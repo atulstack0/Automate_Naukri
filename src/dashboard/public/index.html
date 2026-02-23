@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AutoApply – Job Tracker Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <span class="logo-icon">🤖</span>
+    <span class="logo-text">AutoApply</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
+      <span class="nav-icon">▣</span><span>Dashboard</span>
+    </a>
+    <a class="nav-item" data-view="jobs" onclick="switchView('jobs')">
+      <span class="nav-icon">📋</span><span>All Jobs</span>
+    </a>
+    <a class="nav-item" data-view="live" onclick="switchView('live')">
+      <span class="nav-icon">⚡</span><span>Live Feed</span>
+      <span class="badge-dot" id="live-dot"></span>
+    </a>
+    <a class="nav-item" data-view="learning" onclick="switchView('learning')">
+      <span class="nav-icon">🧠</span><span>Learning List</span>
+      <span class="badge-count" id="learning-badge" style="display:none"></span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="status-pill" id="status-pill">
+      <span class="status-dot" id="status-dot"></span>
+      <span id="status-text">Connecting…</span>
+    </div>
+    <button class="export-btn" onclick="exportCsv()">⬇ Export CSV</button>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════════ MAIN -->
+<main class="main">
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title" id="page-title">JOB APPLICATION TRACKER</h1>
+      <span class="page-subtitle" id="last-updated">—</span>
+    </div>
+    <div class="topbar-right">
+      <button class="refresh-btn" onclick="refreshAll()" title="Refresh">↺ Refresh</button>
+    </div>
+  </header>
+
+  <!-- ── DASHBOARD VIEW ── -->
+  <section class="view active" id="view-dashboard">
+
+    <!-- Stat cards -->
+    <div class="stats-grid">
+      <div class="stat-card" id="card-scanned">
+        <div class="stat-label">TOTAL SCANNED</div>
+        <div class="stat-value" id="stat-scanned">—</div>
+        <div class="stat-sub">jobs found</div>
+      </div>
+      <div class="stat-card green" id="card-applied">
+        <div class="stat-label">APPLIED</div>
+        <div class="stat-value" id="stat-applied">—</div>
+        <div class="stat-sub" id="stat-applied-rate">success rate</div>
+      </div>
+      <div class="stat-card yellow" id="card-skipped">
+        <div class="stat-label">SKIPPED</div>
+        <div class="stat-value" id="stat-skipped">—</div>
+        <div class="stat-sub">low AI score</div>
+      </div>
+      <div class="stat-card red" id="card-errors">
+        <div class="stat-label">FAILED</div>
+        <div class="stat-value" id="stat-errors">—</div>
+        <div class="stat-sub">errors</div>
+      </div>
+    </div>
+
+    <!-- Charts row -->
+    <div class="charts-row">
+      <!-- Trend chart (big) -->
+      <div class="chart-card wide">
+        <div class="chart-header">
+          <span class="chart-title">📈 APPLICATION TREND — LAST 14 DAYS</span>
+          <div class="chart-legend">
+            <span class="leg green">■ Applied</span>
+            <span class="leg yellow">■ Skipped</span>
+            <span class="leg red">■ Failed</span>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Donut (small) -->
+      <div class="chart-card narrow">
+        <div class="chart-header">
+          <span class="chart-title">STATUS BREAKDOWN</span>
+        </div>
+        <div class="chart-wrap donut-wrap">
+          <canvas id="donutChart"></canvas>
+        </div>
+        <div class="donut-legend" id="donut-legend"></div>
+      </div>
+    </div>
+
+    <!-- Bottom row: companies + score dist -->
+    <div class="charts-row">
+      <!-- Top companies -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">🏢 TOP COMPANIES</span>
+        </div>
+        <div class="chart-wrap short">
+          <canvas id="companiesChart"></canvas>
+        </div>
+      </div>
+
+      <!-- AI Score Distribution -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">🎯 AI SCORE DISTRIBUTION</span>
+        </div>
+        <div class="chart-wrap short">
+          <canvas id="scoreChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── ALL JOBS VIEW ── -->
+  <section class="view" id="view-jobs">
+    <div class="table-toolbar">
+      <input class="search-input" id="jobs-search" placeholder="🔍  Filter by title, company, status…" oninput="filterJobs()"/>
+      <select class="filter-select" id="jobs-status-filter" onchange="filterJobs()">
+        <option value="">All Statuses</option>
+        <option value="success">Applied ✅</option>
+        <option value="skipped">Skipped</option>
+        <option value="failed">Failed ❌</option>
+        <option value="pending">Pending</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table class="jobs-table" id="jobs-table">
+        <thead>
+          <tr>
+            <th>Title</th><th>Company</th><th>Score</th>
+            <th>Status</th><th>Scanned</th><th>Applied</th>
+          </tr>
+        </thead>
+        <tbody id="jobs-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── LIVE FEED VIEW ── -->
+  <section class="view" id="view-live">
+    <div class="live-header">
+      <span class="pulse-dot"></span>
+      <span style="color:#39ff14;font-weight:600">LIVE FEED</span>
+      <span style="color:#666;font-size:12px;margin-left:10px">Real-time job events</span>
+    </div>
+    <div class="live-feed" id="live-feed"></div>
+  </section>
+
+  <!-- ── LEARNING LIST VIEW ── -->
+  <section class="view" id="view-learning">
+    <div class="table-toolbar">
+      <span class="learning-title">🧠 QUESTIONS THE AI COULDN'T ANSWER</span>
+      <span class="learning-subtitle" id="learning-subtitle">Loading…</span>
+      <button class="selflearn-btn" id="selflearn-btn" onclick="triggerSelfLearn()">🤖 Self-Learn</button>
+      <span class="selflearn-status" id="selflearn-status"></span>
+    </div>
+    <div class="table-wrap">
+      <table class="jobs-table learning-table" id="learning-table">
+        <thead>
+          <tr>
+            <th style="width:40%">Question</th>
+            <th>Type</th>
+            <th>Times Seen</th>
+            <th>Status</th>
+            <th style="width:30%">Answer / Action</th>
+          </tr>
+        </thead>
+        <tbody id="learning-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

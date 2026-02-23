@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Auth session (contains cookies — never commit)
+auth.json
+
+# Database
+data/autoapply.db
+
+# Logs
+logs/
+
+# Screenshots (keep .gitkeep but ignore actual files)
+data/screenshots/*
+!data/screenshots/.gitkeep
+
+# Resume (personal file)
+data/resume.pdf
+
+# Environment secrets
+.env
+.env.local
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
