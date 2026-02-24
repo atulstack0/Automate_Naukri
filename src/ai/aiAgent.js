@@ -30,22 +30,20 @@ const db = require('../db/db');
  * @returns {Promise<string>} - The best answer to type/select
  */
 async function answerField(question, fieldType = 'text', options = [], profile = {}, hint = '', sourceJobId = null) {
-  // ── Step 1: Check learning list for a previously-saved answer ──
+  // ── Step 1: Check learning list for an EXACT previously-saved answer ──
   try {
-    const learned = db.findSimilarQuestion(question);
-    if (learned && learned.answer) {
-      logger.info(`[Learning] Reusing saved answer for "${question.substring(0, 60)}" → "${learned.answer}"`);
-      console.log(`\nQuestion: ${question}\nResponse: ${learned.answer}\n  ↳ Answered using a previously learned response.`);
-      return learned.answer;
+    const exact = db.findAnswerByQuestion(question);
+    if (exact) {
+      logger.info(`[Learning] Using exact match for "${question.substring(0, 60)}" → "${exact}"`);
+      console.log(`\nQuestion: ${question}\nResponse: ${exact}\n  ↳ Answered using an exact-match learned response.`);
+      return exact;
     }
   } catch (_) { /* non-fatal – fall through to AI */ }
 
-  const optionsList = options.length
-    ? `\nAvailable options (you MUST choose one of these exactly): ${options.join(' | ')}`
-    : '';
-
-  // Build profile from Learning List DB (single source of truth)
+  // ── Step 2: Use AI to answer based on full Learning List & Profile ──
   const ll = db.getAllAnsweredAsMap();
+  const fullContext = db.getAllAnsweringContext(); // Everything we've ever learned
+  
   const profileSummary = `
 Candidate profile:
 - Name: ${ll.name || profile.name || 'Atul Patil'}
@@ -64,9 +62,18 @@ Candidate profile:
 - Portfolio: ${ll.portfolio || profile.portfolio || ''}
 - GitHub: ${ll.github || profile.github || ''}
 - Willing to relocate: ${ll.relocation || 'Yes, open to hybrid/remote'}
+
+Extended Learning Context (Prior answered questions):
+${fullContext || 'No additional context yet.'}
 `.trim();
 
+  const optionsList = options.length
+    ? `\nAvailable options (you MUST choose one of these exactly): ${options.join(' | ')}`
+    : '';
+
   const prompt = `You are filling out a job application form on behalf of a candidate.
+Use the provided profile and the extended learning context to decide the best answer.
+
 ${profileSummary}
 ${hint ? `Context: ${hint}` : ''}
 
@@ -152,10 +159,12 @@ async function selfLearnAnswer(question, fieldType = 'text', options = []) {
 
   // Build profile from Learning List DB (single source of truth)
   const ll = db.getAllAnsweredAsMap();
-  const prompt = `You are an intelligent job application assistant that can self-learn to answer any form question.
-You are helping ${ll.name || 'Atul Patil'} (${ll.currentRole || 'QA Lead'}, ${ll.experience || ll.yearsExperience || '3'} years experience, ${ll.location || ll.currentLocation || 'Pune India'}) apply for QA Engineer jobs.
+  const fullContext = db.getAllAnsweringContext();
 
-You must answer this form question using reasoning and inference:
+  const prompt = `You are an intelligent job application assistant that can self-learn to answer any form question.
+You are helping ${ll.name || 'Atul Patil'} (${ll.currentRole || 'QA Lead'}, ${ll.experience || ll.yearsExperience || '3'} years experience, ${ll.location || ll.currentLocation || 'Pune India'}) apply for jobs.
+
+You must answer this form question using reasoning, inference, and the provided learning history:
 Question: "${question}"
 Field type: ${fieldType}
 ${optionsList}
@@ -166,11 +175,15 @@ Profile summary:
 - Salary: ${ll.salary || '10'} LPA | Notice: ${ll.notice || ll.noticePeriod || '30 days'} | Willing to relocate: ${ll.relocation || 'Yes'}
 - Education: ${ll.education || 'MCA'}
 
+Extended Learning Context (All previously answered questions):
+${fullContext || 'No additional context yet.'}
+
 Self-learning rules:
 - You MUST provide an answer — do NOT say you cannot answer
-- Use inference and common sense if the question is ambiguous
+- Use the "Extended Learning Context" to see how similar questions were answered before
+- Use inference and common sense based on the profile
 - For demographic questions: use the profile data
-- For technical/skills questions: use the profile above
+- For technical/skills questions: use the profile/context above
 - For yes/no: answer Yes unless clearly inappropriate
 - For numeric: provide a specific number
 - Reply with ONLY the answer value, nothing else
@@ -324,6 +337,8 @@ Reply with ONLY one word: YES or NO`;
 async function analyzeFormAndAnswer(formText, profile = {}) {
   // Build profile from Learning List DB (single source of truth)
   const ll = db.getAllAnsweredAsMap();
+  const fullContext = db.getAllAnsweringContext();
+
   const profileSummary = `
 Name: ${ll.name || profile.name || 'Atul Patil'}
 Email: ${ll.email || profile.email || ''}
@@ -333,20 +348,17 @@ Role: ${ll.currentRole || profile.currentRole || 'QA Lead'} at ${ll.currentCompa
 Experience: ${ll.experience || ll.yearsExperience || profile.yearsOfExperience || '3'} years
 Notice: ${ll.notice || ll.noticePeriod || profile.noticePeriod || '30 days'}
 Salary expectation: ${ll.salary || profile.salary || '10'} LPA
-Skills: ${ll.tools || 'Selenium, Playwright, TestNG, REST Assured, Postman, Jenkins, JIRA, SQL, Python, JavaScript'}
-Education: ${ll.education || 'Master of Computer Application (MCA)'}
+Skills: ${ll.tools || 'Selenium, Playwright, Java, Python, Jenkins'}
+
+Extended Learning History:
+${fullContext || 'No existing history.'}
 `.trim();
 
-  const prompt = `You are filling a job application form for this candidate:
+  const prompt = `Analyze this job application form and provide answers for all clear questions/fields.
+Use the Candidate Profile and the Extended Learning History to decide the best answers.
+
 ${profileSummary}
 
-Form content (field labels visible on page):
----
-${formText.substring(0, 4000)}
----
-
-For each input field you can identify, provide the best answer.
-Reply with ONLY a valid JSON array, no extra text:
 [
   {"label": "field label or question", "answer": "value to enter"},
   ...

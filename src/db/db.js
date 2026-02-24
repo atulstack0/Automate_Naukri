@@ -183,6 +183,18 @@ function recordUnknownQuestion(question, fieldType = 'text', options = [], sourc
 }
 
 /**
+ * Find an exact answer for a question (case-insensitive).
+ * Returns the answer string or undefined.
+ */
+function findAnswerByQuestion(question) {
+  const db = getDb();
+  const row = db.prepare(
+    `SELECT answer FROM learning_questions WHERE question = ? COLLATE NOCASE AND answered = 1 LIMIT 1`
+  ).get(question.trim());
+  return row ? row.answer : undefined;
+}
+
+/**
  * Find a previously answered question that is similar to the given question.
  * Returns the row (including `answer`) or undefined.
  */
@@ -222,16 +234,6 @@ function updateLearningAnswer(id, answer) {
 }
 
 /**
- * Reset a learning list entry back to unanswered / pending state.
- */
-function resetLearningAnswer(id) {
-  const db = getDb();
-  return db.prepare(
-    `UPDATE learning_questions SET answer = '', answered = 0, updated_at = datetime('now') WHERE id = ?`
-  ).run(id);
-}
-
-/**
  * Look up a single answer by its answer_key (e.g. 'name', 'email', 'salary').
  * Returns the answer string or '' if not found/unanswered.
  */
@@ -259,6 +261,28 @@ function getAllAnsweredAsMap() {
   return map;
 }
 
+/**
+ * Return a full list of all answered questions and their answers.
+ * This is used to provide the AI with complete context of everything it has learned.
+ */
+function getAllAnsweringContext(limit = 30) {
+  const db = getDb();
+  const rows = db.prepare(
+    `SELECT question, answer FROM learning_questions WHERE answered = 1 ORDER BY updated_at DESC LIMIT ?`
+  ).all(limit);
+  return rows.map(r => `Question: ${r.question}\nAnswer: ${r.answer}`).join('\n---\n');
+}
+
+/**
+ * Reset a learning list entry back to unanswered / pending state.
+ */
+function resetLearningAnswer(id) {
+  const db = getDb();
+  return db.prepare(
+    `UPDATE learning_questions SET answer = '', answered = 0, updated_at = datetime('now') WHERE id = ?`
+  ).run(id);
+}
+
 // ---------- CSV export ----------
 
 function exportAppliedJobsCsv() {
@@ -281,12 +305,13 @@ module.exports = {
   saveScreenshot,
   getScreenshotsForJob,
   recordUnknownQuestion,
+  findAnswerByQuestion,
   findSimilarQuestion,
   getLearningQuestions,
   updateLearningAnswer,
   resetLearningAnswer,
   findAnswerByKey,
   getAllAnsweredAsMap,
+  getAllAnsweringContext,
   exportAppliedJobsCsv,
 };
-
