@@ -180,6 +180,7 @@
     <div class="table-toolbar">
       <span class="learning-title">🧠 QUESTIONS THE AI COULDN'T ANSWER</span>
       <span class="learning-subtitle" id="learning-subtitle">Loading…</span>
+      <button class="add-btn" onclick="openAddModal()">➕ Add New</button>
       <button class="selflearn-btn" id="selflearn-btn" onclick="triggerSelfLearn()">🤖 Self-Learn</button>
       <span class="selflearn-status" id="selflearn-status"></span>
     </div>
@@ -200,6 +201,35 @@
   </section>
 
 </main>
+
+<!-- ═══════════════════════════════════════════════════ MODALS -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">➕ ADD MANUAL QUESTION</span>
+      <button class="modal-close" onclick="closeAddModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Question / Label</label>
+        <input type="text" id="add-question" placeholder="e.g. How many years of experience in Java?" />
+      </div>
+      <div class="form-group">
+        <label>Answer</label>
+        <input type="text" id="add-answer" placeholder="e.g. 5" />
+      </div>
+      <div class="form-group">
+        <label>Answer Key (Optional)</label>
+        <input type="text" id="add-key" placeholder="e.g. javaExperience" />
+        <small>Used for internal mapping (like 'notice', 'salary')</small>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="cancel-btn" onclick="closeAddModal()">Cancel</button>
+      <button class="save-btn" onclick="submitManualQuestion()">Save Answer</button>
+    </div>
+  </div>
+</div>
 
 <script src="app.js"></script>
 </body>

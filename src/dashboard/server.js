@@ -155,6 +155,21 @@ function createDashboardServer(port = 3000) {
     }
   });
 
+  // Manual question addition
+  app.post('/api/learning', (req, res) => {
+    const { question, answer, answerKey } = req.body;
+    if (!question || !answer) {
+      return res.status(400).json({ error: 'Question and answer are required' });
+    }
+    try {
+      db.addManualLearningQuestion(question, answer, answerKey);
+      res.json({ success: true });
+    } catch (err) {
+      logger.error('Manual question addition failed', { err: err.message });
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   app.patch('/api/learning/:id', (req, res) => {
     try {
       const { answer } = req.body;

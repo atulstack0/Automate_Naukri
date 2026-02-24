@@ -654,6 +654,64 @@ async function exportCsv() {
 }
 
 // ════════════════════════════════════════════════════════════════
+//  MANUAL ADD MODAL
+// ════════════════════════════════════════════════════════════════
+function openAddModal() {
+  const modal = document.getElementById('add-modal');
+  modal.classList.add('active');
+  document.getElementById('add-question').focus();
+}
+
+function closeAddModal() {
+  const modal = document.getElementById('add-modal');
+  modal.classList.remove('active');
+  // Clear inputs
+  document.getElementById('add-question').value = '';
+  document.getElementById('add-answer').value = '';
+  document.getElementById('add-key').value = '';
+}
+
+async function submitManualQuestion() {
+  const q = document.getElementById('add-question').value.trim();
+  const a = document.getElementById('add-answer').value.trim();
+  const k = document.getElementById('add-key').value.trim();
+  const btn = document.querySelector('.modal-footer .save-btn');
+
+  if (!q || !a) {
+    alert('Please provide both a question and an answer.');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  try {
+    const res = await fetch('/api/learning', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: q, answer: a, answerKey: k || null }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+
+    closeAddModal();
+    loadLearningList(); // Refresh table
+  } catch (err) {
+    alert('Failed to save: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save Answer';
+  }
+}
+
+// Close modal on escape or background click
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeAddModal();
+});
+document.getElementById('add-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('add-modal')) closeAddModal();
+});
+
+// ════════════════════════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', async () => {

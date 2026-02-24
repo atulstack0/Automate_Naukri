@@ -274,6 +274,22 @@ function getAllAnsweringContext(limit = 30) {
 }
 
 /**
+ * Add a manual question and answer to the learning list.
+ * Uses INSERT OR REPLACE to update if the same question (exact match) exists.
+ */
+function addManualLearningQuestion(question, answer, answerKey = null) {
+  const db = getDb();
+  return db.prepare(`
+    INSERT INTO learning_questions (question, answer, answer_key, answered, asked_count, updated_at)
+    VALUES (?, ?, ?, 1, 1, datetime('now'))
+    ON CONFLICT(answer_key) DO UPDATE SET
+      answer = excluded.answer,
+      updated_at = excluded.updated_at
+    WHERE answer_key IS NOT NULL;
+  `).run(question, answer, answerKey);
+}
+
+/**
  * Reset a learning list entry back to unanswered / pending state.
  */
 function resetLearningAnswer(id) {
@@ -309,6 +325,7 @@ module.exports = {
   findSimilarQuestion,
   getLearningQuestions,
   updateLearningAnswer,
+  addManualLearningQuestion,
   resetLearningAnswer,
   findAnswerByKey,
   getAllAnsweredAsMap,
