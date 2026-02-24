@@ -30,13 +30,16 @@ function switchView(id) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
   document.getElementById(`view-${id}`).classList.add('active');
-  document.querySelector(`[data-view="${id}"]`).classList.add('active');
+  const navItem = document.querySelector(`[data-view="${id}"]`);
+  if (navItem) navItem.classList.add('active');
 
   const titles = { dashboard: 'JOB APPLICATION TRACKER', jobs: 'ALL JOBS', live: 'LIVE FEED', learning: '🧠 LEARNING LIST' };
   document.getElementById('page-title').textContent = titles[id] || '';
 
   if (id === 'jobs') loadJobsTable();
   if (id === 'learning') loadLearningList();
+
+  addDebugLog(`View switched to: ${id}`, 'info');
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -509,10 +512,14 @@ function setupSocket() {
   socket.on('connect', () => {
     setStatus('online', 'Online');
     showDot(true);
+    showToast('Dashboard connected to worker', 'success');
+    addDebugLog('Socket.io connection established', 'info');
   });
   socket.on('disconnect', () => {
     setStatus('offline', 'Offline');
     showDot(false);
+    showToast('Dashboard disconnected', 'error');
+    addDebugLog('Socket.io connection lost', 'error');
   });
 
   // Refresh stats + charts on any worker event
@@ -520,15 +527,48 @@ function setupSocket() {
 
   socket.on('stats:update',  refresh);
   socket.on('init:stats',    s => updateStatsFromSocket(s));
-  socket.on('worker:start',  () => addLiveEvent('scanning', '🚀 Worker started', 'AutoApply'));
-  socket.on('worker:done',   d => addLiveEvent('applied', `✅ Session done – ${d.appliedCount || 0} applied`, ''));
-  socket.on('job:scanned',   d => addLiveEvent('scanning', `🔍 Scanning: ${d.title}`, d.company));
-  socket.on('job:analyzing', d => addLiveEvent('scanning', `🤖 Analyzing: ${d.title}`, d.company));
-  socket.on('job:applying',  d => addLiveEvent('scanning', `📋 Applying: ${d.title}`, d.company, 'blue'));
-  socket.on('job:applied',   d => { addLiveEvent('applied', `✅ Applied [${d.appliedCount}]: ${d.title}`, d.company); refresh(); });
-  socket.on('job:skipped',   d => addLiveEvent('skipped', `⏭ Skipped: ${d.title} (score: ${d.score})`, d.company));
-  socket.on('job:failed',    d => addLiveEvent('failed',  `❌ Failed: ${d.title}`, d.company));
-  socket.on('worker:error',  d => addLiveEvent('failed', `💥 Error: ${d.message}`, ''));
+  socket.on('worker:start',  () => {
+    addLiveEvent('scanning', '🚀 Worker started', 'AutoApply');
+    showToast('Worker process started', 'info');
+    addDebugLog('Worker process initiated');
+  });
+  socket.on('worker:done',   d => {
+    addLiveEvent('applied', `✅ Session done – ${d.appliedCount || 0} applied`, '');
+    showToast(`Session completed: ${d.appliedCount || 0} jobs applied`, 'success');
+    addDebugLog(`Worker session finished. Total applied: ${d.appliedCount}`);
+  });
+  socket.on('job:scanned',   d => {
+    addLiveEvent('scanning', `🔍 Scanning: ${d.title}`, d.company);
+    addDebugLog(`Job found: ${d.title} @ ${d.company}`);
+  });
+  socket.on('job:analyzing', d => {
+    addLiveEvent('scanning', `🤖 Analyzing: ${d.title}`, d.company);
+    addDebugLog(`AI Analyzing job: ${d.title}`);
+  });
+  socket.on('job:applying',  d => {
+    addLiveEvent('scanning', `📋 Applying: ${d.title}`, d.company, 'blue');
+    addDebugLog(`Attempting to apply: ${d.title}`);
+  });
+  socket.on('job:applied',   d => {
+    addLiveEvent('applied', `✅ Applied [${d.appliedCount}]: ${d.title}`, d.company);
+    showToast(`Successfully applied to ${d.company}`, 'success');
+    addDebugLog(`Application SUCCESS: ${d.title}`, 'log');
+    refresh();
+  });
+  socket.on('job:skipped',   d => {
+    addLiveEvent('skipped', `⏭ Skipped: ${d.title} (score: ${d.score})`, d.company);
+    addDebugLog(`Job SKIPPED (Score ${d.score}): ${d.title}`, 'warn');
+  });
+  socket.on('job:failed',    d => {
+    addLiveEvent('failed',  `❌ Failed: ${d.title}`, d.company);
+    showToast(`Failed to apply for ${d.title}`, 'error');
+    addDebugLog(`Application FAILED: ${d.title}`, 'error');
+  });
+  socket.on('worker:error',  d => {
+    addLiveEvent('failed', `💥 Error: ${d.message}`, '');
+    showToast(`Worker Error: ${d.message}`, 'error');
+    addDebugLog(`CRITICAL ERROR: ${d.message}`, 'error');
+  });
 
   // Self-learn cycle completion event
   socket.on('selflearn:done', d => {
@@ -715,19 +755,124 @@ document.getElementById('add-modal').addEventListener('click', e => {
 //  INIT
 // ════════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', async () => {
+  // Load saved theme
+  const savedTheme = localStorage.getItem('dashboard-theme') || 'dark';
+  setTheme(savedTheme);
+
   setupSocket();
   showDot(false);
 
   // Live feed placeholder until events arrive
   const feed = document.getElementById('live-feed');
-  const ph = document.createElement('div');
-  ph.className = 'live-placeholder';
-  ph.style.cssText = 'text-align:center;padding:60px 0;color:#3a4a5c;font-size:14px';
-  ph.innerHTML = '⚡ Waiting for live events…<br><small style="font-size:11px;margin-top:8px;display:block">Events appear here in real-time as the bot runs</small>';
-  feed.appendChild(ph);
+  if (feed) {
+    const ph = document.createElement('div');
+    ph.className = 'live-placeholder';
+    ph.style.cssText = 'text-align:center;padding:60px 0;color:var(--text-dim);font-size:14px';
+    ph.innerHTML = '⚡ Waiting for live events…<br><small style="font-size:11px;margin-top:8px;display:block">Events appear here in real-time as the bot runs</small>';
+    feed.appendChild(ph);
+  }
 
   await refreshAll();
+  addDebugLog('Dashboard initialized and data loaded', 'info');
 
   // Auto-refresh every 30 seconds
   setInterval(refreshAll, 30000);
 });
+
+// ════════════════════════════════════════════════════════════════
+//  CYBERPUNK UI UTILS
+// ════════════════════════════════════════════════════════════════
+
+function setTheme(theme) {
+  document.body.setAttribute('data-theme', theme);
+  document.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const activeBtn = document.getElementById(`theme-${theme}`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  localStorage.setItem('dashboard-theme', theme);
+  showToast(`UI Theme: ${theme.toUpperCase()}`, 'info');
+  addDebugLog(`Theme changed to ${theme}`, 'info');
+}
+
+function showToast(message, type = 'success', duration = 4000) {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+
+  const icon = {
+    success: '✅',
+    error: '❌',
+    info: 'ℹ️',
+    warning: '⚠️'
+  }[type] || '🔔';
+
+  toast.innerHTML = `
+    <span class="toast-icon">${icon}</span>
+    <span class="toast-message">${message}</span>
+  `;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('removing');
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
+
+let debugLogCount = 0;
+
+function toggleDebugConsole() {
+  const consoleEl = document.getElementById('debug-console');
+  const icon = document.getElementById('debug-toggle-icon');
+  const isCollapsed = consoleEl.classList.contains('collapsed');
+
+  if (isCollapsed) {
+    consoleEl.classList.remove('collapsed');
+    consoleEl.classList.add('expanded');
+    icon.textContent = '▼';
+  } else {
+    consoleEl.classList.remove('expanded');
+    consoleEl.classList.add('collapsed');
+    icon.textContent = '▲';
+  }
+}
+
+function addDebugLog(message, type = 'log') {
+  const logsContainer = document.getElementById('debug-logs');
+  if (!logsContainer) return;
+
+  debugLogCount++;
+  const countEl = document.getElementById('debug-count');
+  if (countEl) countEl.textContent = debugLogCount;
+
+  const entry = document.createElement('div');
+  entry.className = 'debug-log-entry';
+
+  const time = new Date().toLocaleTimeString('en-IN', { hour12: false });
+
+  entry.innerHTML = `
+    <span class="debug-log-time">[${time}]</span>
+    <span class="debug-log-msg ${type}">${esc(message)}</span>
+  `;
+
+  logsContainer.appendChild(entry);
+  logsContainer.scrollTop = logsContainer.scrollHeight;
+
+  while (logsContainer.children.length > 200) {
+    logsContainer.removeChild(logsContainer.firstChild);
+  }
+}
+
+function clearDebugConsole(event) {
+  if (event) event.stopPropagation();
+  const logsContainer = document.getElementById('debug-logs');
+  if (logsContainer) logsContainer.innerHTML = '';
+  debugLogCount = 0;
+  const countEl = document.getElementById('debug-count');
+  if (countEl) countEl.textContent = '0';
+  showToast('Debug logs cleared', 'info');
+}

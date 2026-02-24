@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AutoApply – Job Tracker Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <link rel="stylesheet" href="styles.css"/>
 </head>
-<body>
+<body data-theme="dark">
+
+<!-- Effects -->
+<div class="bg-pattern"></div>
 
 <!-- ═══════════════════════════════════════════════════ SIDEBAR -->
 <aside class="sidebar" id="sidebar">
@@ -34,6 +37,19 @@
       <span class="nav-icon">🧠</span><span>Learning List</span>
       <span class="badge-count" id="learning-badge" style="display:none"></span>
     </a>
+
+    <!-- Theme Toggles -->
+    <div class="theme-toggles">
+      <button class="toggle-btn active" onclick="setTheme('dark')" id="theme-dark">
+        <span>🌑 DARK / CRT</span>
+      </button>
+      <button class="toggle-btn" onclick="setTheme('transparent')" id="theme-transparent">
+        <span>🌌 TRANSPARENT</span>
+      </button>
+      <button class="toggle-btn" onclick="setTheme('light')" id="theme-light">
+        <span>☀️ LIGHT</span>
+      </button>
+    </div>
   </nav>
 
   <div class="sidebar-footer">
@@ -64,25 +80,21 @@
 
     <!-- Stat cards -->
     <div class="stats-grid">
-      <div class="stat-card" id="card-scanned">
-        <div class="stat-label">TOTAL SCANNED</div>
-        <div class="stat-value" id="stat-scanned">—</div>
-        <div class="stat-sub">jobs found</div>
+      <div class="stat-card kpi-card" id="card-scanned">
+        <div class="kpi-val" id="stat-scanned">—</div>
+        <div class="kpi-label">TOTAL SCANNED</div>
       </div>
-      <div class="stat-card green" id="card-applied">
-        <div class="stat-label">APPLIED</div>
-        <div class="stat-value" id="stat-applied">—</div>
-        <div class="stat-sub" id="stat-applied-rate">success rate</div>
+      <div class="stat-card kpi-card green" id="card-applied">
+        <div class="kpi-val" id="stat-applied">—</div>
+        <div class="kpi-label" id="stat-applied-rate">success rate</div>
       </div>
-      <div class="stat-card yellow" id="card-skipped">
-        <div class="stat-label">SKIPPED</div>
-        <div class="stat-value" id="stat-skipped">—</div>
-        <div class="stat-sub">low AI score</div>
+      <div class="stat-card kpi-card yellow" id="card-skipped">
+        <div class="kpi-val" id="stat-skipped">—</div>
+        <div class="kpi-label">SKIPPED</div>
       </div>
-      <div class="stat-card red" id="card-errors">
-        <div class="stat-label">FAILED</div>
-        <div class="stat-value" id="stat-errors">—</div>
-        <div class="stat-sub">errors</div>
+      <div class="stat-card kpi-card red" id="card-errors">
+        <div class="kpi-val" id="stat-errors">—</div>
+        <div class="kpi-label">FAILED</div>
       </div>
     </div>
 
@@ -202,12 +214,34 @@
 
 </main>
 
+<!-- ═══════════════════════════════════════════════════ COMPONENTS -->
+
+<!-- Toast Notifications -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Debug Console -->
+<div class="debug-console collapsed" id="debug-console">
+  <div class="debug-console-header" onclick="toggleDebugConsole()">
+    <div class="debug-console-title">
+      <span>TERMINAL</span>
+      <span class="badge" id="debug-count">0</span>
+    </div>
+    <div class="debug-console-controls">
+      <button class="debug-console-btn" onclick="clearDebugConsole(event)">Clear</button>
+      <span id="debug-toggle-icon">▲</span>
+    </div>
+  </div>
+  <div class="debug-console-body" id="debug-logs">
+    <!-- Logs appended here -->
+  </div>
+</div>
+
 <!-- ═══════════════════════════════════════════════════ MODALS -->
 <div class="modal-overlay" id="add-modal">
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">➕ ADD MANUAL QUESTION</span>
-      <button class="modal-close" onclick="closeAddModal()">×</button>
+      <button class="modal-close" onclick="closeAddModal()">&times;</button>
     </div>
     <div class="modal-body">
       <div class="form-group">
@@ -221,7 +255,7 @@
       <div class="form-group">
         <label>Answer Key (Optional)</label>
         <input type="text" id="add-key" placeholder="e.g. javaExperience" />
-        <small>Used for internal mapping (like 'notice', 'salary')</small>
+        <small style="color:var(--text-secondary);font-size:0.7rem">Used for internal mapping (like 'notice', 'salary')</small>
       </div>
     </div>
     <div class="modal-footer">
