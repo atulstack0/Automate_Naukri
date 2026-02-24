@@ -8,10 +8,12 @@ const express = require('express');
 const http = require('http');
 const { Server: SocketServer } = require('socket.io');
 const path = require('path');
+const fs   = require('fs');
 const cors = require('cors');
 const db = require('../db/db');
 const logger = require('../utils/logger');
 const { runSelfLearnCycle } = require('../ai/aiAgent');
+const { seedLearningList } = require('../db/seedLearningList');
 
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const SCREENSHOTS_DIR = path.join(process.cwd(), 'data', 'screenshots');
@@ -207,6 +209,15 @@ function createDashboardServer(port = 3000) {
 
   server.listen(port, () => {
     logger.info(`Dashboard running at http://localhost:${port}`);
+
+    // ── Seed Learning List from config.json ────────────────────────────────
+    try {
+      const configPath = path.join(process.cwd(), 'config', 'config.json');
+      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      seedLearningList(db.getDb(), config);
+    } catch (err) {
+      logger.warn('[Seed] Could not seed learning list', { err: err.message });
+    }
 
     // ── Auto self-learn scheduler ──────────────────────────────────────────
     // First run: 30 s after boot (handles questions captured right at startup)

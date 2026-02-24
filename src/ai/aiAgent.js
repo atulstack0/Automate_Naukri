@@ -44,22 +44,26 @@ async function answerField(question, fieldType = 'text', options = [], profile =
     ? `\nAvailable options (you MUST choose one of these exactly): ${options.join(' | ')}`
     : '';
 
+  // Build profile from Learning List DB (single source of truth)
+  const ll = db.getAllAnsweredAsMap();
   const profileSummary = `
 Candidate profile:
-- Name: ${profile.name || 'Atul Patil'}
-- Email: ${profile.email || ''}
-- Phone: ${profile.phone || ''}
-- Location: ${profile.location || 'Pune, India'}
-- Current role: ${profile.currentRole || 'QA Lead'}
-- Current company: ${profile.currentCompany || 'Chat360'}
-- Years of experience: ${profile.yearsOfExperience || '3'}
-- Notice period: ${profile.noticePeriod || '30 days'}
-- Expected salary: ${profile.salary || '10 LPA'}
-- Skills: Selenium, Playwright, TestNG, REST Assured, Postman, Jenkins, JIRA, SQL, Python
-- Education: B.Sc. Computer Science
-- LinkedIn: ${profile.linkedIn || ''}
-- Portfolio: ${profile.portfolio || ''}
-- Willing to relocate: Yes, open to hybrid/remote
+- Name: ${ll.name || profile.name || 'Atul Patil'}
+- Email: ${ll.email || profile.email || ''}
+- Phone: ${ll.phone || profile.phone || ''}
+- Location: ${ll.location || ll.currentLocation || profile.location || 'Pune, India'}
+- Current role: ${ll.currentRole || profile.currentRole || 'QA Lead'}
+- Current company: ${ll.currentCompany || profile.currentCompany || 'Chat360'}
+- Years of experience: ${ll.experience || ll.yearsExperience || profile.yearsOfExperience || '3'}
+- Notice period: ${ll.notice || ll.noticePeriod || profile.noticePeriod || '30 days'}
+- Expected salary: ${ll.salary || profile.salary || '10 LPA'}
+- Skills: ${ll.tools || 'Selenium, Playwright, TestNG, REST Assured, Postman, Jenkins, JIRA, SQL, Python'}
+- Programming languages: ${ll.languages || 'Java, C#, Python, JavaScript, HTML/CSS, SQL'}
+- Education: ${ll.education || 'Master of Computer Application (MCA)'}
+- LinkedIn: ${ll.linkedIn || profile.linkedIn || ''}
+- Portfolio: ${ll.portfolio || profile.portfolio || ''}
+- GitHub: ${ll.github || profile.github || ''}
+- Willing to relocate: ${ll.relocation || 'Yes, open to hybrid/remote'}
 `.trim();
 
   const prompt = `You are filling out a job application form on behalf of a candidate.
@@ -146,8 +150,10 @@ async function selfLearnAnswer(question, fieldType = 'text', options = []) {
     ? `Possible choices (answer must be one of these): ${options.join(' | ')}`
     : '';
 
+  // Build profile from Learning List DB (single source of truth)
+  const ll = db.getAllAnsweredAsMap();
   const prompt = `You are an intelligent job application assistant that can self-learn to answer any form question.
-You are helping Atul Patil (QA Lead, 3 years experience, Pune India) apply for QA Engineer jobs.
+You are helping ${ll.name || 'Atul Patil'} (${ll.currentRole || 'QA Lead'}, ${ll.experience || ll.yearsExperience || '3'} years experience, ${ll.location || ll.currentLocation || 'Pune India'}) apply for QA Engineer jobs.
 
 You must answer this form question using reasoning and inference:
 Question: "${question}"
@@ -155,15 +161,15 @@ Field type: ${fieldType}
 ${optionsList}
 
 Profile summary:
-- Name: Atul Patil | QA Lead at Chat360 | 3 yrs exp | Pune, India
-- Skills: Selenium, Playwright, TestNG, REST Assured, Jenkins, Java, Python, SQL
-- Salary: 10 LPA | Notice: 30 days | Willing to relocate: Yes
-- Indian national | Male | Age: 28
+- Name: ${ll.name || 'Atul Patil'} | ${ll.currentRole || 'QA Lead'} at ${ll.currentCompany || 'Chat360'} | ${ll.experience || ll.yearsExperience || '3'} yrs exp | ${ll.location || ll.currentLocation || 'Pune, India'}
+- Skills: ${ll.tools || 'Selenium, Playwright, TestNG, REST Assured, Jenkins, Java, Python, SQL'}
+- Salary: ${ll.salary || '10'} LPA | Notice: ${ll.notice || ll.noticePeriod || '30 days'} | Willing to relocate: ${ll.relocation || 'Yes'}
+- Education: ${ll.education || 'MCA'}
 
 Self-learning rules:
 - You MUST provide an answer — do NOT say you cannot answer
 - Use inference and common sense if the question is ambiguous
-- For demographic questions (age, gender, nationality): use Atul's profile
+- For demographic questions: use the profile data
 - For technical/skills questions: use the profile above
 - For yes/no: answer Yes unless clearly inappropriate
 - For numeric: provide a specific number
@@ -316,17 +322,19 @@ Reply with ONLY one word: YES or NO`;
  * @returns {Promise<Array<{label:string, answer:string}>>}
  */
 async function analyzeFormAndAnswer(formText, profile = {}) {
+  // Build profile from Learning List DB (single source of truth)
+  const ll = db.getAllAnsweredAsMap();
   const profileSummary = `
-Name: ${profile.name || 'Atul Patil'}
-Email: ${profile.email || ''}
-Phone: ${profile.phone || ''}
-Location: ${profile.location || 'Pune, India'}
-Role: ${profile.currentRole || 'QA Lead'} at ${profile.currentCompany || 'Chat360'}
-Experience: ${profile.yearsOfExperience || '3'} years
-Notice: ${profile.noticePeriod || '30 days'}
-Salary expectation: ${profile.salary || '10'} LPA
-Skills: Selenium, Playwright, TestNG, REST Assured, Postman, Jenkins, JIRA, SQL, Python, JavaScript
-Education: B.Sc. Computer Science
+Name: ${ll.name || profile.name || 'Atul Patil'}
+Email: ${ll.email || profile.email || ''}
+Phone: ${ll.phone || profile.phone || ''}
+Location: ${ll.location || ll.currentLocation || profile.location || 'Pune, India'}
+Role: ${ll.currentRole || profile.currentRole || 'QA Lead'} at ${ll.currentCompany || profile.currentCompany || 'Chat360'}
+Experience: ${ll.experience || ll.yearsExperience || profile.yearsOfExperience || '3'} years
+Notice: ${ll.notice || ll.noticePeriod || profile.noticePeriod || '30 days'}
+Salary expectation: ${ll.salary || profile.salary || '10'} LPA
+Skills: ${ll.tools || 'Selenium, Playwright, TestNG, REST Assured, Postman, Jenkins, JIRA, SQL, Python, JavaScript'}
+Education: ${ll.education || 'Master of Computer Application (MCA)'}
 `.trim();
 
   const prompt = `You are filling a job application form for this candidate:

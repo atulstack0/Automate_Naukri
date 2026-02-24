@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS learning_questions (
   field_type  TEXT DEFAULT 'text',
   options     TEXT DEFAULT '[]',
   answer      TEXT DEFAULT '',
+  answer_key  TEXT,
   source_job  TEXT,
   asked_count INTEGER DEFAULT 1,
   answered    INTEGER DEFAULT 0,
@@ -57,3 +58,4 @@ CREATE TABLE IF NOT EXISTS learning_questions (
 );
 CREATE INDEX IF NOT EXISTS idx_lq_answered ON learning_questions(answered);
 CREATE INDEX IF NOT EXISTS idx_lq_question ON learning_questions(question);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_lq_answer_key ON learning_questions(answer_key);

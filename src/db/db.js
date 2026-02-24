@@ -22,7 +22,23 @@ function getDb() {
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
 
-  // Run base migrations
+  // Migration: add answer_key column to learning_questions (for existing DBs)
+  // This must run BEFORE initSql because initSql creates an index on this column.
+  try {
+    const tableInfo = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='learning_questions'").get();
+    if (tableInfo) {
+      const cols = db.prepare("PRAGMA table_info(learning_questions)").all();
+      if (!cols.find(c => c.name === 'answer_key')) {
+        db.exec(`ALTER TABLE learning_questions ADD COLUMN answer_key TEXT`);
+        db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_lq_answer_key ON learning_questions(answer_key)`);
+        logger.info('Migration: added answer_key column to learning_questions');
+      }
+    }
+  } catch (err) {
+    logger.warn('answer_key migration skipped or failed', { err: err.message });
+  }
+
+  // Run base migrations / schema init
   const initSql = fs.readFileSync(SQL_INIT_PATH, 'utf8');
   db.exec(initSql);
 
@@ -51,6 +67,8 @@ function getDb() {
   } catch (err) {
     logger.warn('screenshots migration skipped or failed', { err: err.message });
   }
+
+
 
   logger.info('Database initialized', { path: DB_PATH });
   return db;
@@ -213,6 +231,34 @@ function resetLearningAnswer(id) {
   ).run(id);
 }
 
+/**
+ * Look up a single answer by its answer_key (e.g. 'name', 'email', 'salary').
+ * Returns the answer string or '' if not found/unanswered.
+ */
+function findAnswerByKey(answerKey) {
+  const db = getDb();
+  const row = db.prepare(
+    `SELECT answer FROM learning_questions WHERE answer_key = ? AND answered = 1 LIMIT 1`
+  ).get(answerKey);
+  return row ? row.answer : '';
+}
+
+/**
+ * Return all answered entries as a { answer_key: answer } map.
+ * Used to build a full profile from the learning list.
+ */
+function getAllAnsweredAsMap() {
+  const db = getDb();
+  const rows = db.prepare(
+    `SELECT answer_key, answer FROM learning_questions WHERE answered = 1 AND answer_key IS NOT NULL`
+  ).all();
+  const map = {};
+  for (const r of rows) {
+    if (r.answer_key) map[r.answer_key] = r.answer;
+  }
+  return map;
+}
+
 // ---------- CSV export ----------
 
 function exportAppliedJobsCsv() {
@@ -239,6 +285,8 @@ module.exports = {
   getLearningQuestions,
   updateLearningAnswer,
   resetLearningAnswer,
+  findAnswerByKey,
+  getAllAnsweredAsMap,
   exportAppliedJobsCsv,
 };
 

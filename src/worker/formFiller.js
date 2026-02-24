@@ -11,6 +11,7 @@
 const path = require('path');
 const fs   = require('fs');
 const logger = require('../utils/logger');
+const db     = require('../db/db');
 const { randomDelay } = require('../utils/antiDetection');
 const { answerField, analyzeFormAndAnswer } = require('../ai/aiAgent');
 
@@ -106,21 +107,27 @@ function findBestMatch(labelText, threshold = 20) {
 }
 
 /**
- * Get the answer value from qaAnswers (fallback to profile).
+ * Get the answer value — Learning List DB is the primary source.
+ * Falls back to qaAnswers / profile only if DB has no answer.
  */
 function getAnswer(answerKey, qaAnswers, profile) {
-  // Special compound: salary → "X LPA" or "Open to discussion"
+  // Primary source: Learning List DB
+  const dbAnswer = db.findAnswerByKey(answerKey);
+  if (dbAnswer) {
+    // Special compound: salary → "X LPA"
+    if (answerKey === 'salary' && /^\d+$/.test(dbAnswer.trim())) return `${dbAnswer} LPA`;
+    return dbAnswer;
+  }
+
+  // Fallback: config.json data (backward compat)
   if (answerKey === 'salary') {
     const raw = qaAnswers.salary || profile.salary || '';
     if (/^\d+$/.test(raw.trim())) return `${raw} LPA`;
     return 'Open to market standards for this role; exact expectation can be discussed after understanding role responsibilities.';
   }
-
-  // LinkedIn fallback
   if (answerKey === 'linkedIn' && !qaAnswers.linkedIn) {
     return profile.linkedIn || '';
   }
-
   return qaAnswers[answerKey] || profile[answerKey] || '';
 }
 
