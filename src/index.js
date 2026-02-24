@@ -14,9 +14,12 @@ const { initAIProvider, getProviderInfo } = require('./ai/aiProvider');
 
 let config;
 try {
-  config = require(path.join(process.cwd(), 'config', 'config.json'));
+  const configPath = path.join(process.cwd(), 'config', 'config.json');
+  logger.debug(`[Main] Loading configuration from: ${configPath}`);
+  config = require(configPath);
+  logger.info('[Main] Configuration loaded successfully');
 } catch (err) {
-  logger.error('Could not load config/config.json', { err: err.message });
+  logger.error('[Main] CRITICAL: Could not load config/config.json', { err: err.message });
   process.exit(1);
 }
 
@@ -31,12 +34,14 @@ const SKIP_AI       = config.skipAI          || false;
   logger.info('====================================');
 
   // 1. Start dashboard
+  logger.info(`[Main] Starting Dashboard server on port ${PORT}...`);
   createDashboardServer(PORT);
-
+ 
   // 2. Wire live-update emitter
+  logger.debug('[Main] Wiring up Socket.io emitter for worker events');
   setEmitter((event, data) => {
     emitToClients(event, data);
-    logger.debug('WS emit', { event });
+    logger.debug('[WS] Outbound event', { event });
   });
 
   // 3. Initialize AI provider (Gemini → Ollama fallback)
@@ -55,16 +60,19 @@ const SKIP_AI       = config.skipAI          || false;
   }
 
   // 4. Short pause to let dashboard fully bind
+  logger.debug('[Main] Brief initialization pause (1s)...');
   await new Promise(r => setTimeout(r, 1000));
-
+ 
   // 5. Run worker
   try {
+    logger.info('[Main] Relaying control to Worker...');
     await runWorker(config);
   } catch (err) {
-    logger.error('Worker crashed', { message: err.message, stack: err.stack });
+    logger.error('[Main] Worker execution failure', { message: err.message, stack: err.stack });
   }
-
-  logger.info('Session complete. Dashboard still running at http://localhost:' + PORT);
+ 
+  logger.info('=== AutoApply Session Complete ===');
+  logger.info('[Main] Dashboard remains active at http://localhost:' + PORT);
 })();
 
 process.on('SIGINT', () => { logger.info('SIGINT – shutting down'); process.exit(0); });

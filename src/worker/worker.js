@@ -338,14 +338,17 @@ async function applyToJob(page, jobId, config) {
       let applyClicked = false;
       for (const sel of APPLY_BTN_SELECTORS) {
         try {
+          logger.debug(`[Worker] Searching for APPLY button with selector: "${sel}"`);
           const btn = page.locator(sel).first();
           if (await btn.count() > 0 && await btn.isVisible()) {
+            logger.info(`[Worker] Clicked APPLY: "${sel}" - Clicking...`);
             await btn.click();
             applyClicked = true;
-            logger.info(`Clicked apply: "${sel}"`);
             break;
           }
-        } catch (_) {}
+        } catch (err) {
+          logger.debug(`[Worker] Apply selector "${sel}" failed or timed out`, { err: err.message });
+        }
       }
 
       if (!applyClicked) {
@@ -392,7 +395,7 @@ async function applyToJob(page, jobId, config) {
       await captureScreenshot(page, jobId, 'opened');
 
       for (let step = 0; step < 8; step++) {
-        logger.info(`Form step ${step + 1} for ${jobId}`);
+        logger.info(`\n[Worker] Job ${jobId}: Processing Form Step ${step + 1}...`);
 
         // Fill all visible fields on this step
         const stepUnmatched = await fillFormSmart(page, config);
@@ -425,7 +428,7 @@ async function applyToJob(page, jobId, config) {
               await btn.click();
               await randomDelay(1000, 2000);
               submittedOrAdvanced = true;
-              logger.info(`Clicked submit: "${sel}"`);
+              logger.info(`[Worker] Clicked SUBMIT: "${sel}"`);
 
               // Re-check success after submit
               for (const sSel of SUCCESS_SELECTORS) {
@@ -451,7 +454,7 @@ async function applyToJob(page, jobId, config) {
                 await btn.click();
                 await randomDelay(800, 1500);
                 nextClicked = true;
-                logger.info(`Clicked next: "${sel}"`);
+                logger.info(`[Worker] Clicked NEXT/CONTINUE: "${sel}"`);
                 break;
               }
             } catch (_) {}
@@ -589,22 +592,27 @@ async function runWorker(config) {
 
         for (let i = 0; i < count; i++) {
           if (appliedCount >= maxAppsPerRun) {
-            logger.info(`Reached maxAppsPerRun (${maxAppsPerRun})`);
+            logger.info(`[Worker] Reached maxAppsPerRun limit (${maxAppsPerRun})`);
             break outerLoop;
           }
 
           const card = cards.nth(i);
           scannedCount++;
+          logger.info(`\n[Worker] Processing Job ${i + 1}/${count} (Total Scanned: ${scannedCount})`);
 
           let title = 'Unknown';
           let company = 'Unknown';
+          let location = 'Unknown';
           let cardUrl = '';
-
           try {
-            title   = ((await card.locator(selector.jobTitle   || '.title').first().textContent({ timeout: 3000 })) || '').trim();
-            company = ((await card.locator(selector.companyName|| '.comp-name').first().textContent({ timeout: 3000 })) || '').trim();
+            title    = ((await card.locator(selector.jobTitle   || '.title').first().textContent({ timeout: 3000 })) || '').trim();
+            company  = ((await card.locator(selector.companyName|| '.comp-name').first().textContent({ timeout: 3000 })) || '').trim();
+            location = ((await card.locator(selector.jobLocation || '.location').first().textContent({ timeout: 3000 })) || '').trim();
             cardUrl = await card.locator('a').first().getAttribute('href') || '';
-          } catch (_) {}
+            logger.info(`[Worker] Scraped Job: "${title.trim()}" at "${company.trim()}" (${location.trim()})`);
+          } catch (e) {
+            logger.debug('[Worker] Partial scrape failed for card', { err: e.message });
+          }
 
           const jobId = makeJobId(title, company);
           logger.info(`[${scannedCount}] "${title}" @ ${company}`);

@@ -169,7 +169,7 @@ async function fillFormSmart(page, config) {
   const { qaAnswers = {}, profile = {}, resumePath, skipAI = false } = config;
   const unmatched = [];
 
-  logger.info('[FormFiller] Starting AI-augmented smart form fill...');
+  logger.info(`[FormFiller] Starting AI-augmented fill: ${skipAI ? 'Keyword only' : 'Hybrid AI'}`);
 
   // ── AI Pass 0: batch-analyze the whole form for an answer map ──────────
   // Cached by page URL – one Gemini call per page, not per fillFormSmart() invocation
@@ -226,7 +226,12 @@ async function fillFormSmart(page, config) {
 
         const handle = await el.elementHandle();
         const label  = await getElementLabel(page, handle);
-        if (!label) continue;
+        if (!label) {
+          logger.debug(`[FormFiller] Skipping field [${sel}] - no label found`);
+          continue;
+        }
+
+        logger.debug(`[FormFiller] Processing field: "${label.trim().substring(0, 40)}" [${sel}]`);
 
         // Pass 1: keyword match
         let answer = '';
@@ -275,6 +280,9 @@ async function fillFormSmart(page, config) {
 
       const handle  = await sel.elementHandle();
       const label   = await getElementLabel(page, handle);
+      if (label) {
+        logger.debug(`[FormFiller] Processing select: "${label.trim().substring(0, 40)}"`);
+      }
       const options = await page.evaluate(el =>
         Array.from(el.options).map(o => ({ value: o.value, text: o.text })), handle
       );
@@ -300,9 +308,14 @@ async function fillFormSmart(page, config) {
           || options.find(o => o.value !== '' && o.text.toLowerCase() !== 'select');
 
         if (best) {
-          await sel.selectOption({ value: best.value });
+          const chosenVal = best.value;
+          logger.info(`[FormFiller] Select [${label.substring(0, 20)}]: Choosing value "${chosenVal}"`);
+          await sel.selectOption({ value: chosenVal }).catch(() => {});
           logger.info(`[FormFiller] Select "${(label||'').trim().substring(0, 40)}" → "${best.text}"`);
           await randomDelay(150, 350);
+        } else {
+          const optValues = options.map(o => o.value);
+          logger.warn(`[FormFiller] Select [${label.substring(0, 20)}]: No matching option found for "${answer}" among [${optValues.join(', ')}]`);
         }
       } else {
         const clean = (label||'').trim().replace(/\s+/g, ' ').substring(0, 100);
@@ -332,6 +345,8 @@ async function fillFormSmart(page, config) {
       const optLabels  = radioOptions.map(r => r.label);
       const groupLabel = groupName.replace(/[_-]/g, ' ');
 
+      logger.debug(`[FormFiller] Processing radio group: "${groupLabel}" (${optLabels.length} options)`);
+
       // Pass 1: keyword match
       let chosen = '';
       const match = findBestMatch(groupLabel);
@@ -349,12 +364,17 @@ async function fillFormSmart(page, config) {
           chosen.toLowerCase().includes(r.label.toLowerCase())
         );
         if (best) {
-          const radioEl = page.locator(`input[type="radio"][id="${best.id}"], input[type="radio"][value="${best.value}"][name="${groupName}"]`).first();
-          if (await radioEl.count() > 0 && await radioEl.isVisible()) {
-            await radioEl.click();
+          const targetRadio = page.locator(`input[type="radio"][id="${best.id}"], input[type="radio"][value="${best.value}"][name="${groupName}"]`).first();
+          if (await targetRadio.count() > 0 && await targetRadio.isVisible()) {
+            logger.info(`[FormFiller] Radio [${groupLabel.substring(0, 20)}]: Clicking "${best.label}"`);
+            await targetRadio.click().catch(() => {});
             logger.info(`[FormFiller] Radio "${groupLabel}" → "${best.label}"`);
             await randomDelay(100, 250);
+          } else {
+            logger.warn(`[FormFiller] Radio [${groupLabel.substring(0, 20)}]: Option "${best.label}" not found or not visible among [${optLabels.join(', ')}]`);
           }
+        } else {
+          logger.warn(`[FormFiller] Radio [${groupLabel.substring(0, 20)}]: No matching option found for "${chosen}" among [${optLabels.join(', ')}]`);
         }
       }
     }
@@ -369,6 +389,22 @@ async function fillFormSmart(page, config) {
       if (!await cb.isVisible()) continue;
       const handle = await cb.elementHandle();
       const label  = await getElementLabel(page, handle);
+      if (label) {
+        logger.debug(`[FormFiller] Checking checkbox: "${label.trim().substring(0, 40)}"`);
+      }
+      // Add high-density logs for checkboxes
+      let val = null; // Initialize val
+      const match = findBestMatch(label);
+      if (match) {
+        val = getAnswer(match.answerKey, qaAnswers, profile);
+      }
+      if (val === undefined || val === null) {
+        logger.debug(`[FormFiller] No cached answer found for "${label.substring(0, 30)}", skipping...`);
+        // continue; // Do not continue, let the auto-check logic run
+      } else {
+        logger.info(`[FormFiller] Match found: "${label.substring(0, 30)}" -> Key: "${match.answerKey}" -> Value: "${typeof val === 'string' ? val.substring(0, 30) : val}"`);
+      }
+
       const lower  = (label || '').toLowerCase();
       if (/agree|terms|consent|confirm|accept|privacy|authorize/i.test(lower)) {
         if (!await cb.isChecked()) {

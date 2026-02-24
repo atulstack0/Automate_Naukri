@@ -19,6 +19,7 @@ async function askOllama(prompt, opts = {}, connectionOpts = {}) {
     timeoutMs = 120000,
   } = connectionOpts;
 
+  logger.debug(`[Ollama] Requesting generation: model=${model}, temp=${opts.temperature ?? 0.15}`);
   const response = await axios.post(
     `${baseUrl}/api/generate`,
     {
@@ -35,7 +36,9 @@ async function askOllama(prompt, opts = {}, connectionOpts = {}) {
     { timeout: timeoutMs, headers: { 'Content-Type': 'application/json' } }
   );
 
-  return response.data?.response || '';
+  const rawRes = response.data?.response || '';
+  logger.debug(`[Ollama] Raw response received (${rawRes.length} chars)`);
+  return rawRes;
 }
 
 
@@ -61,27 +64,44 @@ Rules:
 
 function parseAIResponse(raw) {
   if (!raw || typeof raw !== 'string') {
+    logger.warn('[Ollama] Received empty/invalid response string');
     return { decision: 'SKIP', score: 0, reason: 'empty AI response' };
   }
+  
+  // Try 1: Direct JSON parse
   try {
-    return normalizeAIResult(JSON.parse(raw.trim()));
-  } catch (_) {}
-
+    const parsed = JSON.parse(raw.trim());
+    logger.debug('[Ollama] Successfully parsed direct JSON');
+    return normalizeAIResult(parsed);
+  } catch (_) {
+    logger.debug('[Ollama] Direct JSON parse failed, trying regex extraction...');
+  }
+ 
+  // Try 2: Extract JSON from markdown or text
   const jsonMatch = raw.match(/\{[\s\S]*?\}/);
   if (jsonMatch) {
-    try { return normalizeAIResult(JSON.parse(jsonMatch[0])); } catch (_) {}
+    try { 
+      const parsed = JSON.parse(jsonMatch[0]);
+      logger.debug('[Ollama] Successfully extracted JSON via regex');
+      return normalizeAIResult(parsed); 
+    } catch (_) {
+      logger.debug('[Ollama] Regex JSON extraction failed parsing');
+    }
   }
-
+ 
+  // Try 3: Heuristic extraction
+  logger.warn('[Ollama] AI returned non-JSON – attempting heuristic parse', { raw: raw.substring(0, 200) });
   const decisionMatch = raw.match(/\b(APPLY|SKIP)\b/i);
   const scoreMatch    = raw.match(/\b(\d{1,3})\b/);
   const reasonMatch   = raw.match(/reason[:\s]+["']?([^"'\n]{5,120})/i);
-
-  logger.warn('AI returned non-JSON – heuristic parse', { raw: raw.substring(0, 200) });
-  return {
+ 
+  const result = {
     decision: decisionMatch ? decisionMatch[1].toUpperCase() : 'SKIP',
     score:    scoreMatch    ? Math.min(parseInt(scoreMatch[1], 10), 100) : 30,
     reason:   reasonMatch   ? reasonMatch[1].trim() : 'parsed from unstructured response',
   };
+  logger.debug('[Ollama] Heuristic parse result', result);
+  return result;
 }
 
 function normalizeAIResult(obj) {

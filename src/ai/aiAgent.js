@@ -42,8 +42,11 @@ async function answerField(question, fieldType = 'text', options = [], profile =
 
   // ── Step 2: Use AI to answer based on full Learning List & Profile ──
   const ll = db.getAllAnsweredAsMap();
-  const fullContext = db.getAllAnsweringContext(); // Everything we've ever learned
+  const contextRows = db.getAllAnsweringContext(30);
+  const fullContext = contextRows || 'No additional context yet.';
   
+  logger.debug(`[AIAgent] Building answer context: ${Object.keys(ll).length} profile fields, ${contextRows.split('\n---\n').length} history items`);
+
   const profileSummary = `
 Candidate profile:
 - Name: ${ll.name || profile.name || 'Atul Patil'}
@@ -64,7 +67,7 @@ Candidate profile:
 - Willing to relocate: ${ll.relocation || 'Yes, open to hybrid/remote'}
 
 Extended Learning Context (Prior answered questions):
-${fullContext || 'No additional context yet.'}
+${fullContext}
 `.trim();
 
   const optionsList = options.length
@@ -192,8 +195,10 @@ ${options.length ? '- Your answer MUST be one of the listed choices' : ''}
 Answer:`;
 
   try {
+    logger.debug(`[AIAgent] Requesting self-learned answer for: "${question.substring(0, 50)}..."`);
     const raw = await askAI(prompt, { temperature: 0.5, num_predict: 100 });
     const answer = (raw || '').trim().replace(/^["'\s]+|["'\s]+$/g, '');
+    logger.info(`[AIAgent] Self-learned: "${question.substring(0, 40)}..." -> "${answer.substring(0, 40)}..."`);
     if (!answer || answer.toLowerCase().includes('cannot') || answer.toLowerCase().includes('unable')) return '';
 
     if (options.length) {

@@ -32,6 +32,7 @@ async function launchBrowser(config = {}) {
     ],
   };
 
+  logger.info(`[Browser] Launching chromium (headless=${headless}, slowMo=${slowMo}ms)`);
   const browser = await chromium.launch(launchOptions);
 
   const contextOptions = {
@@ -49,14 +50,16 @@ async function launchBrowser(config = {}) {
 
   if (useAuth && fs.existsSync(AUTH_PATH)) {
     contextOptions.storageState = AUTH_PATH;
-    logger.info('Loading session from auth.json');
-  } else {
-    logger.info('No auth.json found – starting fresh session');
+    logger.info('[Browser] Loading persistent storage from auth.json');
+  } else if (useAuth) {
+    logger.info('[Browser] No auth.json - starting with fresh state');
   }
 
+  logger.debug('[Browser] Creating persistent context...');
   const context = await browser.newContext(contextOptions);
 
   // Stealth: remove webdriver fingerprint
+  logger.debug('[Browser] Injecting stealth scripts (webdriver, plugins, languages)');
   await context.addInitScript(() => {
     Object.defineProperty(navigator, 'webdriver', { get: () => false });
     Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
@@ -64,7 +67,7 @@ async function launchBrowser(config = {}) {
     window.chrome = { runtime: {} };
   });
 
-  logger.info(`Browser launched: headless=${headless}, slowMo=${slowMo}ms`);
+  logger.info('[Browser] Launch successful');
   return { browser, context };
 }
 

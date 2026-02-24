@@ -106,9 +106,10 @@ async function askAI(prompt, opts = {}) {
     // Try up to 2 times: on rate limit wait 65s then retry once
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
+        logger.debug(`[AIProvider] Attempt ${attempt + 1}: Gemini (${_geminiModel})`);
         const start = Date.now();
         const response = await _askGemini(prompt, opts);
-        logger.debug(`[AIProvider] Gemini responded in ${Date.now() - start}ms`);
+        logger.info(`[AIProvider] Gemini response received in ${Date.now() - start}ms`);
         return response;
       } catch (err) {
         const status = err?.status || err?.response?.status;
@@ -121,10 +122,11 @@ async function askAI(prompt, opts = {}) {
                      : status === 403 ? 'quota exceeded'
                      : status === 429 ? 'rate limited (retry failed)'
                      : err.message;
-        logger.warn(`[AIProvider] Gemini failed (${reason}) – falling back to Ollama`);
+        
+        logger.warn(`[AIProvider] Gemini failed (${reason}) – falling back to local model`);
         if (status === 401 || status === 403) {
           _useGemini = false;
-          logger.warn('[AIProvider] Gemini disabled for this session due to auth failure');
+          logger.warn('[AIProvider] Gemini disabled for this session');
         }
         break; // fall through to Ollama
       }
@@ -134,17 +136,18 @@ async function askAI(prompt, opts = {}) {
   // ── 2. Try Ollama ──────────────────────────────────────────────────────
   if (_useOllama) {
     try {
+      logger.debug(`[AIProvider] Fallback: Ollama (${_ollamaModel})`);
       const start = Date.now();
       const response = await _askOllama(prompt, opts);
-      logger.debug(`[AIProvider] Ollama responded in ${Date.now() - start}ms`);
+      logger.info(`[AIProvider] Ollama response received in ${Date.now() - start}ms`);
       return response;
     } catch (err) {
-      logger.error(`[AIProvider] Ollama also failed: ${err.message}`);
+      logger.error(`[AIProvider] Ollama fallback failed: ${err.message}`);
     }
   }
 
   // ── 3. Both failed ─────────────────────────────────────────────────────
-  logger.error('[AIProvider] All AI providers failed – returning empty response');
+  logger.error('[AIProvider] CRITICAL: All AI providers failed');
   return '';
 }
 

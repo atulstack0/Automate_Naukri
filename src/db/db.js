@@ -19,8 +19,10 @@ function getDb() {
   }
 
   db = new Database(DB_PATH);
+  logger.info(`[DB] Opened persistent connection: ${DB_PATH}`);
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
+  logger.debug('[DB] PRAGMAs set: WAL mode, Foreign Keys ON');
 
   // Migration: add answer_key column to learning_questions (for existing DBs)
   // This must run BEFORE initSql because initSql creates an index on this column.
@@ -141,6 +143,7 @@ function getStats() {
       SUM(CASE WHEN apply_status = 'failed' THEN 1 ELSE 0 END) as fail_count
     FROM jobs
   `).get();
+  logger.debug(`[DB] Fetched stats: ${row.total_scanned} scanned, ${row.success_count} successful`);
   return row;
 }
 
@@ -171,10 +174,12 @@ function recordUnknownQuestion(question, fieldType = 'text', options = [], sourc
     `SELECT id, asked_count FROM learning_questions WHERE question = ? COLLATE NOCASE LIMIT 1`
   ).get(question.trim());
   if (existing) {
+    logger.debug(`[DB] Unknown question exists, incrementing count: "${question.substring(0, 40)}..."`);
     db.prepare(`UPDATE learning_questions SET asked_count = asked_count + 1, updated_at = datetime('now') WHERE id = ?`)
       .run(existing.id);
     return existing.id;
   }
+  logger.info(`[DB] Recording NEW unknown question: "${question.substring(0, 50)}..."`);
   const result = db.prepare(`
     INSERT INTO learning_questions (question, field_type, options, source_job)
     VALUES (?, ?, ?, ?)

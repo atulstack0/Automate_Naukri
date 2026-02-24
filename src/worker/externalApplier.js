@@ -17,15 +17,44 @@ const { decideNextAction, isApplicationComplete } = require('../ai/aiAgent');
 // Site detection
 // ──────────────────────────────────────────────────────────────────────────────
 function detectSiteType(url) {
-  if (/myworkdayjobs\.com|workday\.com/i.test(url))        return 'workday';
-  if (/greenhouse\.io|boards\.greenhouse/i.test(url))       return 'greenhouse';
-  if (/lever\.co/i.test(url))                               return 'lever';
-  if (/smartrecruiters\.com/i.test(url))                    return 'smartrecruiters';
-  if (/icims\.com/i.test(url))                              return 'icims';
-  if (/linkedin\.com\/jobs/i.test(url))                     return 'linkedin';
-  if (/indeed\.com/i.test(url))                             return 'indeed';
-  if (/taleo\.net/i.test(url))                              return 'taleo';
-  if (/successfactors\.com|sap\.com/i.test(url))           return 'successfactors';
+  logger.debug(`[ExtApply] Detecting site type for URL: ${url}`);
+  if (/myworkdayjobs\.com|workday\.com/i.test(url)) {
+    logger.info('[ExtApply] Site Type: workday');
+    return 'workday';
+  }
+  if (/greenhouse\.io|boards\.greenhouse/i.test(url)) {
+    logger.info('[ExtApply] Site Type: greenhouse');
+    return 'greenhouse';
+  }
+  if (/lever\.co/i.test(url)) {
+    logger.info('[ExtApply] Site Type: lever');
+    return 'lever';
+  }
+  if (/smartrecruiters\.com/i.test(url)) {
+    logger.info('[ExtApply] Site Type: smartrecruiters');
+    return 'smartrecruiters';
+  }
+  if (/icims\.com/i.test(url)) {
+    logger.info('[ExtApply] Site Type: icims');
+    return 'icims';
+  }
+  if (/linkedin\.com\/jobs/i.test(url)) {
+    logger.info('[ExtApply] Site Type: linkedin');
+    return 'linkedin';
+  }
+  if (/indeed\.com/i.test(url)) {
+    logger.info('[ExtApply] Site Type: indeed');
+    return 'indeed';
+  }
+  if (/taleo\.net/i.test(url)) {
+    logger.info('[ExtApply] Site Type: taleo');
+    return 'taleo';
+  }
+  if (/successfactors\.com|sap\.com/i.test(url)) {
+    logger.info('[ExtApply] Site Type: successfactors');
+    return 'successfactors';
+  }
+  logger.info('[ExtApply] Site Type: generic');
   return 'generic';
 }
 
@@ -225,7 +254,7 @@ async function applyLinkedIn(page, config) {
 }
 
 async function applyGeneric(page, config) {
-  logger.info('[ExtApply] Generic site – attempting smart apply');
+  logger.info('[ExtApply] Generic site handler started');
   // Try to find and click any Apply button first
   const applyVariants = [
     'button:has-text("Apply Now")',
@@ -238,13 +267,14 @@ async function applyGeneric(page, config) {
     '[id*="apply-btn"]',
   ];
 
+  logger.debug(`[ExtApply] Checking ${applyVariants.length} variants for initial Apply button`);
   for (const sel of applyVariants) {
     try {
       const btn = page.locator(sel).first();
       if (await btn.count() > 0 && await btn.isVisible()) {
+        logger.info(`[ExtApply] Initial Apply match: "${sel}" - Clicking...`);
         await highlightAndClick(page, btn, `Apply (${sel.match(/"([^"]+)"/)?.[1] || 'Generic'})`, { timeout: 8000 });
         await randomDelay(2000, 3000);
-        logger.info(`[ExtApply] Clicked: "${sel}"`);
         break;
       }
     } catch (_) {}
@@ -274,19 +304,26 @@ async function genericMultiStep(page, config) {
     await randomDelay(700, 1400);
 
     // Try submit
+    logger.debug('[ExtApply] Checking for Submit buttons...');
     const submitted = await clickSubmit(page);
     if (submitted) {
+      logger.info('[ExtApply] Submission clicked, waiting for outcome...');
       await randomDelay(1500, 2500);
       if (await isSuccessPage(page)) return 'success';
+      logger.debug('[ExtApply] Success page not reached yet, continuing...');
       continue;
     }
 
     // Try next
+    logger.debug('[ExtApply] Checking for Next/Continue buttons...');
     const advanced = await clickNext(page);
-    if (advanced) continue;
+    if (advanced) {
+      logger.info('[ExtApply] Advanced to next step');
+      continue;
+    }
 
     // ── AI Navigation fallback ────────────────────────────────────────────
-    // When no known buttons are found, ask AI what to click next
+    logger.info('[ExtApply] No basic buttons found, invoking AI Navigation fallback');
     try {
       const pageText = await page.evaluate(() => document.body.innerText).catch(() => '');
       const aiAction = await decideNextAction(pageText, 'complete job application form');

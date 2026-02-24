@@ -26,6 +26,7 @@ const TARGET_URL = config.jobsUrl || 'https://www.naukri.com/nlogin/login';
   logger.info(`Opening browser. Please log into: ${TARGET_URL}`);
   logger.info('When done, press ENTER in this terminal to save auth.json and close.');
 
+  logger.info('[AuthSaver] Launching browser for manual session capture...');
   const browser = await chromium.launch({
     headless: false,
     slowMo: 30,
@@ -36,6 +37,7 @@ const TARGET_URL = config.jobsUrl || 'https://www.naukri.com/nlogin/login';
     ],
   });
 
+  logger.debug('[AuthSaver] Creating new context and disabling automation flags');
   const context = await browser.newContext({
     viewport: { width: 1366, height: 768 },
     userAgent:
@@ -50,11 +52,12 @@ const TARGET_URL = config.jobsUrl || 'https://www.naukri.com/nlogin/login';
   });
 
   const page = await context.newPage();
+  logger.info(`[AuthSaver] Navigating to target: ${TARGET_URL}`);
   await page.goto(TARGET_URL, { waitUntil: 'domcontentloaded' });
 
   // Wait for user input
-  logger.info('Browser is open. Log in manually now.');
-  logger.info('Press ENTER here when login is complete...');
+  logger.info('[AuthSaver] ! ACTION REQUIRED: Use the browser window to log in manually.');
+  logger.info('[AuthSaver] ! Once logged in, press ENTER in this terminal to capture credentials.');
 
   await new Promise(resolve => {
     process.stdin.once('data', () => resolve());
@@ -62,11 +65,12 @@ const TARGET_URL = config.jobsUrl || 'https://www.naukri.com/nlogin/login';
   });
 
   // Save auth state
+  logger.info(`[AuthSaver] Capturing storage state to: ${AUTH_PATH}...`);
   await context.storageState({ path: AUTH_PATH });
-  logger.info(`✅ auth.json saved to ${AUTH_PATH}`);
+  logger.info(`[AuthSaver] ✅ SUCCESS: auth.json created (${fs.statSync(AUTH_PATH).size} bytes)`);
 
   await browser.close();
-  logger.info('Browser closed. You can now run: npm start');
+  logger.info('[AuthSaver] Browser closed. Process complete.');
   process.exit(0);
 })().catch(err => {
   logger.error('saveAuth failed', { message: err.message, stack: err.stack });
