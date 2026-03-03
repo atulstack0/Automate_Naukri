@@ -85,6 +85,11 @@ function upsertJob(jobData) {
     INSERT INTO jobs (job_id, title, company, location, url, description, decision, score, reason, apply_status)
     VALUES (@job_id, @title, @company, @location, @url, @description, @decision, @score, @reason, @apply_status)
     ON CONFLICT(job_id) DO UPDATE SET
+      title        = excluded.title,
+      company      = excluded.company,
+      location     = excluded.location,
+      url          = excluded.url,
+      description  = CASE WHEN excluded.description != '' THEN excluded.description ELSE jobs.description END,
       decision     = excluded.decision,
       score        = excluded.score,
       reason       = excluded.reason,
@@ -92,6 +97,7 @@ function upsertJob(jobData) {
   `);
   return stmt.run(jobData);
 }
+
 
 function updateJobApplyStatus(jobId, status, errorMessage = null, appliedAt = null) {
   const db = getDb();
@@ -304,6 +310,14 @@ function resetLearningAnswer(id) {
   ).run(id);
 }
 
+/**
+ * Permanently delete a learning list entry by id.
+ */
+function deleteLearningQuestion(id) {
+  const db = getDb();
+  return db.prepare('DELETE FROM learning_questions WHERE id = ?').run(id);
+}
+
 // ---------- CSV export ----------
 
 function exportAppliedJobsCsv() {
@@ -332,6 +346,7 @@ module.exports = {
   updateLearningAnswer,
   addManualLearningQuestion,
   resetLearningAnswer,
+  deleteLearningQuestion,
   findAnswerByKey,
   getAllAnsweredAsMap,
   getAllAnsweringContext,

@@ -15,16 +15,15 @@
   "maxRetries": 3,
   "delayMin": 1500,
   "delayMax": 3000,
-  "slowMo": 20,
+  "slowMo": 500,
   "aiModel": "qwen2.5:7b",
   "ollamaBaseUrl": "http://localhost:11434",
-  "ollamaTimeout": 120000,
+  "ollamaTimeout": 60000,
   "geminiApiKey": "AIzaSyBwC_IjWmWW1mDI7nmUk8cPcybnjNgQjNg",
   "geminiModel": "gemini-2.0-flash",
   "skipAI": false,
-  "resumePath": "./data/screenshots/Atul_Patil_Resume.pdf",
+  "resumePath": "C:\\AAATTTTUUUULLL\\Doc\\Resume\\Atul_Patil_Resume.pdf",
   "dashboardPort": 3000,
-
   "profile": {
     "name": "Atul Patil",
     "email": "atulp4til87@gmail.com",
@@ -41,7 +40,6 @@
     "summary": "Leading QA at Chat360; designed automation frameworks (Java+Selenium+TestNG), ran API testing (Postman/Rest Assured), integrated tests in Jenkins CI/CD; improved efficiency and reduced regression cycles.",
     "linkedIn": "https://www.linkedin.com/in/atulpatil87/"
   },
-
   "selector": {
     "jobCard": ".srp-jobtuple-wrapper",
     "jobTitle": ".title",
@@ -55,11 +53,16 @@
     "resumeUpload": "input[type='file']",
     "submitButton": "button[type='submit']",
     "successIndicator": ".success-msg, .applied-text, [class*='success']",
-    "applyModal": ".apply-modal, .apply-drawer, [class*='apply']"
+    "applyModal": ".apply-modal, .apply-drawer, .naukri-drawer, .df__drawer, .drawer-wrapper"
   },
-
   "keywords": {
-    "required": ["QA", "automation", "Playwright", "Selenium", "testing"],
+    "required": [
+      "QA",
+      "automation",
+      "Playwright",
+      "Selenium",
+      "testing"
+    ],
     "preferred": [
       "SDET",
       "quality assurance",
@@ -69,8 +72,10 @@
       "Postman",
       "REST"
     ],
-    "excluded": ["5+ years senior", "10 years", "lead architect"]
+    "excluded": [
+      "TOSCA"
+    ]
   },
-
-  "scoreThreshold": 40
+  "scoreThreshold": 40,
+  "maxPagesPerSearch": 5
 }

@@ -1,878 +1,838 @@
+/**
+ * AutoApply Dashboard — app.js v3
+ * All features: stats, jobs (CSV import/export), learning list,
+ * resume upload + AI auto-learn, keywords tag editor, live browser view,
+ * settings, profile editor, selectors editor, blocklist, live log,
+ * dark/light mode, bot controls, real-time socket.io
+ */
 'use strict';
-/* ═══════════════════════════════════════════════════════════════
-   AutoApply Dashboard — app.js
-   Chart.js + Socket.io  |  Real-time job tracking
-   ═══════════════════════════════════════════════════════════════ */
 
-// ── Chart.js global defaults ────────────────────────────────────
-Chart.defaults.color = '#5a6a82';
-Chart.defaults.font.family = "'Inter', sans-serif";
-Chart.defaults.borderColor = '#1e2530';
+/* ── Socket.io ────────────────────────────────────────────── */
+const socket = io();
 
-const COLORS = {
-  green:  '#39ff14',
-  yellow: '#f0d000',
-  red:    '#ff4444',
-  blue:   '#00c8ff',
-  purple: '#a855f7',
-  orange: '#f97316',
-};
+/* ── Theme ────────────────────────────────────────────────── */
+const html    = document.documentElement;
+const btnTheme = document.getElementById('themeToggle');
+(function initTheme() {
+  const saved = localStorage.getItem('theme') || 'dark';
+  html.setAttribute('data-theme', saved);
+  btnTheme.textContent = saved === 'dark' ? '🌙' : '☀️';
+})();
+btnTheme.addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  btnTheme.textContent = next === 'dark' ? '🌙' : '☀️';
+});
 
-// ── State ────────────────────────────────────────────────────────
-let allJobs = [];
-let trendChart, donutChart, companiesChart, scoreChart;
-
-// ════════════════════════════════════════════════════════════════
-//  VIEW SWITCHING
-// ════════════════════════════════════════════════════════════════
-function switchView(id) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
-  document.getElementById(`view-${id}`).classList.add('active');
-  const navItem = document.querySelector(`[data-view="${id}"]`);
-  if (navItem) navItem.classList.add('active');
-
-  const titles = { dashboard: 'JOB APPLICATION TRACKER', jobs: 'ALL JOBS', live: 'LIVE FEED', learning: '🧠 LEARNING LIST' };
-  document.getElementById('page-title').textContent = titles[id] || '';
-
-  if (id === 'jobs') loadJobsTable();
-  if (id === 'learning') loadLearningList();
-
-  addDebugLog(`View switched to: ${id}`, 'info');
+/* ── Toast ────────────────────────────────────────────────── */
+function toast(msg, type = 'info') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${type === 'ok' ? '✅' : type === 'err' ? '🔴' : 'ℹ️'}</span><span>${msg}</span>`;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(() => el.remove(), 3200);
 }
 
-// ════════════════════════════════════════════════════════════════
-//  STATS CARDS
-// ════════════════════════════════════════════════════════════════
-async function loadStats() {
-  try {
-    const s = await fetchJSON('/api/stats');
-    const total    = s.total_scanned || 0;
-    const applied  = s.success_count || 0;
-    const skipped  = s.total_skipped || 0;
-    const errors   = s.fail_count    || 0;
-    const rate     = total > 0 ? Math.round((applied / total) * 100) : 0;
+/* ── Tab navigation ───────────────────────────────────────── */
+document.querySelectorAll('.nav-item').forEach(el => {
+  el.addEventListener('click', e => {
+    e.preventDefault();
+    const tab = el.dataset.tab;
+    document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+    el.classList.add('active');
+    const page = document.getElementById(`page-${tab}`);
+    if (page) page.classList.add('active');
+    // Lazy load on switch
+    if (tab === 'jobs')      loadJobs();
+    if (tab === 'learning')  { loadLearning(); loadResumeContent(); }
+    if (tab === 'config')    loadConfig();
+    if (tab === 'keywords')  loadKeywords();
+    if (tab === 'profile')   loadProfile();
+    if (tab === 'selectors') loadSelectors();
+    if (tab === 'blocklist') loadBlocklist();
+    if (tab === 'liveview')  startScreenshotRefresh();
+  });
+});
 
-    animateNumber('stat-scanned', total);
-    animateNumber('stat-applied', applied);
-    animateNumber('stat-skipped', skipped);
-    animateNumber('stat-errors',  errors);
-    document.getElementById('stat-applied-rate').textContent = `${rate}% success rate`;
-    setLastUpdated();
-  } catch (e) { console.warn('Stats load failed', e); }
+/* ── Connection badge ────────────────────────────────────── */
+const connDot   = document.getElementById('connDot');
+const connLabel = document.getElementById('connLabel');
+socket.on('connect',    () => { connDot.className = 'conn-dot ok'; connLabel.textContent = 'Connected'; });
+socket.on('disconnect', () => { connDot.className = 'conn-dot err'; connLabel.textContent = 'Disconnected'; });
+
+/* ═══════════════ STATS / DASHBOARD ═════════════════════════ */
+function updateKPI(s) {
+  animNum('kTotal',    s.total   || 0);
+  animNum('kApplied',  s.applied || 0);
+  animNum('kSkipped',  s.skipped || 0);
+  animNum('kFailed',   s.failed  || 0);
+  document.getElementById('kRate').textContent  = (s.successRate || 0) + '%';
+  document.getElementById('nc-total').textContent = s.total || 0;
+  document.getElementById('nc-jobs').textContent  = s.total || 0;
 }
-
-function animateNumber(id, target) {
+function animNum(id, target) {
   const el = document.getElementById(id);
-  const from = parseInt(el.textContent) || 0;
-  const dur = 600, steps = 30, step = Math.ceil(dur / steps);
-  let i = 0;
-  const inc = (target - from) / steps;
-  const timer = setInterval(() => {
-    i++;
-    el.textContent = Math.round(from + inc * i);
-    if (i >= steps) { clearInterval(timer); el.textContent = target; }
-  }, step);
+  if (!el) return;
+  const cur = parseInt(el.textContent) || 0;
+  const step = Math.ceil(Math.abs(target - cur) / 18);
+  let v = cur;
+  const tid = setInterval(() => {
+    if (v === target) { clearInterval(tid); return; }
+    v = v < target ? Math.min(v + step, target) : Math.max(v - step, target);
+    el.textContent = v;
+  }, 25);
 }
 
-// ════════════════════════════════════════════════════════════════
-//  TREND CHART  (line)
-// ════════════════════════════════════════════════════════════════
+async function loadDashboard() {
+  try {
+    const [statsR, summR] = await Promise.all([
+      fetch('/api/stats').then(r => r.json()),
+      fetch('/api/db/summary').then(r => r.json()),
+    ]);
+    updateKPI(statsR);
+    document.getElementById('kLearning').textContent = summR.learning || 0;
+    document.getElementById('nc-learning').textContent = summR.learning || 0;
+    document.getElementById('lastRefresh').textContent = 'Last updated ' + new Date().toLocaleTimeString();
+
+    await Promise.all([loadTrendChart(), loadDonutChart(), loadCompanyChart(), loadScoreChart()]);
+    await loadRecent();
+  } catch (e) { console.error('[Dashboard]', e); }
+}
+
+socket.on('init:stats',   updateKPI);
+socket.on('stats:update', updateKPI);
+socket.on('job:applied',  () => { loadDashboard(); updateLearningCount(); });
+socket.on('job:analyzed', d => appendLog('info', `🔍 Analyzed: ${d.title} @ ${d.company} → ${d.decision} (${d.score})`));
+socket.on('selflearn:done', r => { toast(`✨ Auto-learned ${r.answered} answers`, 'ok'); updateLearningCount(); });
+
+async function updateLearningCount() {
+  try { const s = await fetch('/api/db/summary').then(r=>r.json()); document.getElementById('nc-learning').textContent = s.learning||0; document.getElementById('kLearning').textContent = s.learning||0; } catch(_) {}
+}
+
+document.getElementById('btnRefreshDash').addEventListener('click', loadDashboard);
+
+/* ── Charts ──────────────────────────────────────────────── */
+const chartCol = { applied:'#10b981', skipped:'#f59e0b', failed:'#ef4444', pending:'#6366f1', total:'#3b82f6' };
+const charts = {};
+
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+function chartDefaults() { return { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{ color: getComputedStyle(html).getPropertyValue('--tx').trim()||'#eef0f7', font:{ size:11 } } } }, scales:{} }; }
+
 async function loadTrendChart() {
   try {
-    let data = [];
-    try { data = await fetchJSON('/api/jobs/trend'); } catch (_) {}
-
-    // Fallback: build trend from /api/jobs/all when trend endpoint missing
-    if (!data.length) {
-      try {
-        const all = await fetchJSON('/api/jobs/all');
-        const byDay = {};
-        all.forEach(j => {
-          const day = (j.created_at || '').slice(0, 10);
-          if (!day) return;
-          if (!byDay[day]) byDay[day] = { day, applied: 0, skipped: 0, failed: 0 };
-          if (j.apply_status === 'success') byDay[day].applied++;
-          else if (j.apply_status === 'skipped') byDay[day].skipped++;
-          else if (j.apply_status === 'failed') byDay[day].failed++;
-        });
-        data = Object.values(byDay).sort((a, b) => a.day.localeCompare(b.day));
-      } catch (_) {}
-    }
-
-    if (!data.length) { showEmpty('trendChart', 'No trend data yet'); return; }
-
-    const labels  = data.map(r => formatDay(r.day));
-    const applied = data.map(r => r.applied);
-    const skipped = data.map(r => r.skipped);
-    const failed  = data.map(r => r.failed);
-
-    const gGreen  = makeGradient('trendChart', 'rgba(57,255,20,.5)', 'rgba(57,255,20,0)');
-    const gYellow = makeGradient('trendChart', 'rgba(240,208,0,.25)', 'rgba(240,208,0,0)');
-    const gRed    = makeGradient('trendChart', 'rgba(255,68,68,.25)', 'rgba(255,68,68,0)');
-
-    if (trendChart) trendChart.destroy();
-    trendChart = new Chart(document.getElementById('trendChart'), {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Applied', data: applied,
-            borderColor: COLORS.green, backgroundColor: gGreen,
-            borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: COLORS.green,
-            fill: true, tension: 0.4,
-          },
-          {
-            label: 'Skipped', data: skipped,
-            borderColor: COLORS.yellow, backgroundColor: gYellow,
-            borderWidth: 2, pointRadius: 3, pointBackgroundColor: COLORS.yellow,
-            fill: true, tension: 0.4, borderDash: [4,3],
-          },
-          {
-            label: 'Failed', data: failed,
-            borderColor: COLORS.red, backgroundColor: gRed,
-            borderWidth: 2, pointRadius: 3, pointBackgroundColor: COLORS.red,
-            fill: true, tension: 0.4,
-          },
-        ],
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
-        plugins: { legend: { display: false }, tooltip: tooltipStyle() },
-        scales: {
-          x: { grid: { color: '#1e2530' }, ticks: { font: { size: 11 } } },
-          y: {
-            grid: { color: '#1e2530' }, beginAtZero: true,
-            ticks: { stepSize: 1, font: { size: 11 } },
-          },
-        },
-      },
-    });
-  } catch (e) { console.warn('Trend chart failed', e); }
+    const rows = await fetch('/api/jobs/trend').then(r=>r.json());
+    const labels  = rows.map(r => r.day);
+    const applied = rows.map(r => r.applied);
+    const skipped = rows.map(r => r.skipped);
+    const failed  = rows.map(r => r.failed);
+    destroyChart('trend');
+    const ctx = document.getElementById('cTrend').getContext('2d');
+    const fmk = (c,a) => { const g=ctx.createLinearGradient(0,0,0,180); g.addColorStop(0,c.replace(')',`,${a})`).replace('rgb','rgba')); g.addColorStop(1,'transparent'); return g; };
+    const def = chartDefaults();
+    charts.trend = new Chart(ctx, { type:'line', data:{ labels, datasets:[
+      { label:'Applied', data:applied, borderColor:chartCol.applied, backgroundColor:'rgba(16,185,129,.12)', fill:true, tension:.4, pointRadius:3 },
+      { label:'Skipped', data:skipped, borderColor:chartCol.skipped, backgroundColor:'rgba(245,158,11,.09)', fill:true, tension:.4, pointRadius:3 },
+      { label:'Failed',  data:failed,  borderColor:chartCol.failed,  backgroundColor:'rgba(239,68,68,.09)',  fill:true, tension:.4, pointRadius:3 },
+    ]}, options:{ ...def, scales:{ x:{ ticks:{ color:'#505872', font:{size:10} }, grid:{ color:'rgba(255,255,255,.04)' } }, y:{ ticks:{ color:'#505872' }, grid:{ color:'rgba(255,255,255,.04)' }, beginAtZero:true } } } });
+  } catch(e) { console.warn('[TrendChart]', e); }
 }
 
-// ════════════════════════════════════════════════════════════════
-//  DONUT CHART  (status breakdown)
-// ════════════════════════════════════════════════════════════════
 async function loadDonutChart() {
   try {
-    const s = await fetchJSON('/api/stats');
-    const applied = s.success_count || 0;
-    const failed  = s.fail_count    || 0;
-    const skipped = s.total_skipped || 0;
-
-    if (!applied && !failed && !skipped) { showEmpty('donutChart', 'No jobs yet'); return; }
-
-    if (donutChart) donutChart.destroy();
-    donutChart = new Chart(document.getElementById('donutChart'), {
-      type: 'doughnut',
-      data: {
-        labels: ['Applied', 'Failed', 'Skipped'],
-        datasets: [{
-          data: [applied, failed, skipped],
-          backgroundColor: [COLORS.green, COLORS.red, COLORS.yellow],
-          borderColor: '#111418',
-          borderWidth: 3,
-          hoverOffset: 8,
-        }],
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        cutout: '68%',
-        plugins: {
-          legend: { display: false },
-          tooltip: tooltipStyle(),
-        },
-      },
+    const s = await fetch('/api/stats').then(r=>r.json());
+    destroyChart('donut');
+    charts.donut = new Chart(document.getElementById('cDonut').getContext('2d'), {
+      type:'doughnut',
+      data:{ labels:['Applied','Skipped','Failed','Pending'], datasets:[{ data:[s.applied,s.skipped,s.failed,s.pending], backgroundColor:['#10b981','#f59e0b','#ef4444','rgba(99,102,241,.5)'], borderWidth:0, hoverOffset:6 }] },
+      options:{ ...chartDefaults(), cutout:'72%', plugins:{ legend:{ position:'bottom', labels:{ color: getComputedStyle(html).getPropertyValue('--tx').trim()||'#eef0f7', boxWidth:10, padding:12, font:{size:11} } } } }
     });
-
-    // Render custom legend
-    const legend = document.getElementById('donut-legend');
-    const items = [
-      { label: 'Applied', color: COLORS.green, val: applied },
-      { label: 'Failed',  color: COLORS.red,   val: failed  },
-      { label: 'Skipped', color: COLORS.yellow, val: skipped },
-    ];
-    legend.innerHTML = items.map(it =>
-      `<div class="leg-item">
-        <div class="swatch" style="background:${it.color}"></div>
-        ${it.label} <strong style="color:${it.color};margin-left:4px">${it.val}</strong>
-       </div>`
-    ).join('');
-  } catch (e) { console.warn('Donut chart failed', e); }
+  } catch(e) { console.warn('[DonutChart]', e); }
 }
 
-// ════════════════════════════════════════════════════════════════
-//  COMPANIES CHART  (horizontal bar)
-// ════════════════════════════════════════════════════════════════
-async function loadCompaniesChart() {
+async function loadCompanyChart() {
   try {
-    let data = [];
-    try { data = await fetchJSON('/api/jobs/top-companies'); } catch (_) {}
-
-    // Fallback: compute from /api/jobs/all
-    if (!data.length) {
-      try {
-        const all = await fetchJSON('/api/jobs/all');
-        const byCompany = {};
-        all.forEach(j => {
-          if (!j.company) return;
-          if (!byCompany[j.company]) byCompany[j.company] = { company: j.company, total: 0, applied: 0 };
-          byCompany[j.company].total++;
-          if (j.apply_status === 'success') byCompany[j.company].applied++;
-        });
-        data = Object.values(byCompany).sort((a, b) => b.total - a.total).slice(0, 8);
-      } catch (_) {}
-    }
-
-    if (!data.length) { showEmpty('companiesChart', 'No company data yet'); return; }
-
-    if (companiesChart) companiesChart.destroy();
-    companiesChart = new Chart(document.getElementById('companiesChart'), {
-      type: 'bar',
-      data: {
-        labels: data.map(r => r.company || 'Unknown'),
-        datasets: [
-          {
-            label: 'Total Seen',
-            data: data.map(r => r.total),
-            backgroundColor: 'rgba(0,200,255,0.15)',
-            borderColor: COLORS.blue,
-            borderWidth: 1.5,
-            borderRadius: 5,
-          },
-          {
-            label: 'Applied',
-            data: data.map(r => r.applied),
-            backgroundColor: 'rgba(57,255,20,0.25)',
-            borderColor: COLORS.green,
-            borderWidth: 1.5,
-            borderRadius: 5,
-          },
-        ],
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: tooltipStyle() },
-        scales: {
-          x: { grid: { color: '#1e2530' }, beginAtZero: true, ticks: { font: { size: 10 } } },
-          y: { grid: { color: 'transparent' }, ticks: { font: { size: 10 } } },
-        },
-      },
+    const rows = await fetch('/api/jobs/top-companies').then(r=>r.json());
+    destroyChart('co');
+    const def = chartDefaults();
+    charts.co = new Chart(document.getElementById('cCompanies').getContext('2d'), {
+      type:'bar',
+      data:{ labels:rows.map(r=>r.company.length>16?r.company.substring(0,16)+'…':r.company), datasets:[
+        { label:'Total',   data:rows.map(r=>r.total),   backgroundColor:'rgba(99,102,241,.6)',  borderRadius:5 },
+        { label:'Applied', data:rows.map(r=>r.applied), backgroundColor:'rgba(16,185,129,.7)', borderRadius:5 },
+      ]},
+      options:{ ...def, scales:{ x:{ ticks:{ color:'#505872', font:{size:10} }, grid:{color:'rgba(255,255,255,.04)'} }, y:{ beginAtZero:true, ticks:{ color:'#505872' }, grid:{color:'rgba(255,255,255,.04)'} } } }
     });
-  } catch (e) { console.warn('Companies chart failed', e); }
+  } catch(e) { console.warn('[CompanyChart]', e); }
 }
 
-// ════════════════════════════════════════════════════════════════
-//  SCORE DISTRIBUTION CHART  (bar)
-// ════════════════════════════════════════════════════════════════
 async function loadScoreChart() {
   try {
-    let data = [];
-    try { data = await fetchJSON('/api/jobs/score-dist'); } catch (_) {}
-
-    // Fallback: compute from /api/jobs/all
-    if (!data.length) {
-      try {
-        const all = await fetchJSON('/api/jobs/all');
-        const buckets = { '90-100':0,'75-89':0,'60-74':0,'40-59':0,'Below 40':0,'Not scored':0 };
-        all.forEach(j => {
-          const s = j.score || 0;
-          if (s === 0) buckets['Not scored']++;
-          else if (s >= 90) buckets['90-100']++;
-          else if (s >= 75) buckets['75-89']++;
-          else if (s >= 60) buckets['60-74']++;
-          else if (s >= 40) buckets['40-59']++;
-          else buckets['Below 40']++;
-        });
-        data = Object.entries(buckets).map(([range, count]) => ({ range, count }));
-      } catch (_) {}
-    }
-
-    data = data.filter(d => d.count > 0);
-    if (!data.length) { showEmpty('scoreChart', 'No score data yet'); return; }
-
-    const order = ['90-100','75-89','60-74','40-59','Below 40','Not scored'];
-    const sorted = order.map(r => data.find(d => d.range === r) || { range: r, count: 0 }).filter(d => d.count > 0);
-
-    const colorMap = { '90-100':'#39ff14','75-89':'#7fff00','60-74':'#f0d000','40-59':'#f97316','Below 40':'#ff4444','Not scored':'#5a6a82' };
-    const barColors = sorted.map(d => colorMap[d.range] || '#5a6a82');
-
-    if (scoreChart) scoreChart.destroy();
-    scoreChart = new Chart(document.getElementById('scoreChart'), {
-      type: 'bar',
-      data: {
-        labels: sorted.map(r => r.range),
-        datasets: [{
-          label: 'Jobs',
-          data: sorted.map(r => r.count),
-          backgroundColor: barColors.map(c => c + '44'),
-          borderColor: barColors,
-          borderWidth: 2,
-          borderRadius: 5,
-        }],
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: tooltipStyle() },
-        scales: {
-          x: { grid: { color: 'transparent' }, ticks: { font: { size: 10 } } },
-          y: { grid: { color: '#1e2530' }, beginAtZero: true, ticks: { stepSize: 1, font: { size: 10 } } },
-        },
-      },
+    const rows = await fetch('/api/jobs/score-dist').then(r=>r.json());
+    destroyChart('sc');
+    const scoreColors = { '90-100':'#10b981','75-89':'#3b82f6','60-74':'#a855f7','40-59':'#f59e0b','Below 40':'#ef4444' };
+    const def = chartDefaults();
+    charts.sc = new Chart(document.getElementById('cScores').getContext('2d'), {
+      type:'bar',
+      data:{ labels:rows.map(r=>r.range), datasets:[{ label:'Jobs', data:rows.map(r=>r.count), backgroundColor:rows.map(r=>scoreColors[r.range]||'#6366f1'), borderRadius:6 }]},
+      options:{ ...def, scales:{ x:{ ticks:{ color:'#505872', font:{size:10} }, grid:{color:'rgba(255,255,255,.04)'} }, y:{ beginAtZero:true, ticks:{ color:'#505872' }, grid:{color:'rgba(255,255,255,.04)'} } } }
     });
-  } catch (e) { console.warn('Score chart failed', e); }
+  } catch(e) { console.warn('[ScoreChart]', e); }
 }
 
-// ════════════════════════════════════════════════════════════════
-//  JOBS TABLE
-// ════════════════════════════════════════════════════════════════
-async function loadJobsTable() {
+async function loadRecent() {
   try {
-    allJobs = await fetchJSON('/api/jobs/all');
-    renderJobsTable(allJobs);
-  } catch (e) { console.warn('Jobs table failed', e); }
+    const rows = await fetch('/api/jobs/recent').then(r=>r.json());
+    const el = document.getElementById('recentList');
+    if (!rows.length) { el.innerHTML = '<div style="color:var(--tx3);text-align:center;padding:20px">No activity yet.</div>'; return; }
+    el.innerHTML = rows.map(r => `
+      <div class="recent-row">
+        ${statusBadgeStr(r.apply_status)}
+        <span class="rr-title">${esc(r.title)}</span>
+        <span class="rr-co">${esc(r.company)}</span>
+        ${scoreBarStr(r.score)}
+        <span class="rr-date">${fmtDate(r.created_at)}</span>
+      </div>`).join('');
+  } catch(e) { console.warn('[Recent]', e); }
 }
 
-function renderJobsTable(jobs) {
-  const tbody = document.getElementById('jobs-tbody');
-  if (!jobs.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#5a6a82;padding:40px">No jobs yet</td></tr>';
-    return;
-  }
-  tbody.innerHTML = jobs.map(j => {
-    const score = j.score || 0;
-    const scoreColor = score >= 80 ? COLORS.green : score >= 60 ? COLORS.yellow : COLORS.red;
-    const status = j.apply_status || 'pending';
-    const chip = `<span class="status-chip ${status}">${statusEmoji(status)} ${status}</span>`;
-    return `<tr>
-      <td><strong>${esc(j.title)}</strong></td>
-      <td>${esc(j.company)}</td>
-      <td><span class="score-badge" style="background:${scoreColor}22;color:${scoreColor}">${score}</span></td>
-      <td>${chip}</td>
-      <td>${fmtDt(j.created_at)}</td>
-      <td>${j.applied_at ? fmtDt(j.applied_at) : '<span style="color:#3a4a5c">—</span>'}</td>
-    </tr>`;
-  }).join('');
+/* ═══════════════ JOBS TAB ═══════════════════════════════════ */
+let allJobs = [];
+async function loadJobs() {
+  try {
+    allJobs = await fetch('/api/jobs/all').then(r=>r.json());
+    renderJobs();
+    document.getElementById('nc-jobs').textContent = allJobs.length;
+  } catch(e) { console.warn('[Jobs]', e); toast('Failed to load jobs', 'err'); }
 }
 
-function filterJobs() {
-  const q      = document.getElementById('jobs-search').value.toLowerCase();
-  const status = document.getElementById('jobs-status-filter').value;
-  const filtered = allJobs.filter(j => {
-    const matchQ = !q || (j.title||'').toLowerCase().includes(q) || (j.company||'').toLowerCase().includes(q);
-    const matchS = !status || j.apply_status === status;
-    return matchQ && matchS;
+function renderJobs() {
+  const q     = (document.getElementById('jobSearch').value || '').toLowerCase();
+  const status= document.getElementById('jobFilter').value;
+  const sort  = document.getElementById('jobSort').value;
+  let rows = allJobs.filter(j => {
+    if (status && j.apply_status !== status) return false;
+    if (q && !`${j.title} ${j.company} ${j.location||''} ${j.reason||''}`.toLowerCase().includes(q)) return false;
+    return true;
   });
-  renderJobsTable(filtered);
+  const [field, dir] = sort.split('-');
+  rows.sort((a,b) => {
+    let av = a[field], bv = b[field];
+    if (typeof av === 'string') return dir === 'asc' ? av.localeCompare(bv||'') : (bv||'').localeCompare(av);
+    return dir === 'asc' ? (av||0)-(bv||0) : (bv||0)-(av||0);
+  });
+
+  const tbody = document.getElementById('tblJobsBody');
+  const empty = document.getElementById('jobsEmpty');
+  if (!rows.length) { tbody.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display = 'none';
+  tbody.innerHTML = rows.map(j => `
+    <tr>
+      <td title="${esc(j.title)}" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(j.title)}</td>
+      <td>${esc(j.company||'')}</td>
+      <td>${esc(j.location||'-')}</td>
+      <td>${scoreBarStr(j.score)}</td>
+      <td>${statusBadgeStr(j.apply_status)}</td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--tx2)" title="${esc(j.reason||'')}"><span>${esc((j.reason||'').substring(0,60))}</span></td>
+      <td style="white-space:nowrap;font-size:12px">${fmtDate(j.created_at)}</td>
+      <td>${jobLinkCell(j)}</td>
+    </tr>`).join('');
 }
 
-// ════════════════════════════════════════════════════════════════
-//  LEARNING LIST
-// ════════════════════════════════════════════════════════════════
-async function loadLearningList() {
+['jobSearch','jobFilter','jobSort'].forEach(id => {
+  document.getElementById(id).addEventListener('input', renderJobs);
+  document.getElementById(id).addEventListener('change', renderJobs);
+});
+document.getElementById('btnRefreshJobs').addEventListener('click', loadJobs);
+
+// Jobs CSV Export
+document.getElementById('btnJobExport').addEventListener('click', () => {
+  window.location.href = '/api/jobs/export/csv';
+});
+
+// Jobs CSV Import
+document.getElementById('jobImportFile').addEventListener('change', async e => {
+  const file = e.target.files[0]; if (!file) return;
+  const text = await file.text();
   try {
-    const rows = await fetchJSON('/api/learning');
-    const tbody = document.getElementById('learning-tbody');
-    const pending = rows.filter(r => !r.answered).length;
+    const r = await fetch('/api/jobs/import/csv', { method:'POST', headers:{'Content-Type':'text/csv'}, body:text });
+    const d = await r.json();
+    if (d.success) { toast(`✅ Imported ${d.inserted} jobs`, 'ok'); loadJobs(); loadDashboard(); }
+    else toast('Import failed: ' + d.error, 'err');
+  } catch(err) { toast('Error: ' + err.message, 'err'); }
+  e.target.value = '';
+});
 
-    // Update subtitle
-    const sub = document.getElementById('learning-subtitle');
-    sub.textContent = `${rows.length} total question${rows.length !== 1 ? 's' : ''} · ${pending} pending`;
+// Global CSV export button in sidebar
+document.getElementById('btnExportCsv').addEventListener('click', () => {
+  window.location.href = '/api/jobs/export/csv';
+});
 
-    // Update nav badge
-    updateLearningBadge(pending);
+/* ═══════════════ LEARNING LIST TAB══════════════════════════ */
+let allLearning = [];
+async function loadLearning() {
+  try {
+    allLearning = await fetch('/api/learning').then(r=>r.json());
+    renderLearning();
+    document.getElementById('nc-learning').textContent = allLearning.length;
+  } catch(e) { toast('Failed to load learning list','err'); }
+}
 
-    if (!rows.length) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#5a6a82;padding:48px">
-        <div style="font-size:32px;margin-bottom:10px">🧠</div>
-        No questions yet. Run the bot to start collecting unanswered questions.
-      </td></tr>`;
-      return;
+function renderLearning() {
+  const q      = (document.getElementById('lSearch').value || '').toLowerCase();
+  const filter = document.getElementById('lFilter').value;
+  let rows = allLearning.filter(r => {
+    if (filter === 'answered' && !r.answered) return false;
+    if (filter === 'unanswered' && r.answered) return false;
+    if (q && !`${r.question} ${r.answer||''} ${r.answer_key||''}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  const tbody = document.getElementById('tblLBody');
+  const empty = document.getElementById('lEmpty');
+  const meta  = document.getElementById('lMeta');
+  const answCnt = allLearning.filter(r=>r.answered).length;
+  meta.innerHTML = `<span>Total: <b>${allLearning.length}</b></span><span>Answered: <b>${answCnt}</b></span><span>Unanswered: <b>${allLearning.length-answCnt}</b></span><span>Showing: <b>${rows.length}</b></span>`;
+  if (!rows.length) { tbody.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  tbody.innerHTML = rows.map((r,i) => `
+    <tr id="lr-${r.id}">
+      <td style="color:var(--tx3);font-size:11px;width:36px">${i+1}</td>
+      <td style="color:var(--tx)">${esc(r.question)}</td>
+      <td style="color:var(--tx3);font-size:12px">${esc(r.answer_key||'')}</td>
+      <td>
+        <span class="editable" contenteditable="true" data-id="${r.id}" title="Click to edit">${esc(r.answer||'')}</span>
+      </td>
+      <td>${r.answered ? '<span class="badge b-green">✓ Answered</span>' : '<span class="badge b-muted">Pending</span>'}</td>
+      <td class="actions-col">
+        <button class="btn-icon-edit" onclick="saveEditInline(${r.id})">💾</button>
+        <button class="btn-icon-del"  onclick="deleteLearning(${r.id})">🗑</button>
+      </td>
+    </tr>`).join('');
+
+  // Inline save on Enter
+  document.querySelectorAll('.editable[data-id]').forEach(el => {
+    el.addEventListener('keydown', e => { if (e.key==='Enter'&&!e.shiftKey) { e.preventDefault(); saveEditInline(Number(el.dataset.id)); } });
+  });
+}
+
+window.saveEditInline = async function(id) {
+  const el = document.querySelector(`.editable[data-id="${id}"]`);
+  if (!el) return;
+  const answer = el.textContent.trim();
+  try {
+    const r = await fetch(`/api/learning/${id}`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({answer}) });
+    const d = await r.json();
+    if (d.success) { toast('Saved!','ok'); const entry = allLearning.find(x=>x.id===id); if(entry) { entry.answer=answer; entry.answered=1; } }
+    else toast('Save failed: '+d.error,'err');
+  } catch(e) { toast('Error: '+e.message,'err'); }
+};
+
+window.deleteLearning = async function(id) {
+  if (!confirm('Delete this Q&A entry?')) return;
+  try {
+    const r = await fetch(`/api/learning/${id}`, { method:'DELETE' });
+    const d = await r.json();
+    if (d.success) { allLearning = allLearning.filter(x=>x.id!==id); renderLearning(); toast('Deleted','ok'); }
+    else toast('Delete failed: '+d.error,'err');
+  } catch(e) { toast('Error','err'); }
+};
+
+// Add Q&A
+document.getElementById('btnAddQA').addEventListener('click', async () => {
+  const q = document.getElementById('lNewQ').value.trim();
+  const a = document.getElementById('lNewA').value.trim();
+  const k = document.getElementById('lNewKey').value.trim();
+  if (!q || !a) { toast('Question and Answer required','err'); return; }
+  const r = await fetch('/api/learning', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ question:q, answer:a, answerKey:k||undefined }) });
+  const d = await r.json();
+  if (d.success) { toast('Added!','ok'); document.getElementById('lNewQ').value=''; document.getElementById('lNewA').value=''; document.getElementById('lNewKey').value=''; loadLearning(); }
+  else toast('Error: '+d.error,'err');
+});
+
+// Search/filter
+['lSearch','lFilter'].forEach(id => {
+  document.getElementById(id).addEventListener('input', renderLearning);
+  document.getElementById(id).addEventListener('change', renderLearning);
+});
+document.getElementById('btnRefreshL').addEventListener('click', loadLearning);
+
+// Self-learn
+document.getElementById('btnSelfLearn').addEventListener('click', async () => {
+  const btn = document.getElementById('btnSelfLearn');
+  btn.disabled=true; btn.textContent='⏳ Running…';
+  try {
+    const r = await fetch('/api/learning/self-learn',{method:'POST'});
+    const d = await r.json();
+    if (d.success) { toast(`✨ Auto-learned ${d.answered} answers`,'ok'); loadLearning(); }
+    else toast(d.status||'Finished','info');
+  } catch(e) { toast('Error','err'); }
+  btn.disabled=false; btn.textContent='✨ Auto-Learn';
+});
+
+// Learning CSV Export
+document.getElementById('btnLearningExport').addEventListener('click', () => { window.location.href='/api/learning/export/csv'; });
+
+// Learning CSV Import
+document.getElementById('lImportFile').addEventListener('change', async e => {
+  const file = e.target.files[0]; if (!file) return;
+  const text = await file.text();
+  try {
+    const r = await fetch('/api/learning/import/csv',{method:'POST',headers:{'Content-Type':'text/csv'},body:text});
+    const d = await r.json();
+    if (d.success) { toast(`Imported ${d.inserted} entries`,'ok'); loadLearning(); }
+    else toast('Import failed: '+d.error,'err');
+  } catch(err) { toast('Error','err'); }
+  e.target.value='';
+});
+
+/* ── Resume Upload + AI Auto-Learn ───────────────────────── */
+async function loadResumeContent() {
+  try {
+    const d = await fetch('/api/resume/content').then(r=>r.json());
+    if (d.text) {
+      document.getElementById('resumeEditor').value = d.text;
+      document.getElementById('btnAutoLearnResume').disabled = false;
     }
-
-    tbody.innerHTML = rows.map(r => {
-      const answered = Number(r.answered) === 1;
-      const statusPill = answered
-        ? `<span class="learn-pill answered">✅ Answered</span>`
-        : `<span class="learn-pill pending">⏳ Pending</span>`;
-
-      let options = [];
-      try { options = JSON.parse(r.options || '[]'); } catch (_) {}
-      const optHint = options.length
-        ? `<div class="learn-options">Options: ${options.map(o => `<code>${esc(o)}</code>`).join(', ')}</div>`
-        : '';
-
-      const actionCell = answered
-        ? `<span class="learn-saved-answer">${esc(r.answer)}</span>
-           <button class="learn-edit-btn" onclick="editLearningAnswer(${r.id}, '${esc(r.answer).replace(/'/g, '&#39;')}')">✏️ Edit</button>`
-        : `<div class="learn-input-row">
-             <input id="li-${r.id}" class="learn-input" type="text" placeholder="Type answer…" />
-             <button class="learn-save-btn" onclick="saveLearningAnswer(${r.id})">Save</button>
-           </div>`;
-
-      return `<tr>
-        <td>
-          <div class="learn-question">${esc(r.question)}</div>
-          ${optHint}
-          <div class="learn-meta">Job: ${esc(r.source_job || '—')}</div>
-        </td>
-        <td><code class="field-type-badge">${esc(r.field_type || 'text')}</code></td>
-        <td><span class="asked-badge">${r.asked_count}</span></td>
-        <td>${statusPill}</td>
-        <td>${actionCell}</td>
-      </tr>`;
-    }).join('');
-  } catch (e) { console.warn('Learning list failed', e); }
+  } catch(_) {}
 }
 
-function updateLearningBadge(count) {
-  const badge = document.getElementById('learning-badge');
-  if (!badge) return;
-  if (count > 0) {
-    badge.style.display = 'inline-block';
-    badge.textContent = count;
-  } else {
-    badge.style.display = 'none';
-  }
-}
-
-async function saveLearningAnswer(id) {
-  const input = document.getElementById(`li-${id}`);
-  if (!input) return;
-  const answer = input.value.trim();
-  if (!answer) { input.style.borderColor = '#ff4444'; return; }
+document.getElementById('resumeUpload').addEventListener('change', async e => {
+  const file = e.target.files[0]; if (!file) return;
+  const fd = new FormData(); fd.append('resume', file);
+  toast('Uploading and extracting text…','info');
   try {
-    await fetch(`/api/learning/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ answer }),
-    });
-    loadLearningList(); // Refresh
-  } catch (e) { console.warn('Save learning answer failed', e); }
-}
+    const r = await fetch('/api/resume/upload',{method:'POST',body:fd});
+    const d = await r.json();
+    if (d.success) {
+      document.getElementById('resumeEditor').value = d.text;
+      document.getElementById('btnAutoLearnResume').disabled = false;
+      toast(`Extracted ${d.length} characters from resume`,'ok');
+    } else toast('Upload failed: '+d.error,'err');
+  } catch(err) { toast('Error: '+err.message,'err'); }
+  e.target.value='';
+});
 
-function editLearningAnswer(id, current) {
-  // Replace the saved-answer display with an editable input
-  const cell = document.querySelector(`button[onclick="editLearningAnswer(${id}, '${current.replace(/'/g, '&#39;')}')"]`).parentElement;
-  cell.innerHTML = `<div class="learn-input-row">
-    <input id="li-${id}" class="learn-input" type="text" value="${esc(current)}" />
-    <button class="learn-save-btn" onclick="saveLearningAnswer(${id})">Save</button>
-  </div>`;
-  document.getElementById(`li-${id}`).focus();
-}
+// Save edited resume text
+document.getElementById('resumeEditor').addEventListener('blur', async () => {
+  const text = document.getElementById('resumeEditor').value;
+  if (!text.trim()) return;
+  await fetch('/api/resume/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});
+});
 
-// Refresh just the pending count badge without full table reload
-async function loadLearningBadge() {
+// AI Auto-Learn from resume
+document.getElementById('btnAutoLearnResume').addEventListener('click', async () => {
+  const text = document.getElementById('resumeEditor').value.trim();
+  if (!text) { toast('Please upload or paste your resume first','err'); return; }
+  const btn = document.getElementById('btnAutoLearnResume');
+  btn.disabled=true; btn.textContent='🤖 AI Generating… (may take 30s)';
   try {
-    const rows = await fetchJSON('/api/learning');
-    const pending = rows.filter(r => !r.answered).length;
-    updateLearningBadge(pending);
-  } catch (_) {}
+    const r = await fetch('/api/resume/auto-learn',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});
+    const d = await r.json();
+    if (d.success) { toast(`🎉 Generated ${d.generated} Q&As, saved ${d.saved} to DB`,'ok'); loadLearning(); }
+    else toast('Error: '+d.error,'err');
+  } catch(err) { toast('Error: '+err.message,'err'); }
+  btn.disabled=false; btn.textContent='🤖 AI Auto-Generate Q&A';
+});
+
+/* ═══════════════ LIVE LOG TAB ═══════════════════════════════ */
+const logVP = document.getElementById('logVP');
+function appendLog(level, msg) {
+  const ts = new Date().toLocaleTimeString();
+  const row = document.createElement('div');
+  row.className = `log-row ${level}`;
+  row.innerHTML = `<span class="log-ts">${ts}</span><span class="log-msg">${esc(msg)}</span>`;
+  logVP.appendChild(row);
+  logVP.scrollTop = logVP.scrollHeight;
+  if (logVP.children.length > 500) logVP.removeChild(logVP.firstChild);
 }
+socket.on('bot:log', d => appendLog(d.level || detectLevel(d.msg), d.msg));
 
-async function triggerSelfLearn() {
-  const btn = document.getElementById('selflearn-btn');
-  const status = document.getElementById('selflearn-status');
-  if (!btn || btn.disabled) return;
-
-  btn.disabled = true;
-  btn.textContent = '🔄 Running…';
-  status.textContent = '';
-
+document.getElementById('btnClearLog').addEventListener('click', () => { logVP.innerHTML=''; });
+document.getElementById('btnLoadLogs').addEventListener('click', async () => {
   try {
-    const res = await fetch('/api/learning/self-learn', { method: 'POST' });
-    const data = await res.json();
-    if (data.status === 'already_running') {
-      status.textContent = '⏳ Already running in background…';
+    const d = await fetch('/api/logs/tail').then(r=>r.json());
+    (d.lines||[]).forEach(l => appendLog(detectLevel(l), l));
+    toast(`Loaded ${d.lines.length} lines`,'ok');
+  } catch(e) { toast('Failed','err'); }
+});
+
+/* ═══════════════ LIVE BROWSER VIEW ==════════════════════════ */
+let screenshotTimer = null;
+async function refreshScreenshot() {
+  try {
+    const d = await fetch('/api/screenshot/latest-path').then(r=>r.json());
+    const img    = document.getElementById('lvImg');
+    const holder = document.getElementById('lvPlaceholder');
+    const meta   = document.getElementById('lvMeta');
+    if (d.path) {
+      img.src = d.path + '?t=' + Date.now();
+      img.style.display = 'block';
+      holder.style.display = 'none';
+      meta.textContent = 'Last refresh: ' + new Date().toLocaleTimeString();
     } else {
-      status.textContent = `✅ Auto-answered ${data.answered || 0} of ${data.processed || 0} question(s)`;
-      await loadLearningList();
+      img.style.display='none'; holder.style.display='block';
     }
-  } catch (err) {
-    status.textContent = '❌ Self-learn failed: ' + err.message;
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '🤖 Self-Learn';
-    // Clear status message after 6 seconds
-    setTimeout(() => { if (status) status.textContent = ''; }, 6000);
-  }
+  } catch(_) {}
 }
 
-// ════════════════════════════════════════════════════════════════
-//  LIVE FEED  ( Socket.io )
-// ════════════════════════════════════════════════════════════════
-function setupSocket() {
-  const socket = io();
-
-  socket.on('connect', () => {
-    setStatus('online', 'Online');
-    showDot(true);
-    showToast('Dashboard connected to worker', 'success');
-    addDebugLog('Socket.io connection established', 'info');
-  });
-  socket.on('disconnect', () => {
-    setStatus('offline', 'Offline');
-    showDot(false);
-    showToast('Dashboard disconnected', 'error');
-    addDebugLog('Socket.io connection lost', 'error');
-  });
-
-  // Refresh stats + charts on any worker event
-  const refresh = () => { loadStats(); loadDonutChart(); };
-
-  socket.on('stats:update',  refresh);
-  socket.on('init:stats',    s => updateStatsFromSocket(s));
-  socket.on('worker:start',  () => {
-    addLiveEvent('scanning', '🚀 Worker started', 'AutoApply');
-    showToast('Worker process started', 'info');
-    addDebugLog('Worker process initiated');
-  });
-  socket.on('worker:done',   d => {
-    addLiveEvent('applied', `✅ Session done – ${d.appliedCount || 0} applied`, '');
-    showToast(`Session completed: ${d.appliedCount || 0} jobs applied`, 'success');
-    addDebugLog(`Worker session finished. Total applied: ${d.appliedCount}`);
-  });
-  socket.on('job:scanned',   d => {
-    addLiveEvent('scanning', `🔍 Scanning: ${d.title}`, d.company);
-    addDebugLog(`Job found: ${d.title} @ ${d.company}`);
-  });
-  socket.on('job:analyzing', d => {
-    addLiveEvent('scanning', `🤖 Analyzing: ${d.title}`, d.company);
-    addDebugLog(`AI Analyzing job: ${d.title}`);
-  });
-  socket.on('job:applying',  d => {
-    addLiveEvent('scanning', `📋 Applying: ${d.title}`, d.company, 'blue');
-    addDebugLog(`Attempting to apply: ${d.title}`);
-  });
-  socket.on('job:applied',   d => {
-    addLiveEvent('applied', `✅ Applied [${d.appliedCount}]: ${d.title}`, d.company);
-    showToast(`Successfully applied to ${d.company}`, 'success');
-    addDebugLog(`Application SUCCESS: ${d.title}`, 'log');
-    refresh();
-  });
-  socket.on('job:skipped',   d => {
-    addLiveEvent('skipped', `⏭ Skipped: ${d.title} (score: ${d.score})`, d.company);
-    addDebugLog(`Job SKIPPED (Score ${d.score}): ${d.title}`, 'warn');
-  });
-  socket.on('job:failed',    d => {
-    addLiveEvent('failed',  `❌ Failed: ${d.title}`, d.company);
-    showToast(`Failed to apply for ${d.title}`, 'error');
-    addDebugLog(`Application FAILED: ${d.title}`, 'error');
-  });
-  socket.on('worker:error',  d => {
-    addLiveEvent('failed', `💥 Error: ${d.message}`, '');
-    showToast(`Worker Error: ${d.message}`, 'error');
-    addDebugLog(`CRITICAL ERROR: ${d.message}`, 'error');
-  });
-
-  // Self-learn cycle completion event
-  socket.on('selflearn:done', d => {
-    if (d && d.answered > 0) {
-      addLiveEvent('applied', `🤖 Self-Learn: auto-answered ${d.answered}/${d.processed} question(s)`, 'Learning System');
-      // If user is on the learning list view, refresh it
-      if (document.getElementById('view-learning').classList.contains('active')) {
-        loadLearningList();
-      }
-      // Update badge count
-      loadLearningBadge();
-    }
-  });
+function startScreenshotRefresh() {
+  if (screenshotTimer) clearInterval(screenshotTimer);
+  const ms = parseInt(document.getElementById('screenshotInterval').value);
+  refreshScreenshot();
+  if (ms > 0) screenshotTimer = setInterval(refreshScreenshot, ms);
 }
 
-function addLiveEvent(type, title, company, forceType) {
-  const feed = document.getElementById('live-feed');
-  // Remove placeholder if present
-  const placeholder = feed.querySelector('.live-placeholder');
-  if (placeholder) placeholder.remove();
+document.getElementById('btnRefreshScreenshot').addEventListener('click', refreshScreenshot);
+document.getElementById('screenshotInterval').addEventListener('change', startScreenshotRefresh);
 
-  const el = document.createElement('div');
-  el.className = `live-event ${forceType || type}`;
-  el.innerHTML = `
-    <div class="event-main">
-      <div class="event-title">${esc(title)}</div>
-      ${company ? `<div class="event-company">${esc(company)}</div>` : ''}
-    </div>
-    <div class="event-time">${new Date().toLocaleTimeString('en-IN')}</div>
-  `;
-  feed.insertBefore(el, feed.firstChild);
-  // Cap at 50 events
-  while (feed.children.length > 50) feed.removeChild(feed.lastChild);
-}
-
-function updateStatsFromSocket(s) {
-  if (!s) return;
-  document.getElementById('stat-scanned').textContent = s.total_scanned || 0;
-  document.getElementById('stat-applied').textContent = s.success_count || 0;
-  document.getElementById('stat-skipped').textContent = s.total_skipped || 0;
-  document.getElementById('stat-errors').textContent  = s.fail_count    || 0;
-}
-
-// ════════════════════════════════════════════════════════════════
-//  HELPERS
-// ════════════════════════════════════════════════════════════════
-async function fetchJSON(url) {
-  const r = await fetch(url);
-  if (!r.ok) throw new Error(r.statusText);
-  return r.json();
-}
-
-function makeGradient(canvasId, top, bottom) {
-  const canvas = document.getElementById(canvasId);
-  const ctx = canvas.getContext('2d');
-  const g = ctx.createLinearGradient(0, 0, 0, 300);
-  g.addColorStop(0, top); g.addColorStop(1, bottom);
-  return g;
-}
-
-function showEmpty(canvasId, message) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  const wrap = canvas.parentElement;
-  canvas.style.display = 'none';
-  if (!wrap.querySelector('.empty-state')) {
-    const el = document.createElement('div');
-    el.className = 'empty-state';
-    el.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#3a4a5c;font-size:13px;gap:8px';
-    el.innerHTML = `<span style="font-size:28px">📭</span><span>${message}</span>`;
-    wrap.appendChild(el);
-  }
-}
-
-function tooltipStyle() {
-  return {
-    backgroundColor: 'rgba(10,12,15,.95)',
-    borderColor: '#1e2530', borderWidth: 1,
-    titleColor: '#d4dce8', bodyColor: '#5a6a82',
-    padding: 10, cornerRadius: 8,
-    callbacks: {},
-  };
-}
-
-function setStatus(cls, text) {
-  const dot  = document.getElementById('status-dot');
-  const txt  = document.getElementById('status-text');
-  dot.className = `status-dot ${cls}`;
-  txt.textContent = text;
-}
-function showDot(on) {
-  document.getElementById('live-dot').style.display = on ? '' : 'none';
-}
-function setLastUpdated() {
-  document.getElementById('last-updated').textContent =
-    'Updated: ' + new Date().toLocaleTimeString('en-IN');
-}
-function formatDay(d) {
-  if (!d) return '';
-  const dt = new Date(d + 'T00:00:00');
-  return dt.toLocaleDateString('en-IN', { day:'2-digit', month:'short' });
-}
-function fmtDt(s) {
-  if (!s) return '—';
-  return new Date(s).toLocaleString('en-IN', { dateStyle:'medium', timeStyle:'short' });
-}
-function statusEmoji(s) {
-  return { success:'✅', skipped:'⏭', failed:'❌', pending:'⏳', retrying:'🔁' }[s] || '';
-}
-function esc(str) {
-  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-async function refreshAll() {
-  await Promise.all([
-    loadStats(), loadTrendChart(), loadDonutChart(),
-    loadCompaniesChart(), loadScoreChart(),
-  ]);
-}
-
-async function exportCsv() {
-  window.open('/api/export/csv', '_blank');
-}
-
-// ════════════════════════════════════════════════════════════════
-//  MANUAL ADD MODAL
-// ════════════════════════════════════════════════════════════════
-function openAddModal() {
-  const modal = document.getElementById('add-modal');
-  modal.classList.add('active');
-  document.getElementById('add-question').focus();
-}
-
-function closeAddModal() {
-  const modal = document.getElementById('add-modal');
-  modal.classList.remove('active');
-  // Clear inputs
-  document.getElementById('add-question').value = '';
-  document.getElementById('add-answer').value = '';
-  document.getElementById('add-key').value = '';
-}
-
-async function submitManualQuestion() {
-  const q = document.getElementById('add-question').value.trim();
-  const a = document.getElementById('add-answer').value.trim();
-  const k = document.getElementById('add-key').value.trim();
-  const btn = document.querySelector('.modal-footer .save-btn');
-
-  if (!q || !a) {
-    alert('Please provide both a question and an answer.');
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = 'Saving…';
-
+/* ═══════════════ SETTINGS TAB ══════════════════════════════ */
+async function loadConfig() {
   try {
-    const res = await fetch('/api/learning', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: q, answer: a, answerKey: k || null }),
-    });
-    if (!res.ok) throw new Error(await res.text());
-
-    closeAddModal();
-    loadLearningList(); // Refresh table
-  } catch (err) {
-    alert('Failed to save: ' + err.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Save Answer';
-  }
+    const c = await fetch('/api/config').then(r=>r.json());
+    document.getElementById('cfgJobTitle').value  = c.jobTitle  || c.searchKeywords?.[0] || '';
+    document.getElementById('cfgLocation').value  = c.searchLocation || '';
+    document.getElementById('cfgMaxJobs').value   = c.maxAppsPerRun || '';
+    document.getElementById('cfgMaxPages').value  = c.maxPagesPerSearch || '';
+    document.getElementById('cfgThreshold').value = c.scoreThreshold || '';
+    document.getElementById('cfgAiModel').value   = c.aiModel || '';
+    document.getElementById('cfgOllama').value    = c.ollamaBaseUrl || '';
+    document.getElementById('cfgTimeout').value   = c.ollamaTimeout || '';
+    document.getElementById('cfgSlowMo').value    = c.slowMo || '';
+    document.getElementById('cfgDelayMin').value  = c.delayMin || '';
+    document.getElementById('cfgDelayMax').value  = c.delayMax || '';
+    document.getElementById('cfgHeadless').value  = String(c.headless === true);
+    document.getElementById('cfgSkipAI').value    = String(c.skipAI === true);
+    document.getElementById('cfgSafety').value    = String(c.safetyMode === true);
+    document.getElementById('aiModelName').textContent = c.aiModel || 'unknown';
+  } catch(e) { toast('Config load failed','err'); }
 }
 
-// Close modal on escape or background click
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeAddModal();
+document.getElementById('btnSaveConfig').addEventListener('click', async () => {
+  const body = {
+    searchLocation:     document.getElementById('cfgLocation').value,
+    maxAppsPerRun:      parseInt(document.getElementById('cfgMaxJobs').value)||20,
+    maxPagesPerSearch:  parseInt(document.getElementById('cfgMaxPages').value)||5,
+    scoreThreshold:     parseInt(document.getElementById('cfgThreshold').value)||40,
+    aiModel:            document.getElementById('cfgAiModel').value,
+    ollamaBaseUrl:      document.getElementById('cfgOllama').value,
+    ollamaTimeout:      parseInt(document.getElementById('cfgTimeout').value)||60000,
+    slowMo:             parseInt(document.getElementById('cfgSlowMo').value)||20,
+    delayMin:           parseInt(document.getElementById('cfgDelayMin').value)||1500,
+    delayMax:           parseInt(document.getElementById('cfgDelayMax').value)||3000,
+    headless:           document.getElementById('cfgHeadless').value === 'true',
+    skipAI:             document.getElementById('cfgSkipAI').value === 'true',
+    safetyMode:         document.getElementById('cfgSafety').value === 'true',
+  };
+  try {
+    const r = await fetch('/api/config',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d = await r.json();
+    if (d.success) toast('Settings saved!','ok'); else toast('Error: '+d.error,'err');
+  } catch(e) { toast('Error','err'); }
 });
-document.getElementById('add-modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('add-modal')) closeAddModal();
-});
+document.getElementById('btnRefreshConfig').addEventListener('click', loadConfig);
 
-// ════════════════════════════════════════════════════════════════
-//  INIT
-// ════════════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', async () => {
-  // Load saved theme
-  const savedTheme = localStorage.getItem('dashboard-theme') || 'dark';
-  setTheme(savedTheme);
+/* ═══════════════ KEYWORDS TAB ══════════════════════════════ */
+let keywords = { required:[], preferred:[], excluded:[] };
 
-  setupSocket();
-  showDot(false);
+async function loadKeywords() {
+  try {
+    keywords = await fetch('/api/keywords').then(r=>r.json());
+    renderTags('req',  keywords.required,  'reqTagArea');
+    renderTags('pref', keywords.preferred, 'prefTagArea');
+    renderTags('excl', keywords.excluded,  'exclTagArea');
+  } catch(e) { toast('Failed to load keywords','err'); }
+}
 
-  // Live feed placeholder until events arrive
-  const feed = document.getElementById('live-feed');
-  if (feed) {
-    const ph = document.createElement('div');
-    ph.className = 'live-placeholder';
-    ph.style.cssText = 'text-align:center;padding:60px 0;color:var(--text-dim);font-size:14px';
-    ph.innerHTML = '⚡ Waiting for live events…<br><small style="font-size:11px;margin-top:8px;display:block">Events appear here in real-time as the bot runs</small>';
-    feed.appendChild(ph);
-  }
+function renderTags(type, list, areaId) {
+  const area = document.getElementById(areaId);
+  area.innerHTML = (list||[]).map(kw =>
+    `<span class="tag ${type}">${esc(kw)} <span class="tag-x" onclick="removeKeyword('${type}','${esc(kw)}')">×</span></span>`
+  ).join('');
+}
 
-  await refreshAll();
-  addDebugLog('Dashboard initialized and data loaded', 'info');
+window.removeKeyword = function(type, kw) {
+  const key = type==='req'?'required':type==='pref'?'preferred':'excluded';
+  keywords[key] = keywords[key].filter(k=>k!==kw);
+  const areaMap = {req:'reqTagArea',pref:'prefTagArea',excl:'exclTagArea'};
+  renderTags(type, keywords[key], areaMap[type]);
+};
 
-  // Auto-refresh every 30 seconds
-  setInterval(refreshAll, 30000);
-});
+function addKeyword(type, inputId, area) {
+  const input = document.getElementById(inputId);
+  const val   = input.value.trim(); if (!val) return;
+  const key   = type==='req'?'required':type==='pref'?'preferred':'excluded';
+  if (!keywords[key].includes(val)) { keywords[key].push(val); renderTags(type, keywords[key], area); }
+  input.value='';
+}
 
-// ════════════════════════════════════════════════════════════════
-//  CYBERPUNK UI UTILS
-// ════════════════════════════════════════════════════════════════
-
-function setTheme(theme) {
-  document.body.setAttribute('data-theme', theme);
-  document.querySelectorAll('.toggle-btn').forEach(btn => {
-    btn.classList.remove('active');
+document.getElementById('btnAddReq').addEventListener('click',  () => addKeyword('req','reqInput','reqTagArea'));
+document.getElementById('btnAddPref').addEventListener('click',  () => addKeyword('pref','prefInput','prefTagArea'));
+document.getElementById('btnAddExcl').addEventListener('click',  () => addKeyword('excl','exclInput','exclTagArea'));
+['reqInput','prefInput','exclInput'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key!=='Enter') return;
+    if (id==='reqInput')  addKeyword('req','reqInput','reqTagArea');
+    if (id==='prefInput') addKeyword('pref','prefInput','prefTagArea');
+    if (id==='exclInput') addKeyword('excl','exclInput','exclTagArea');
   });
-  const activeBtn = document.getElementById(`theme-${theme}`);
-  if (activeBtn) activeBtn.classList.add('active');
+});
 
-  localStorage.setItem('dashboard-theme', theme);
-  showToast(`UI Theme: ${theme.toUpperCase()}`, 'info');
-  addDebugLog(`Theme changed to ${theme}`, 'info');
+document.getElementById('btnSaveKeywords').addEventListener('click', async () => {
+  try {
+    const r = await fetch('/api/keywords',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(keywords)});
+    const d = await r.json();
+    if (d.success) toast('Keywords saved!','ok'); else toast('Error: '+d.error,'err');
+  } catch(e) { toast('Error','err'); }
+});
+document.getElementById('btnRefreshKeywords').addEventListener('click', loadKeywords);
+
+/* ═══════════════ PROFILE TAB ════════════════════════════════ */
+async function loadProfile() {
+  try {
+    const [p, c] = await Promise.all([
+      fetch('/api/profile').then(r=>r.json()),
+      fetch('/api/config').then(r=>r.json()),
+    ]);
+    document.getElementById('pfName').value        = p.name         ||'';
+    document.getElementById('pfEmail').value       = p.email        ||'';
+    document.getElementById('pfPhone').value       = p.phone        ||'';
+    document.getElementById('pfLocation').value    = p.currentLocation||'';
+    document.getElementById('pfResumePath').value  = c.resumePath   ||'';
+    document.getElementById('pfLinkedIn').value    = p.linkedIn     ||'';
+    document.getElementById('pfGitHub').value      = p.github       ||'';
+    document.getElementById('pfPortfolio').value   = p.portfolio    ||'';
+    document.getElementById('pfCompany').value     = p.currentCompany||'';
+    document.getElementById('pfRole').value        = p.currentRole  ||'';
+    document.getElementById('pfYears').value       = p.yearsExperience||'';
+    document.getElementById('pfSalary').value      = p.salary       ||'';
+    document.getElementById('pfNotice').value      = p.noticePeriod ||'';
+    document.getElementById('pfSummary').value     = p.summary      ||'';
+    document.getElementById('pfCoverLetter').value = p.coverLetter  ||'';
+  } catch(e) { toast('Profile load failed','err'); }
 }
 
-function showToast(message, type = 'success', duration = 4000) {
-  const container = document.getElementById('toast-container');
-  if (!container) return;
+document.getElementById('btnSaveProfile').addEventListener('click', async () => {
+  const profile = {
+    name:            document.getElementById('pfName').value,
+    email:           document.getElementById('pfEmail').value,
+    phone:           document.getElementById('pfPhone').value,
+    currentLocation: document.getElementById('pfLocation').value,
+    linkedIn:        document.getElementById('pfLinkedIn').value,
+    github:          document.getElementById('pfGitHub').value,
+    portfolio:       document.getElementById('pfPortfolio').value,
+    currentCompany:  document.getElementById('pfCompany').value,
+    currentRole:     document.getElementById('pfRole').value,
+    yearsExperience: document.getElementById('pfYears').value,
+    salary:          document.getElementById('pfSalary').value,
+    noticePeriod:    document.getElementById('pfNotice').value,
+    summary:         document.getElementById('pfSummary').value,
+    coverLetter:     document.getElementById('pfCoverLetter').value,
+  };
+  const resumePath = document.getElementById('pfResumePath').value.trim();
+  try {
+    const [r1, r2] = await Promise.all([
+      fetch('/api/profile',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(profile)}),
+      resumePath ? fetch('/api/config',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({resumePath})}) : Promise.resolve({json:()=>({})}),
+    ]);
+    const [d1] = await Promise.all([r1.json(), r2.json ? r2.json() : r2]);
+    if (d1.success) toast('Profile saved! ✅','ok'); else toast('Error: '+d1.error,'err');
+  } catch(e) { toast('Error','err'); }
+});
+document.getElementById('btnRefreshProfile').addEventListener('click', loadProfile);
 
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-
-  const icon = {
-    success: '✅',
-    error: '❌',
-    info: 'ℹ️',
-    warning: '⚠️'
-  }[type] || '🔔';
-
-  toast.innerHTML = `
-    <span class="toast-icon">${icon}</span>
-    <span class="toast-message">${message}</span>
-  `;
-
-  container.appendChild(toast);
-
-  setTimeout(() => {
-    toast.classList.add('removing');
-    setTimeout(() => toast.remove(), 300);
-  }, duration);
+/* ═══════════════ SELECTORS TAB ════════════════════════════ */
+async function loadSelectors() {
+  try {
+    const s = await fetch('/api/selectors').then(r=>r.json());
+    const grid = document.getElementById('selectorsGrid');
+    const labels = {
+      jobCard:'Job Card', jobTitle:'Job Title', companyName:'Company Name', applyButton:'Apply Button',
+      nextPage:'Next Page', nameField:'Name Field', emailField:'Email Field', phoneField:'Phone Field',
+      coverLetterField:'Cover Letter', resumeUpload:'Resume Upload', submitButton:'Submit Button',
+      successIndicator:'Success Indicator', applyModal:'Apply Modal',
+    };
+    grid.innerHTML = Object.entries(s).map(([key,val]) =>
+      `<div class="selector-row">
+        <div class="selector-key">${labels[key]||key}</div>
+        <input class="input" id="sel-${key}" value="${esc(val||'')}" placeholder="${key}"/>
+      </div>`
+    ).join('');
+  } catch(e) { toast('Selectors load failed','err'); }
 }
 
-let debugLogCount = 0;
+document.getElementById('btnSaveSelectors').addEventListener('click', async () => {
+  const inputs = document.querySelectorAll('[id^="sel-"]');
+  const body = {};
+  inputs.forEach(el => { body[el.id.replace('sel-','')] = el.value.trim(); });
+  try {
+    const r = await fetch('/api/selectors',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d = await r.json();
+    if (d.success) toast('Selectors saved!','ok'); else toast('Error: '+d.error,'err');
+  } catch(e) { toast('Error','err'); }
+});
+document.getElementById('btnRefreshSelectors').addEventListener('click', loadSelectors);
 
-function toggleDebugConsole() {
-  const consoleEl = document.getElementById('debug-console');
-  const icon = document.getElementById('debug-toggle-icon');
-  const isCollapsed = consoleEl.classList.contains('collapsed');
+/* ═══════════════ BLOCKLIST TAB ════════════════════════════ */
+async function loadBlocklist() {
+  try {
+    const list = await fetch('/api/blocklist').then(r=>r.json());
+    const el = document.getElementById('blockList');
+    const empty = document.getElementById('blockEmpty');
+    document.getElementById('nc-block').textContent = list.length || '–';
+    if (!list.length) { el.innerHTML=''; empty.style.display='block'; return; }
+    empty.style.display='none';
+    el.innerHTML = list.map(c =>
+      `<li class="block-item"><span>🚫 ${esc(c)}</span><button class="btn-icon-del" onclick="removeBlock('${esc(c)}')">Remove</button></li>`
+    ).join('');
+  } catch(e) { toast('Blocklist load failed','err'); }
+}
 
-  if (isCollapsed) {
-    consoleEl.classList.remove('collapsed');
-    consoleEl.classList.add('expanded');
-    icon.textContent = '▼';
-  } else {
-    consoleEl.classList.remove('expanded');
-    consoleEl.classList.add('collapsed');
-    icon.textContent = '▲';
+window.removeBlock = async function(company) {
+  const r = await fetch(`/api/blocklist/${encodeURIComponent(company)}`,{method:'DELETE'});
+  const d = await r.json();
+  if (d.success) { loadBlocklist(); toast('Removed','ok'); } else toast('Error','err');
+};
+
+document.getElementById('btnAddBlock').addEventListener('click', async () => {
+  const company = document.getElementById('blockInput').value.trim(); if(!company) return;
+  const r = await fetch('/api/blocklist',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({company})});
+  const d = await r.json();
+  if (d.success) { document.getElementById('blockInput').value=''; loadBlocklist(); toast(`Blocked: ${company}`,'ok'); }
+  else toast('Error: '+d.error,'err');
+});
+document.getElementById('blockInput').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('btnAddBlock').click(); });
+
+/* ═══════════════ BOT CONTROLS ══════════════════════════════ */
+const botDot    = document.getElementById('botDot');
+const botLabel  = document.getElementById('botLabel');
+const botUptime = document.getElementById('botUptime');
+const btnStart   = document.getElementById('btnStart');
+const btnStop    = document.getElementById('btnStop');
+const btnRestart = document.getElementById('btnRestart');
+let uptimeInterval = null;
+
+function setBotUI(state) {
+  const status = state.status;
+  botDot.className = `bot-dot ${status}`;
+  botLabel.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+  const running = status === 'running' || status === 'stopping';
+  btnStart.disabled   = running;
+  btnStop.disabled    = !running;
+  btnRestart.disabled = status === 'idle';
+  if (status === 'running' && state.startedAt) {
+    clearInterval(uptimeInterval);
+    const start = new Date(state.startedAt);
+    uptimeInterval = setInterval(() => {
+      const d = Math.floor((Date.now()-start)/1000);
+      botUptime.textContent = d<60 ? `${d}s` : d<3600 ? `${Math.floor(d/60)}m ${d%60}s` : `${Math.floor(d/3600)}h ${Math.floor((d%3600)/60)}m`;
+    }, 1000);
+  } else { clearInterval(uptimeInterval); botUptime.textContent=''; }
+}
+
+socket.on('bot:status', setBotUI);
+
+async function botAction(action, payload = {}) {
+  try {
+    const r = await fetch(`/api/bot/${action}`,{
+      method:'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const d = await r.json();
+    if (d.error) toast('Bot error: '+d.error,'err');
+    else { appendLog('info',`Bot ${action}: ${d.message||'OK'}`); }
+  } catch(e) { toast('Bot action failed','err'); }
+}
+
+btnStart.addEventListener('click',   () => { botAction('start');   toast('Starting bot…','info'); });
+btnStop.addEventListener('click',    () => { botAction('stop');    toast('Stopping bot…','info'); });
+btnRestart.addEventListener('click', () => { botAction('restart'); toast('Restarting…','info'); });
+
+// Apply Section Buttons
+const btnApplyNaukri = document.getElementById('btnApplyNaukri');
+if (btnApplyNaukri) {
+  btnApplyNaukri.addEventListener('click', () => {
+    botAction('start');
+    toast('Starting Naukri Automation…', 'info');
+  });
+}
+
+const btnApplyLinkedIn = document.getElementById('btnApplyLinkedIn');
+if (btnApplyLinkedIn) {
+  btnApplyLinkedIn.addEventListener('click', () => {
+    botAction('start', { platform: 'linkedin' });
+    toast('Starting LinkedIn Automation…', 'info');
+  });
+}
+
+// Disable/Enable Apply buttons based on bot status
+const originalSetBotUI = setBotUI;
+setBotUI = function(state) {
+  originalSetBotUI(state);
+  const running = state.status === 'running' || state.status === 'stopping';
+  if (btnApplyNaukri) btnApplyNaukri.disabled = running;
+  if (btnApplyLinkedIn) btnApplyLinkedIn.disabled = running;
+};
+
+/* ══════ UTILS ═════════════════════════════════════════════ */
+function jobLinkCell(j) {
+  const url = j.url || '';
+  // If we have a real URL, parse and label it
+  if (url) {
+    try {
+      const u = new URL(url);
+      const isNaukri = u.hostname.includes('naukri.com');
+      const label = isNaukri ? 'Naukri' : u.hostname.replace(/^www\./, '');
+      const icon  = isNaukri ? '🏢' : '🔗';
+      const color = isNaukri ? 'var(--acc2)' : '#f59e0b';
+      return `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer" title="${esc(url)}" style="color:${color};font-size:12px;white-space:nowrap">${icon} ${esc(label)}</a>`;
+    } catch (_) {
+      return `<a href="${esc(url)}" target="_blank" style="color:var(--acc2);font-size:12px;white-space:nowrap">🔗 Open</a>`;
+    }
   }
-}
-
-function addDebugLog(message, type = 'log') {
-  const logsContainer = document.getElementById('debug-logs');
-  if (!logsContainer) return;
-
-  debugLogCount++;
-  const countEl = document.getElementById('debug-count');
-  if (countEl) countEl.textContent = debugLogCount;
-
-  const entry = document.createElement('div');
-  entry.className = 'debug-log-entry';
-
-  const time = new Date().toLocaleTimeString('en-IN', { hour12: false });
-
-  entry.innerHTML = `
-    <span class="debug-log-time">[${time}]</span>
-    <span class="debug-log-msg ${type}">${esc(message)}</span>
-  `;
-
-  logsContainer.appendChild(entry);
-  logsContainer.scrollTop = logsContainer.scrollHeight;
-
-  while (logsContainer.children.length > 200) {
-    logsContainer.removeChild(logsContainer.firstChild);
+  // Fallback: generate a Naukri search URL from the job title
+  const title = (j.title || '').trim();
+  if (title && title !== 'Unknown') {
+    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const searchUrl = `https://www.naukri.com/${slug}-jobs`;
+    return `<a href="${esc(searchUrl)}" target="_blank" rel="noopener noreferrer" title="Search Naukri for: ${esc(title)}" style="color:var(--tx3);font-size:12px;white-space:nowrap">🔍 Search</a>`;
   }
+  return '–';
 }
 
-function clearDebugConsole(event) {
-  if (event) event.stopPropagation();
-  const logsContainer = document.getElementById('debug-logs');
-  if (logsContainer) logsContainer.innerHTML = '';
-  debugLogCount = 0;
-  const countEl = document.getElementById('debug-count');
-  if (countEl) countEl.textContent = '0';
-  showToast('Debug logs cleared', 'info');
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function scoreBarStr(score) {
+  const n = parseInt(score)||0;
+  const c = n>=80?'#10b981':n>=60?'#3b82f6':n>=40?'#f59e0b':'#ef4444';
+  return `<div class="sbar"><div class="sbar-bg"><div class="sbar-fill" style="width:${n}%;background:${c}"></div></div><span class="sbar-num">${n}</span></div>`;
 }
+
+function statusBadgeStr(s) {
+  const map = { success:'b-green', applied:'b-green', skipped:'b-amber', failed:'b-red', pending:'b-muted', external:'b-blue' };
+  const txt = { success:'✅ Applied',applied:'✅ Applied',skipped:'⏭ Skipped',failed:'❌ Failed',pending:'⏳ Pending',external:'🔗 External' };
+  return `<span class="badge ${map[s]||'b-muted'}">${txt[s]||s}</span>`;
+}
+
+function fmtDate(d) {
+  if (!d) return '–';
+  const dt = new Date(d);
+  return isNaN(dt) ? d : dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+}
+
+function detectLevel(msg) {
+  if (/error|fail|exception/i.test(msg)) return 'error';
+  if (/warn|skip/i.test(msg))  return 'warn';
+  if (/applied|success|✅/i.test(msg)) return 'success';
+  return 'info';
+}
+
+/* ══════ INIT ══════════════════════════════════════════════ */
+(async () => {
+  await loadDashboard();
+  // Fetch initial bot status
+  try { const s = await fetch('/api/bot/status').then(r=>r.json()); setBotUI(s); } catch(_) {}
+  // Auto-refresh stats every 30s
+  setInterval(loadDashboard, 30000);
+})();

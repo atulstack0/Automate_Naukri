@@ -16,7 +16,7 @@ async function askOllama(prompt, opts = {}, connectionOpts = {}) {
   const {
     baseUrl  = process.env.OLLAMA_URL || 'http://localhost:11434',
     model    = process.env.OLLAMA_MODEL || 'qwen2.5:7b',
-    timeoutMs = 120000,
+    timeoutMs = 300000,
   } = connectionOpts;
 
   logger.debug(`[Ollama] Requesting generation: model=${model}, temp=${opts.temperature ?? 0.15}`);
@@ -43,24 +43,29 @@ async function askOllama(prompt, opts = {}, connectionOpts = {}) {
 
 
 
-const PROMPT_TEMPLATE = (jobText, keywords) => `You are a job application AI assistant. Analyze the job description below and decide whether to APPLY or SKIP based on relevance to the candidate's profile.
+const PROMPT_TEMPLATE = (jobText, keywords, profile) => `You are a strict, highly discerning job application AI assistant. Analyze the job description below and decide whether to APPLY or SKIP based on strict relevance to the candidate's profile.
 
-Candidate profile keywords: ${keywords.join(', ')}
+Candidate Profile Summary: ${profile.summary || 'N/A'}
+Current Role: ${profile.currentRole || 'N/A'}
+Years of Experience: ${profile.yearsExperience || 'N/A'}
+Target Keywords: ${keywords.join(', ')}
 
 Job Description:
 ---
-${jobText.substring(0, 3000)}
+${jobText.substring(0, 1500)}
 ---
 
 Respond with ONLY a valid JSON object (no markdown, no explanation, no extra text). Use this exact format:
-{"decision":"APPLY","score":85,"reason":"matches keywords X and Y, good fit for candidate"}
+{"decision":"APPLY","score":85,"reason":"matches keywords X and Y, align with experience"}
 
-Rules:
-- decision must be exactly "APPLY" or "SKIP"
-- score is an integer 0-100 indicating relevance
-- reason is a short string under 120 characters
-- If the job is unclear or missing details, return {"decision":"SKIP","score":20,"reason":"insufficient job details"}
-- Do NOT include any text outside the JSON object`;
+Strict Rules:
+1. decision MUST be exactly "APPLY" or "SKIP".
+2. score is an integer 0-100.
+3. reason is a short string under 120 characters.
+4. IMPORTANT: If the job explicitly requires significantly more experience than the candidate has (e.g., job requires 7+ years, candidate has 3), you MUST return {"decision":"SKIP","score":10,"reason":"requires too much experience"}.
+5. IMPORTANT: If the core tech stack or primary responsibilities do not strongly align with the candidate's summary and keywords, you MUST return "SKIP".
+6. If the job is unclear or missing details, return {"decision":"SKIP","score":20,"reason":"insufficient job details"}.
+7. Do NOT include any text outside the JSON object.`;
 
 function parseAIResponse(raw) {
   if (!raw || typeof raw !== 'string') {
@@ -132,7 +137,7 @@ async function warmUpOllama(baseUrl, model, maxWaitMs = 180000) {
         `${baseUrl}/api/generate`,
         { model, prompt: 'Reply with the word READY only.', stream: false,
           options: { num_predict: 5, temperature: 0 } },
-        { timeout: 120000, headers: { 'Content-Type': 'application/json' } }
+        { timeout: 300000, headers: { 'Content-Type': 'application/json' } }
       );
       const reply = (res.data?.response || '').trim();
       logger.info(`Ollama warm-up OK (attempt ${attempt + 1}): "${reply.substring(0, 30)}"`);
@@ -195,6 +200,7 @@ async function analyzeJob(jobText, config) {
     aiModel       = 'mistral',
     keywords      = { required: [], preferred: [] },
     skipAI        = false,
+    profile       = {},
   } = config;
 
   // If skipAI mode: use local keyword scorer only
@@ -208,24 +214,37 @@ async function analyzeJob(jobText, config) {
     ...(keywords.preferred || []),
   ];
 
-  logger.info(`Sending job to Ollama (model: ${aiModel})`);
+  logger.info(`Analyzing job description (model: ${aiModel})...`);
+  const { askAI } = require('./aiProvider');
 
   try {
-    const response = await axios.post(
-      `${ollamaBaseUrl}/api/generate`,
-      {
-        model:   aiModel,
-        prompt:  PROMPT_TEMPLATE(jobText, allKeywords),
-        stream:  false,
-        options: { temperature: 0.1, top_p: 0.95, num_predict: 200 },
-      },
-      { timeout: 120000, headers: { 'Content-Type': 'application/json' } }
-    );
+    const raw = await askAI(PROMPT_TEMPLATE(jobText, allKeywords, profile), {
+      temperature: 0.1,
+      top_p: 0.95,
+      num_predict: 200,
+    });
+    
+    // FALLBACK: If AI returns nothing, use local keyword scorer
+    if (!raw) {
+      logger.warn('[Ollama] AI returned empty – falling back to local keyword scorer');
+      const fallback = localKeywordScore(jobText, keywords);
+      return fallback;
+    }
 
-    const raw = response.data?.response || '';
     logger.debug('Ollama raw response', { raw: raw.substring(0, 300) });
 
     const result = parseAIResponse(raw);
+    
+    // If parse produced an invalid or 0-score skip, maybe try keyword fallback as a safety
+    if (result.decision === 'SKIP' && result.score === 0) {
+      logger.info('[Ollama] AI suggested SKIP(0) – double-checking with keyword scorer');
+      const kwResult = localKeywordScore(jobText, keywords);
+      if (kwResult.decision === 'APPLY') {
+        logger.info('[Ollama] Keyword scorer overruled AI SKIP', kwResult);
+        return kwResult;
+      }
+    }
+
     logger.info('AI decision', result);
     return result;
   } catch (err) {

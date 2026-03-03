@@ -12,6 +12,7 @@ const { fillFormSmart } = require('./formFiller');
 const { applyExternal } = require('./externalApplier');
 const db = require('../db/db');
 const logger = require('../utils/logger');
+const { handleLoginRequired } = require('../auth/autoLogin');
 const {
   randomDelay,
   humanClick,
@@ -275,6 +276,7 @@ async function applyToJob(page, jobId, config) {
     'a#apply-button',
     '[data-ga-track*="apply" i]',
     'button:has-text("Apply")',
+    'button:has-text("Apply on company site")',
     'button:has-text("Apply Now")',
     'a:has-text("Apply Now")',
     '.apply-button',
@@ -285,6 +287,8 @@ async function applyToJob(page, jobId, config) {
     'button:has-text("Continue")',
     'button:has-text("Save & Next")',
     'button:has-text("Save and Next")',
+    'button:has-text("Save")',
+    'button:has-text("Save & Continue")',
     '[class*="next-btn"]:not([disabled])',
     '[class*="nextbtn"]:not([disabled])',
   ];
@@ -293,6 +297,7 @@ async function applyToJob(page, jobId, config) {
     selector.submitButton,
     'button:has-text("Submit")',
     'button:has-text("Apply")',
+    'button:has-text("Save")',
     'button[type="submit"]',
     '[class*="submit-btn"]',
   ].filter(Boolean);
@@ -311,6 +316,7 @@ async function applyToJob(page, jobId, config) {
 
   const ALREADY_APPLIED_SELECTORS = [
     '.already-applied',
+    '#already-applied',
     '[class*="alreadyApplied"]',
     'button:has-text("Applied")',
     'text=Already Applied',
@@ -334,20 +340,20 @@ async function applyToJob(page, jobId, config) {
         }
       }
 
-      // ── 2. Find & click the Apply button ──────────────────────────────
       let applyClicked = false;
       for (const sel of APPLY_BTN_SELECTORS) {
         try {
-          logger.debug(`[Worker] Searching for APPLY button with selector: "${sel}"`);
           const btn = page.locator(sel).first();
           if (await btn.count() > 0 && await btn.isVisible()) {
-            logger.info(`[Worker] Clicked APPLY: "${sel}" - Clicking...`);
-            await btn.click();
+            await btn.scrollIntoViewIfNeeded().catch(() => {});
+            logger.info(`[Worker] Clicking APPLY button: "${sel}"`);
+            await btn.click({ timeout: 10000 });
             applyClicked = true;
+            await randomDelay(2000, 3000);
             break;
           }
         } catch (err) {
-          logger.debug(`[Worker] Apply selector "${sel}" failed or timed out`, { err: err.message });
+          logger.debug(`[Worker] Apply selector "${sel}" failed: ${err.message}`);
         }
       }
 
@@ -357,7 +363,7 @@ async function applyToJob(page, jobId, config) {
         continue;
       }
 
-      await randomDelay(1000, 2000);
+      await randomDelay(350, 500);  // brief DOM settle after click
 
       // ── 3. Check for new tab (external) ───────────────────────────────
       const pages = page.context().pages();
@@ -394,11 +400,22 @@ async function applyToJob(page, jobId, config) {
       // ── 6. Multi-step form handling (up to 8 steps) ───────────────────
       await captureScreenshot(page, jobId, 'opened');
 
+      let blockResumeUpload = false;
+
       for (let step = 0; step < 8; step++) {
         logger.info(`\n[Worker] Job ${jobId}: Processing Form Step ${step + 1}...`);
 
-        // Fill all visible fields on this step
-        const stepUnmatched = await fillFormSmart(page, config);
+        // Fill all visible fields on this step - scoped to apply drawer/modal
+        const scope = selector.applyModal || '.apply-modal, .apply-drawer, .naukri-drawer, .df__drawer';
+        
+        // Wait briefly for the scope container to exist so we don't accidentally match earlier fragments like the Apply Button
+        await page.waitForSelector(scope, { state: 'attached', timeout: 5000 }).catch(() => {});
+        
+        const stepUnmatched = await fillFormSmart(page, { ...config, scopeSelector: scope, blockResumeUpload });
+        if (stepUnmatched.chatbotInteracted) {
+          blockResumeUpload = true;
+        }
+        
         if (stepUnmatched.length) unmatched.push(...stepUnmatched);
 
         await randomDelay(600, 1200);
@@ -461,6 +478,11 @@ async function applyToJob(page, jobId, config) {
           }
 
           if (!nextClicked) {
+            if (stepUnmatched.chatbotInteracted) {
+              logger.info(`[Worker] Chatbot interaction detected. Continuing chat flow without Next/Submit button...`);
+              continue;
+            }
+            
             // No next or submit — form may be done or stuck
             logger.warn(`No next/submit button on step ${step + 1} – breaking`);
             break;
@@ -529,8 +551,41 @@ async function runWorker(config) {
   logger.info('=== AutoApply Worker Starting ===');
   emitEvent('worker:start', { config: { jobsUrl, maxAppsPerRun } });
 
-  const { browser, context } = await launchBrowser({ headless, slowMo, useAuth: true });
-  const page = await context.newPage();
+  let { browser, context } = await launchBrowser({ headless, slowMo, useAuth: true });
+  let page = await context.newPage();
+
+  // ── Auto-Login Check ───────────────────────────────────────────────────
+  logger.info(`[Worker] Verifying Naukri login status...`);
+  await page.goto('https://www.naukri.com/', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await randomDelay(2000, 3000);
+
+  // Check if logged in (presence of user avatar/drawer)
+  const isLoggedIn = await page.evaluate(() => {
+    return !!document.querySelector('.nI-gNb-drawer__icon') || !!document.querySelector('.user-name');
+  });
+
+  if (!isLoggedIn) {
+    logger.warn(`[Worker] User is logged out of Naukri. Initiating auto-login protocol...`);
+    // Close headless browser temporarily
+    await closeBrowser(browser, context);
+    
+    // Prompt user for login visually
+    const loginSuccess = await handleLoginRequired('naukri');
+    if (!loginSuccess) {
+      logger.error(`[Worker] Auto-login failed or timed out. Aborting run.`);
+      emitEvent('worker:error', { message: 'Naukri auto-login failed' });
+      return;
+    }
+
+    // Re-launch headless browser with NEW merged auth.json
+    logger.info(`[Worker] Re-launching headless browser with updated credentials...`);
+    const newSession = await launchBrowser({ headless, slowMo, useAuth: true });
+    browser = newSession.browser;
+    context = newSession.context;
+    page = await context.newPage();
+  } else {
+    logger.info(`[Worker] Login verified. Proceeding...`);
+  }
 
   let appliedCount = 0;
   let skippedCount = 0;
@@ -609,6 +664,10 @@ async function runWorker(config) {
             company  = ((await card.locator(selector.companyName|| '.comp-name').first().textContent({ timeout: 3000 })) || '').trim();
             location = ((await card.locator(selector.jobLocation || '.location').first().textContent({ timeout: 3000 })) || '').trim();
             cardUrl = await card.locator('a').first().getAttribute('href') || '';
+            // Resolve relative URLs (e.g. '/job-listings/...') to absolute Naukri URLs
+            if (cardUrl && !cardUrl.startsWith('http')) {
+              try { cardUrl = new URL(cardUrl, 'https://www.naukri.com').href; } catch (_) {}
+            }
             logger.info(`[Worker] Scraped Job: "${title.trim()}" at "${company.trim()}" (${location.trim()})`);
           } catch (e) {
             logger.debug('[Worker] Partial scrape failed for card', { err: e.message });
@@ -626,7 +685,9 @@ async function runWorker(config) {
           }
 
           db.upsertJob({
-            job_id: jobId, title, company, location: '', url: cardUrl || currentJobsUrl,
+            // Store cardUrl if available; the second upsert (after job tab opens) will
+            // always overwrite with the actual job detail page URL via jobPage.url()
+            job_id: jobId, title, company, location, url: cardUrl || '',
             description: '', decision: 'PENDING', score: 0,
             reason: 'pending analysis', apply_status: 'pending',
           });
@@ -652,13 +713,14 @@ async function runWorker(config) {
             logger.warn(`Could not open job detail: ${jobId}`);
           }
 
-          await randomDelay(1500, 3000);
+          await randomDelay(400, 800);  // minimal settle — removed wasteful long delay
 
           const jobText = await jobPage.evaluate(() => document.body.innerText).catch(() => '');
           const jobUrl = jobPage.url();
+          logger.info(`[Worker] Job page URL: ${jobUrl} (job_id: ${jobId})`);
 
           db.upsertJob({
-            job_id: jobId, title, company, location: '', url: jobUrl,
+            job_id: jobId, title, company, location, url: jobUrl,
             description: jobText.substring(0, 5000), decision: 'PENDING',
             score: 0, reason: '', apply_status: 'pending',
           });
@@ -668,7 +730,7 @@ async function runWorker(config) {
           logger.info(`AI: ${aiResult.decision} (${aiResult.score}) – ${aiResult.reason}`);
 
           db.upsertJob({
-            job_id: jobId, title, company, location: '', url: jobUrl,
+            job_id: jobId, title, company, location, url: jobUrl,
             description: jobText.substring(0, 5000),
             decision: aiResult.decision, score: aiResult.score, reason: aiResult.reason,
             apply_status: aiResult.decision === 'SKIP' ? 'skipped' : 'pending',
@@ -677,8 +739,9 @@ async function runWorker(config) {
           emitEvent('job:analyzed', { jobId, title, company, ...aiResult });
 
           if (aiResult.decision === 'APPLY' && aiResult.score >= scoreThreshold) {
-            const safetyExtra = safetyMode ? delayMax * 1.5 : 0;
-            await randomDelay(delayMin + safetyExtra, delayMax + safetyExtra);
+            // Minimal human-like pause — no need for full delayMin/delayMax before clicking Apply
+            const safetyExtra = safetyMode ? 1000 : 0;
+            await randomDelay(300 + safetyExtra, 600 + safetyExtra);
 
             logger.info(`Applying: "${title}" @ ${company}`);
             emitEvent('job:applying', { jobId, title, company });

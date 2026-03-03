@@ -1,0 +1,548 @@
+2026-02-25 10:08:27 [ERROR] Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at createDashboardServer (C:\AAATTTTUUUULLL\Project\autoapply\src\dashboard\server.js:225:10)
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:38:3
+    at Object.<anonymous> (C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:76:3)
+    at Module._compile (node:internal/modules/cjs/loader:1688:14)
+    at Object..js (node:internal/modules/cjs/loader:1820:10)
+    at Module.load (node:internal/modules/cjs/loader:1423:32)
+    at Function._load (node:internal/modules/cjs/loader:1246:12)
+2026-02-25 10:14:01 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:14:01 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:14:02 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:14:02 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:17:11 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:17:11 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:17:12 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:17:12 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:20:16 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:20:16 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:20:17 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:20:17 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:21:22 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:21:22 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:26:22 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:26:22 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:27:10 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:27:10 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:27:18 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:27:18 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:30:15 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:30:15 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:30:23 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:30:23 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:31:22 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:31:22 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:33:21 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:33:22 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:33:29 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:33:29 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:33:29 [ERROR] Apply attempt 0 error {"jobId":"QA_Engineer_Selenium_WebDriver_with_RPA_Leading_Client_1771995119001","err":"locator.all: Target page, context or browser has been closed"}
+2026-02-25 10:33:33 [ERROR] Apply attempt 1 error {"jobId":"QA_Engineer_Selenium_WebDriver_with_RPA_Leading_Client_1771995119001","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 10:33:41 [ERROR] Apply attempt 2 error {"jobId":"QA_Engineer_Selenium_WebDriver_with_RPA_Leading_Client_1771995119001","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 10:33:58 [ERROR] Apply attempt 3 error {"jobId":"QA_Engineer_Selenium_WebDriver_with_RPA_Leading_Client_1771995119001","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 10:33:58 [ERROR] ❌ Failed: QA Engineer – Selenium WebDriver with RPA
+2026-02-25 10:36:01 [ERROR] Apply attempt 0 error {"jobId":"Unknown_Unknown_1771995840971","err":"locator.count: Target page, context or browser has been closed"}
+2026-02-25 10:36:06 [ERROR] Apply attempt 1 error {"jobId":"Unknown_Unknown_1771995840971","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 10:36:15 [ERROR] Apply attempt 2 error {"jobId":"Unknown_Unknown_1771995840971","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 10:36:22 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:36:22 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:36:33 [ERROR] Apply attempt 3 error {"jobId":"Unknown_Unknown_1771995840971","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 10:36:33 [ERROR] ❌ Failed: Unknown
+2026-02-25 10:36:33 [ERROR] page.goto: Target page, context or browser has been closed
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\worker\worker.js:722:68
+    at async runWorker (C:\AAATTTTUUUULLL\Project\autoapply\src\worker\worker.js:722:13)
+    at async C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:69:5
+2026-02-25 10:38:21 [ERROR] Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at createDashboardServer (C:\AAATTTTUUUULLL\Project\autoapply\src\dashboard\server.js:225:10)
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:38:3
+    at Object.<anonymous> (C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:76:3)
+    at Module._compile (node:internal/modules/cjs/loader:1688:14)
+    at Object..js (node:internal/modules/cjs/loader:1820:10)
+    at Module.load (node:internal/modules/cjs/loader:1423:32)
+    at Function._load (node:internal/modules/cjs/loader:1246:12)
+2026-02-25 10:39:44 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:39:44 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:41:22 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:41:22 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:42:50 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:42:50 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:44:04 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:44:04 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:45:55 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:45:55 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:46:22 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:46:22 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:49:09 [ERROR] Apply attempt 0 error {"jobId":"ORAN_Functional_QA_Engineer_MNC_-_ORAN_Functional_QA_Engineer_-_Pune_1771996623768","err":"locator.count: Target page, context or browser has been closed"}
+2026-02-25 10:49:13 [ERROR] Apply attempt 1 error {"jobId":"ORAN_Functional_QA_Engineer_MNC_-_ORAN_Functional_QA_Engineer_-_Pune_1771996623768","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 10:49:23 [ERROR] Apply attempt 2 error {"jobId":"ORAN_Functional_QA_Engineer_MNC_-_ORAN_Functional_QA_Engineer_-_Pune_1771996623768","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 10:49:39 [ERROR] Apply attempt 3 error {"jobId":"ORAN_Functional_QA_Engineer_MNC_-_ORAN_Functional_QA_Engineer_-_Pune_1771996623768","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 10:49:39 [ERROR] ❌ Failed: ORAN Functional QA Engineer
+2026-02-25 10:51:22 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 10:51:22 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 10:51:44 [ERROR] page.goto: Target page, context or browser has been closed
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\worker\worker.js:722:68
+    at async runWorker (C:\AAATTTTUUUULLL\Project\autoapply\src\worker\worker.js:722:13)
+    at async C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:69:5
+2026-02-25 12:31:51 [ERROR] Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at createDashboardServer (C:\AAATTTTUUUULLL\Project\autoapply\src\dashboard\server.js:236:10)
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:38:3
+    at Object.<anonymous> (C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:76:3)
+    at Module._compile (node:internal/modules/cjs/loader:1688:14)
+    at Object..js (node:internal/modules/cjs/loader:1820:10)
+    at Module.load (node:internal/modules/cjs/loader:1423:32)
+    at Function._load (node:internal/modules/cjs/loader:1246:12)
+2026-02-25 12:36:32 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 12:36:32 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 12:38:38 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 12:38:38 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 12:40:44 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 12:40:44 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 12:46:22 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 12:46:22 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 12:51:22 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 12:51:22 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 12:52:39 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 12:52:39 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 12:54:45 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 12:54:45 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 12:56:22 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-25 12:56:22 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 12:56:51 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 12:56:51 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 12:59:43 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 12:59:43 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 13:04:13 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 13:04:13 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 13:06:04 [ERROR] Apply attempt 0 error {"jobId":"Qa_Engineer_TSIT_Digital_1772004838740","err":"locator.count: Target page, context or browser has been closed"}
+2026-02-25 13:06:09 [ERROR] Apply attempt 1 error {"jobId":"Qa_Engineer_TSIT_Digital_1772004838740","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 13:06:17 [ERROR] Apply attempt 2 error {"jobId":"Qa_Engineer_TSIT_Digital_1772004838740","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 13:06:34 [ERROR] Apply attempt 3 error {"jobId":"Qa_Engineer_TSIT_Digital_1772004838740","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 13:06:34 [ERROR] ❌ Failed: Qa Engineer
+2026-02-25 13:07:52 [ERROR] Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at createDashboardServer (C:\AAATTTTUUUULLL\Project\autoapply\src\dashboard\server.js:381:10)
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:38:3
+    at Object.<anonymous> (C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:76:3)
+    at Module._compile (node:internal/modules/cjs/loader:1688:14)
+    at Object..js (node:internal/modules/cjs/loader:1820:10)
+    at Module.load (node:internal/modules/cjs/loader:1423:32)
+    at Function._load (node:internal/modules/cjs/loader:1246:12)
+2026-02-25 13:08:39 [ERROR] page.goto: Target page, context or browser has been closed
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\worker\worker.js:722:68
+    at async runWorker (C:\AAATTTTUUUULLL\Project\autoapply\src\worker\worker.js:722:13)
+    at async C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:69:5
+2026-02-25 13:09:13 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 13:09:13 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 13:14:15 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 13:14:15 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 13:14:33 [ERROR] page.goto: Target page, context or browser has been closed
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\worker\worker.js:722:68
+    at async runWorker (C:\AAATTTTUUUULLL\Project\autoapply\src\worker\worker.js:722:13)
+    at async C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:69:5
+2026-02-25 13:19:13 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 13:19:13 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 13:24:13 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 13:24:13 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 13:29:13 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 13:29:13 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 13:34:13 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 13:34:13 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 13:39:13 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 13:39:13 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 13:44:13 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 13:44:13 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 13:49:13 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 13:49:13 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 13:54:13 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 13:54:13 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 13:59:14 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 13:59:14 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 14:04:20 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 14:04:20 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 14:09:14 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 14:09:14 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 14:14:42 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 14:14:42 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 14:27:53 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 14:27:53 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 14:30:27 [ERROR] ❌ Failed: Unknown
+2026-02-25 14:33:44 [ERROR] ❌ Failed: Unknown
+2026-02-25 14:33:58 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 14:33:58 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 14:38:58 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 14:38:58 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 14:43:59 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 14:43:59 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 14:48:58 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 14:48:58 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 14:51:29 [ERROR] Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at createDashboardServer (C:\AAATTTTUUUULLL\Project\autoapply\src\dashboard\server.js:518:10)
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:38:3
+    at Object.<anonymous> (C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:76:3)
+    at Module._compile (node:internal/modules/cjs/loader:1688:14)
+    at Object..js (node:internal/modules/cjs/loader:1820:10)
+    at Module.load (node:internal/modules/cjs/loader:1423:32)
+    at Function._load (node:internal/modules/cjs/loader:1246:12)
+2026-02-25 14:54:00 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 14:54:00 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 14:54:34 [ERROR] page.goto: Target page, context or browser has been closed
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\worker\worker.js:723:68
+    at async runWorker (C:\AAATTTTUUUULLL\Project\autoapply\src\worker\worker.js:723:13)
+    at async C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:69:5
+2026-02-25 14:56:38 [ERROR] Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at createDashboardServer (C:\AAATTTTUUUULLL\Project\autoapply\src\dashboard\server.js:518:10)
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:38:3
+    at Object.<anonymous> (C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:76:3)
+    at Module._compile (node:internal/modules/cjs/loader:1688:14)
+    at Object..js (node:internal/modules/cjs/loader:1820:10)
+    at Module.load (node:internal/modules/cjs/loader:1423:32)
+    at Function._load (node:internal/modules/cjs/loader:1246:12)
+2026-02-25 14:58:58 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 14:58:58 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:01:30 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:01:30 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:03:38 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:03:38 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:03:58 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:03:58 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:05:43 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:05:43 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:08:58 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:08:58 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:08:59 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:08:59 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:11:04 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:11:04 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:13:59 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:13:59 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:14:17 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:14:17 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:16:22 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:16:22 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:18:58 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:18:58 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:19:36 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:19:36 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:21:42 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:21:42 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:23:58 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:23:58 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:33:35 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:33:35 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:49:03 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:49:03 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 15:49:03 [ERROR] Apply attempt 0 error {"jobId":"Teradata_QA_Engineer_Apptad_1772014489730","err":"locator.all: Target page, context or browser has been closed"}
+2026-02-25 15:49:07 [ERROR] Apply attempt 1 error {"jobId":"Teradata_QA_Engineer_Apptad_1772014489730","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 15:49:16 [ERROR] Apply attempt 2 error {"jobId":"Teradata_QA_Engineer_Apptad_1772014489730","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 15:49:35 [ERROR] Apply attempt 3 error {"jobId":"Teradata_QA_Engineer_Apptad_1772014489730","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 15:49:35 [ERROR] ❌ Failed: Teradata QA Engineer
+2026-02-25 15:53:53 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 15:53:53 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:00:17 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:00:17 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:06:15 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:06:15 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:08:22 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:08:22 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:10:27 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:10:27 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:11:38 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:11:38 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:12:38 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:12:38 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:14:43 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:14:43 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:16:38 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:16:38 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:17:26 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:17:26 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:18:43 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:18:43 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:19:31 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:19:31 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:21:38 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:21:38 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:21:46 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:21:46 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:23:44 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:23:44 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:23:51 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:23:51 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:25:49 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:25:49 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:25:57 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:25:57 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:28:02 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:28:02 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:30:08 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:30:08 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:31:38 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:31:38 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:32:13 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:32:13 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:33:43 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:33:43 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:34:20 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:34:20 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:35:49 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:35:49 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:36:25 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:36:25 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:37:54 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:37:54 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:38:30 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:38:30 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:39:59 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:39:59 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:40:36 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:40:36 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:42:41 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:42:41 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:44:46 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:44:46 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:46:38 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:46:38 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:47:05 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:47:05 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:48:44 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:48:44 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:49:11 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:49:11 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:50:49 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:50:49 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:51:20 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:51:20 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:52:54 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:52:54 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:53:25 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:53:25 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:55:00 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:55:00 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:55:40 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:55:40 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:57:05 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:57:05 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:57:45 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:57:45 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 16:59:11 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 16:59:11 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:00:27 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:00:27 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:01:16 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:01:16 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:02:32 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:02:32 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:03:22 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:03:22 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:04:47 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:04:47 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:06:38 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:06:38 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:06:52 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:06:52 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:08:44 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:08:44 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:08:58 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:08:58 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:10:49 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:10:49 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:11:04 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:11:04 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:12:55 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:12:55 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:13:10 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:13:10 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:15:00 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:15:00 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:15:15 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:15:15 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:17:06 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:17:06 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:17:20 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:17:20 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:19:11 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:19:11 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:19:26 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:19:26 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:21:17 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:21:17 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:21:31 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:21:31 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:23:22 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:23:22 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:23:37 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:23:37 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:25:28 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:25:28 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:25:51 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:25:51 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:27:57 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:27:57 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:34:29 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:34:29 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:36:34 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:36:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:36:35 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:36:35 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:38:40 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:38:40 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:40:46 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:40:46 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:42:51 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:42:51 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:43:00 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:43:00 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:44:56 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:44:56 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:47:02 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:47:02 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:49:07 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:49:07 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:49:29 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:49:29 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:51:12 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:51:12 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:53:18 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:53:18 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:55:21 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:55:21 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 17:58:59 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 17:58:59 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:01:04 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 18:01:04 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:03:10 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 18:03:10 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:05:15 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 18:05:15 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:05:58 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 18:05:58 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:07:21 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 18:07:21 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:09:26 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 18:09:26 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:11:31 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 18:11:31 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:11:46 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 18:11:46 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:13:37 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 18:13:37 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:18:59 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 18:18:59 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:21:05 [ERROR] [AIProvider] Ollama fallback failed: timeout of 60000ms exceeded
+2026-02-25 18:21:05 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:24:37 [ERROR] Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at createDashboardServer (C:\AAATTTTUUUULLL\Project\autoapply\src\dashboard\server.js:518:10)
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:38:3
+    at Object.<anonymous> (C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:76:3)
+    at Module._compile (node:internal/modules/cjs/loader:1688:14)
+    at Object..js (node:internal/modules/cjs/loader:1820:10)
+    at Module.load (node:internal/modules/cjs/loader:1423:32)
+    at Function._load (node:internal/modules/cjs/loader:1246:12)
+2026-02-25 18:32:17 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 18:32:17 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:33:28 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 18:33:28 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:38:25 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 18:38:25 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:38:28 [ERROR] ❌ Failed: QA Engineer
+2026-02-25 18:39:35 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 18:39:35 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:39:36 [ERROR] ❌ Failed: QA Engineer
+2026-02-25 18:48:53 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 18:48:53 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:50:07 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 18:50:07 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:56:14 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 18:56:14 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 18:56:16 [ERROR] ❌ Failed: QA Engineer
+2026-02-25 19:01:04 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 19:01:04 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 19:09:02 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 19:09:02 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 19:09:03 [ERROR] ❌ Failed: QA Engineer
+2026-02-25 19:13:11 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 19:13:11 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 22:07:05 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 22:07:05 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 22:35:00 [ERROR] ❌ Failed: Qa Engineer
+2026-02-25 22:37:46 [ERROR] ❌ Failed: Qa Engineer
+2026-02-25 22:46:04 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 22:46:04 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 22:46:04 [ERROR] Apply attempt 0 error {"jobId":"Qa_Engineer_Worldline_1772039271841","err":"locator.all: Target page, context or browser has been closed"}
+2026-02-25 22:46:09 [ERROR] Apply attempt 1 error {"jobId":"Qa_Engineer_Worldline_1772039271841","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 22:46:18 [ERROR] Apply attempt 2 error {"jobId":"Qa_Engineer_Worldline_1772039271841","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 22:46:35 [ERROR] Apply attempt 3 error {"jobId":"Qa_Engineer_Worldline_1772039271841","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-25 22:46:35 [ERROR] ❌ Failed: Qa Engineer
+2026-02-25 22:48:15 [ERROR] Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at createDashboardServer (C:\AAATTTTUUUULLL\Project\autoapply\src\dashboard\server.js:518:10)
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:38:3
+    at Object.<anonymous> (C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:76:3)
+    at Module._compile (node:internal/modules/cjs/loader:1688:14)
+    at Object..js (node:internal/modules/cjs/loader:1820:10)
+    at Module.load (node:internal/modules/cjs/loader:1423:32)
+    at Function._load (node:internal/modules/cjs/loader:1246:12)
+2026-02-25 22:56:44 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 22:56:44 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 22:56:56 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 22:56:56 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 23:05:05 [ERROR] Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at createDashboardServer (C:\AAATTTTUUUULLL\Project\autoapply\src\dashboard\server.js:518:10)
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:38:3
+    at Object.<anonymous> (C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:76:3)
+    at Module._compile (node:internal/modules/cjs/loader:1688:14)
+    at Object..js (node:internal/modules/cjs/loader:1820:10)
+    at Module.load (node:internal/modules/cjs/loader:1423:32)
+    at Function._load (node:internal/modules/cjs/loader:1246:12)
+2026-02-25 23:13:03 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 23:13:03 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 23:13:42 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 23:13:42 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 23:25:34 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 23:25:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 23:26:13 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 23:26:13 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 23:35:29 [ERROR] Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at createDashboardServer (C:\AAATTTTUUUULLL\Project\autoapply\src\dashboard\server.js:518:10)
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:38:3
+    at Object.<anonymous> (C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:76:3)
+    at Module._compile (node:internal/modules/cjs/loader:1688:14)
+    at Object..js (node:internal/modules/cjs/loader:1820:10)
+    at Module.load (node:internal/modules/cjs/loader:1423:32)
+    at Function._load (node:internal/modules/cjs/loader:1246:12)
+2026-02-25 23:43:28 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 23:43:28 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 23:43:57 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 23:43:57 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 23:55:23 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 23:55:23 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-25 23:55:52 [ERROR] [AIProvider] Ollama fallback failed: timeout of 300000ms exceeded
+2026-02-25 23:55:52 [ERROR] [AIProvider] CRITICAL: All AI providers failed

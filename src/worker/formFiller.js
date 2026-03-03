@@ -40,9 +40,9 @@ const FIELD_MAP = [
   { keys: ['relocation', 'remote', 'work from home', 'wfh', 'hybrid'],       answerKey: 'relocation' },
 
   // Experience
-  { keys: ['years of experience', 'total experience', 'work experience', 'experience in years'], answerKey: 'experience' },
+  { keys: ['years of experience', 'total experience', 'work experience', 'experience in years', 'years experince', 'years experience', 'how many years', 'mcu testing'], answerKey: 'experience' },
   { keys: ['current role', 'current designation', 'present role'],           answerKey: 'currentRole' },
-  { keys: ['current company', 'present company', 'employer'],                answerKey: 'currentRole' },
+  { keys: ['current company', 'present company', 'employer'],                answerKey: 'currentCompany' },
   { keys: ['previous role', 'past role', 'work history', 'career history'], answerKey: 'previousRoles' },
   { keys: ['responsibilities', 'key responsibilities', 'job role', 'what do you do'], answerKey: 'responsibilities' },
 
@@ -128,6 +128,9 @@ function getAnswer(answerKey, qaAnswers, profile) {
   if (answerKey === 'linkedIn' && !qaAnswers.linkedIn) {
     return profile.linkedIn || '';
   }
+  if (answerKey === 'experience') {
+    return qaAnswers.experience || profile.experience || profile.yearsExperience || '';
+  }
   return qaAnswers[answerKey] || profile[answerKey] || '';
 }
 
@@ -137,23 +140,107 @@ function getAnswer(answerKey, qaAnswers, profile) {
 async function getElementLabel(page, elementHandle) {
   try {
     return await page.evaluate((el) => {
-      // Try: aria-label
-      if (el.ariaLabel) return el.ariaLabel;
-      if (el.getAttribute('aria-label')) return el.getAttribute('aria-label');
-      // Try: placeholder
-      if (el.placeholder) return el.placeholder;
-      // Try: associated <label>
-      if (el.id) {
-        const lbl = document.querySelector(`label[for="${el.id}"]`);
-        if (lbl) return lbl.textContent;
+      // Helper to clean duplicated text (e.g. "LabelLabel")
+      function cleanDuplicatedText(str) {
+        if (!str) return '';
+        const s = str.trim();
+        const half = Math.floor(s.length / 2);
+        if (s.length > 0 && s.substring(0, half) === s.substring(s.length - half)) {
+          return s.substring(0, half).trim();
+        }
+        return s;
       }
-      // Try: wrapping label
-      const parent = el.closest('label');
-      if (parent) return parent.textContent;
-      // Try: preceding sibling or parent text
-      const p = el.parentElement;
-      if (p) return p.innerText || p.textContent || '';
-      return '';
+
+      // Helper to find bot message context for chatbots
+      function findChatbotContext(input) {
+        // Deep search: look for the last text element in the entire document (or scoped drawer)
+        // that looks like a question and is above the input.
+        const allElements = Array.from(document.querySelectorAll('*'));
+        const inputIndex = allElements.indexOf(input);
+
+        // Search backwards from the input up to 100 elements just to be safe
+        let searchLimit = Math.max(0, inputIndex - 100);
+        for (let i = inputIndex - 1; i >= searchLimit; i--) {
+          const node = allElements[i];
+          // Skip if it's a hidden element or a script/style
+          if (node.tagName === 'SCRIPT' || node.tagName === 'STYLE' || node.tagName === 'SVG' || node.tagName === 'PATH') continue;
+          
+          let text = (node.innerText || node.textContent || '').trim();
+          
+          // Filter out generic short texts
+          if (text.length > 5 && (text.includes('?') || text.toLowerCase().includes('how many') || text.toLowerCase().includes('experience'))) {
+            // Because innerText cascades up, we want the most specific node (least children)
+            // that contains the text
+            if (node.children.length === 0 || (node.children.length === 1 && node.children[0].tagName === 'SPAN')) {
+                return text;
+            }
+          }
+        }
+        return null;
+      }
+
+      const rawLabel = (function() {
+        // Try: aria-label
+        if (el.ariaLabel) return el.ariaLabel;
+        if (el.getAttribute('aria-label')) return el.getAttribute('aria-label');
+        // Try: placeholder
+        if (el.placeholder) return el.placeholder;
+        if (el.getAttribute('data-placeholder')) return el.getAttribute('data-placeholder');
+        // Try: associated <label>
+        if (el.id) {
+          const lbl = document.querySelector(`label[for="${el.id}"]`);
+          if (lbl) return lbl.innerText || lbl.textContent;
+        }
+        // Try: wrapping label
+        const parent = el.closest('label');
+        if (parent) return parent.innerText || parent.textContent;
+        
+        // Try: preceding sibling or parent text
+        // Specific for LinkedIn: look for a sibling with class .artdeco-text-input--label or .fb-form-element-label
+        const container = el.closest('.fb-form-element, .artdeco-text-input, .artdeco-dropdown');
+        if (container) {
+          const lblNode = container.querySelector('.fb-form-element-label, .artdeco-text-input--label, label');
+          if (lblNode) return lblNode.innerText || lblNode.textContent;
+        }
+
+        const p = el.parentElement;
+        if (p) return p.innerText || p.textContent || '';
+        return '';
+      })();
+
+      let clean = (rawLabel || '').trim();
+      clean = cleanDuplicatedText(clean);
+      
+      const isContentEditable = el.getAttribute('contenteditable') === 'true' || el.classList.contains('textArea') || el.classList.contains('chatbot_InputContainer');
+      // If label is generic like "Type message here..." OR if it's an explicit chatbot interactive div, find the actual question text
+      if (isContentEditable || !clean || /type message|enter answer|reply|your message|type here|chat/i.test(clean)) {
+        const context = findChatbotContext(el);
+        if (context) return cleanDuplicatedText(context);
+      }
+
+      return clean;
+    }, elementHandle);
+  } catch (_) {
+    return '';
+  }
+}
+
+/**
+ * Get the current value of a form element.
+ */
+async function getElementValue(page, elementHandle) {
+  try {
+    return await page.evaluate(el => {
+      const tag = el.tagName.toLowerCase();
+      if (tag === 'select') {
+        const idx = el.selectedIndex;
+        if (idx === -1) return '';
+        return el.options[idx].text || el.options[idx].value || '';
+      }
+      if (el.type === 'checkbox' || el.type === 'radio') {
+        return el.checked ? 'Checked' : 'Unchecked';
+      }
+      return el.value || el.innerText || '';
     }, elementHandle);
   } catch (_) {
     return '';
@@ -166,10 +253,26 @@ async function getElementLabel(page, elementHandle) {
  * Returns a list of truly unmatched questions (AI also couldn't answer).
  */
 async function fillFormSmart(page, config) {
-  const { qaAnswers = {}, profile = {}, resumePath, skipAI = false } = config;
+  const { qaAnswers = {}, profile = {}, resumePath, skipAI = false, scopeSelector = '' } = config;
   const unmatched = [];
 
-  logger.info(`[FormFiller] Starting AI-augmented fill: ${skipAI ? 'Keyword only' : 'Hybrid AI'}`);
+  logger.info(`[FormFiller] Starting AI-augmented fill: ${skipAI ? 'Keyword only' : 'Hybrid AI'} (Scope: ${scopeSelector || 'None'})`);
+
+  // Define the root locator (whole page or a specific modal/drawer)
+  let root = scopeSelector ? page.locator(scopeSelector).first() : page;
+  let activeScope = scopeSelector;
+  
+  // Check if scope exists
+  if (scopeSelector) {
+    const exists = await root.count();
+    if (exists === 0) {
+      logger.warn(`[FormFiller] Scope selector "${scopeSelector}" not found – falling back to page`);
+      root = page;
+      activeScope = '';
+    } else {
+      logger.debug(`[FormFiller] Scoped to: "${scopeSelector}"`);
+    }
+  }
 
   // ── AI Pass 0: batch-analyze the whole form for an answer map ──────────
   // Cached by page URL – one Gemini call per page, not per fillFormSmart() invocation
@@ -181,7 +284,7 @@ async function fillFormSmart(page, config) {
       logger.info(`[FormFiller] AI answer map from cache (${Object.keys(aiAnswerMap).length} entries)`);
     } else {
       try {
-        const pageText = await page.evaluate(() => document.body.innerText).catch(() => '');
+        const pageText = await root.evaluate((el) => el.innerText || document.body.innerText).catch(() => '');
         const aiAnswers = await analyzeFormAndAnswer(pageText, profile);
         for (const { label, answer } of aiAnswers) {
           if (label && answer) aiAnswerMap[label.toLowerCase().trim()] = answer;
@@ -212,12 +315,16 @@ async function fillFormSmart(page, config) {
 
   // ── Text inputs & textareas ────────────────────────────────────────────
   const inputSelectors = [
-    'input[type="text"]', 'input[type="email"]', 'input[type="tel"]',
+    'input[type="text"]', 'input:not([type])', 'input[type="email"]', 'input[type="tel"]',
     'input[type="number"]', 'input[type="url"]', 'textarea',
+    '[contenteditable="true"]', '.textArea', '.chatbot_InputContainer textarea', '.chatbot_InputContainer input', '.bottom-chat input'
   ];
 
+  let totalInputsFound = 0;
   for (const sel of inputSelectors) {
-    const elements = await page.locator(sel).all();
+    // If scoped, search within root, otherwise search page
+    const elements = activeScope ? await root.locator(sel).all() : await page.locator(sel).all();
+    totalInputsFound += elements.length;
     for (const el of elements) {
       try {
         const isVisible = await el.isVisible();
@@ -227,44 +334,107 @@ async function fillFormSmart(page, config) {
         const handle = await el.elementHandle();
         const label  = await getElementLabel(page, handle);
         if (!label) {
-          logger.debug(`[FormFiller] Skipping field [${sel}] - no label found`);
-          continue;
+          const outerHTML = await el.evaluate(e => e.outerHTML).catch(()=>'error');
+          logger.warn(`[FormFiller] Skipping field [${sel}] - no label extracted. HTML: ${outerHTML}`);
+          
+          // ALWAYS process chatbot input containers or editable divs even if aria-labels are missing
+          const isEditableDiv = outerHTML.includes('contenteditable="true"');
+          const isChatbotClass = outerHTML.toLowerCase().includes('textarea') || outerHTML.toLowerCase().includes('chatbot');
+          
+          if (!isEditableDiv && !isChatbotClass) {
+              continue;
+          }
         }
 
-        logger.debug(`[FormFiller] Processing field: "${label.trim().substring(0, 40)}" [${sel}]`);
+        logger.debug(`[FormFiller] Processing field: "${(label||'bot input').trim().substring(0, 40)}" [${sel}]`);
 
-        // Pass 1: keyword match
+        // Detect validation errors
+        const errorText = await el.evaluate(input => {
+          const parent = input.closest('.fb-form-element, .artdeco-text-input, .artdeco-dropdown, div');
+          if (!parent) return null;
+          // LinkedIn uses .artdeco-inline-feedback__message or variants. Catch all error feedbacks.
+          const errorMsg = parent.querySelector('.artdeco-inline-feedback--error, .artdeco-inline-feedback__message, [id*="error"], .validation-error, [role="alert"]');
+          return errorMsg ? errorMsg.innerText.trim() : null;
+        });
+
+        if (errorText) {
+          logger.warn(`[FormFiller] Validation error detected for "${label}": ${errorText}`);
+        }
+
+        // Pass 1: keyword match (skip if error, as we need fresh AI logic)
         let answer = '';
-        const match = findBestMatch(label);
-        if (match) {
-          answer = getAnswer(match.answerKey, qaAnswers, profile);
-          logger.info(`[FormFiller] Keyword "${label.trim().substring(0, 50)}" → ${match.answerKey}`);
+        if (!errorText) {
+          const match = label ? findBestMatch(label) : null;
+          if (match) {
+            answer = getAnswer(match.answerKey, qaAnswers, profile);
+            logger.info(`[FormFiller] Keyword "${label.trim().substring(0, 50)}" → ${match.answerKey}`);
+          }
         }
 
-        // Pass 2: AI batch map
-        if (!answer) {
+        // Pass 2: AI batch map (skip if error)
+        if (!answer && !errorText) {
           answer = lookupAiMap(label) || '';
           if (answer) logger.info(`[FormFiller] AI-map "${label.trim().substring(0, 50)}" → "${answer.substring(0, 60)}"`);
         }
 
-        // Pass 3: per-field AI call for truly unknown fields
+        // Pass 3: per-field AI call (always do if error or unknown)
         if (!answer && !skipAI) {
-          answer = await answerField(label, 'text', [], profile);
-          if (answer) logger.info(`[FormFiller] AI-field "${label.trim().substring(0, 50)}" → "${answer.substring(0, 60)}"`);
+          const rejectedValue = errorText ? await getElementValue(page, handle) : '';
+          
+          // Auto-detect numeric fields from label context
+          let typeOverride = 'text';
+          if (/how many years|how much|total years|experience with/i.test(label || '')) {
+             typeOverride = 'number';
+          }
+
+          answer = await answerField(label, typeOverride, [], profile, errorText || '', null, rejectedValue);
+          if (answer) logger.info(`[FormFiller] AI-field "${label.trim().substring(0, 50)}" → "${answer.substring(0, 60)}" ${errorText ? `(RETRY: rejected "${rejectedValue}")` : ''}`);
         }
 
         if (!answer) {
-          const clean = label.trim().replace(/\s+/g, ' ').substring(0, 100);
-          if (clean.length > 2) unmatched.push({ label: clean, type: 'text' });
-          continue;
+          const isBot = sel.includes('contenteditable') || sel.includes('chatbot') || sel.includes('textArea');
+          if (isBot) {
+            logger.warn(`[FormFiller] Chatbot question "${label}" unmatched. Defaulting to "Yes" to bypass.`);
+            answer = "Yes";
+          } else {
+            const clean = (label || '').trim().replace(/\s+/g, ' ').substring(0, 100);
+            if (clean.length > 2) unmatched.push({ label: clean, type: 'text' });
+            continue;
+          }
         }
 
         await el.click();
         await page.keyboard.press('Control+a');
         await page.keyboard.press('Delete');
         await randomDelay(80, 200);
-        await el.type(String(answer), { delay: Math.floor(Math.random() * 50) + 25 });
+
+        // For inputs/textareas, .fill or .type works best. For contenteditable divs, page.keyboard works best.
+        try {
+          // Playwright 1.39+ natively prefers .fill() over .type(), but type() simulates keystrokes better 
+          // However, div elements sometimes reject both. Try fill, fallback to raw keyboard.
+          const tag = await el.evaluate(e => e.tagName);
+          if (tag === 'DIV') {
+            await page.keyboard.type(String(answer), { delay: Math.floor(Math.random() * 50) + 25 });
+          } else {
+             // Fallback to type for backwards compatibility with input fields
+             await el.type(String(answer), { delay: Math.floor(Math.random() * 50) + 25 });
+          }
+        } catch(fillErr) {
+          logger.debug(`[FormFiller] .type() failed, using raw keyboard...`);
+          await el.click();
+          await page.keyboard.type(String(answer), { delay: Math.floor(Math.random() * 50) + 25 });
+        }
+        
         await randomDelay(150, 400);
+
+        // Chatbot support: press ENTER if it's a message-style input or a known chatbot selector
+        const isBotInput = sel.includes('contenteditable') || sel.includes('chatbot') || sel.includes('textArea') || /type message|enter answer|reply|your message|type here|chat/i.test(label);
+        if (isBotInput) {
+          logger.info(`[FormFiller] Identified chatbot input, pressing ENTER`);
+          await page.keyboard.press('Enter');
+          await randomDelay(1500, 3000); // Wait for bot response
+          unmatched.chatbotInteracted = true;
+        }
       } catch (err) {
         logger.debug(`[FormFiller] Input error: ${err.message}`);
       }
@@ -272,7 +442,7 @@ async function fillFormSmart(page, config) {
   }
 
   // ── Select / Dropdowns ────────────────────────────────────────────────
-  const selects = await page.locator('select').all();
+  const selects = activeScope ? await root.locator('select').all() : await page.locator('select').all();
   for (const sel of selects) {
     try {
       const isVisible = await sel.isVisible();
@@ -288,24 +458,58 @@ async function fillFormSmart(page, config) {
       );
       const optTexts = options.map(o => o.text).filter(t => t && t.toLowerCase() !== 'select');
 
-      // Pass 1: keyword match
-      let answer = '';
-      const match = findBestMatch(label);
-      if (match) answer = getAnswer(match.answerKey, qaAnswers, profile);
+      // Detect validation errors
+      const errorText = await sel.evaluate(el => {
+        const parent = el.closest('.fb-form-element, .artdeco-dropdown, div');
+        if (!parent) return null;
+        const errorMsg = parent.querySelector('.artdeco-inline-feedback--error, .artdeco-inline-feedback__message, [id*="error"], .validation-error, [role="alert"]');
+        return errorMsg ? errorMsg.innerText.trim() : null;
+      });
 
-      // Pass 2: AI batch map
-      if (!answer) answer = lookupAiMap(label) || '';
+      if (errorText) {
+        logger.warn(`[FormFiller] Validation error detected for select "${label}": ${errorText}`);
+      }
+
+      // Pass 1: keyword match (skip if error)
+      let answer = '';
+      if (!errorText) {
+        const match = findBestMatch(label);
+        if (match) answer = getAnswer(match.answerKey, qaAnswers, profile);
+      }
+
+      // Pass 2: AI batch map (skip if error)
+      if (!answer && !errorText) answer = lookupAiMap(label) || '';
 
       // Pass 3: per-field AI call with options
       if (!answer && !skipAI && optTexts.length) {
-        answer = await answerField(label, 'select', optTexts, profile);
+        const rejectedValue = errorText ? await getElementValue(page, handle) : '';
+        answer = await answerField(label, 'select', optTexts, profile, errorText || '', null, rejectedValue);
+        if (answer) logger.info(`[FormFiller] AI-select "${label.trim().substring(0, 50)}" → "${answer}" ${errorText ? `(RETRY: rejected "${rejectedValue}")` : ''}`);
       }
 
       if (answer) {
-        const best = options.find(o => o.text.toLowerCase() === answer.toLowerCase())
-          || options.find(o => o.text.toLowerCase().includes(answer.toLowerCase())
-            || answer.toLowerCase().includes(o.text.toLowerCase()))
-          || options.find(o => o.value !== '' && o.text.toLowerCase() !== 'select');
+        const cleanAnswer = (answer || '').toLowerCase().replace(/[^\w\d+]/g, '');
+        
+        let best = options.find(o => o.text.toLowerCase() === answer.toLowerCase());
+        
+        if (!best) {
+          best = options.find(o => {
+            const t = o.text.toLowerCase();
+            const a = answer.toLowerCase();
+            // Standard inclusion
+            if (t.includes(a) || a.includes(t)) return true;
+            // Phone code special handling: match "+91" in "India (+91)"
+            const tDigits = t.replace(/[^\d+]/g, '');
+            const aDigits = a.replace(/[^\d+]/g, '');
+            if (aDigits && tDigits && (tDigits === aDigits || tDigits.includes(aDigits))) return true;
+            return false;
+          });
+        }
+        
+        // Final fallback: only if no match at all AND it's not a dummy option
+        if (!best) {
+          best = options.find(o => o.value !== '' && !/select|choose|none/i.test(o.text));
+        }
 
         if (best) {
           const chosenVal = best.value;
@@ -329,8 +533,9 @@ async function fillFormSmart(page, config) {
   // ── Radio buttons ─────────────────────────────────────────────────────
   // Group radios by name, pick the right option via AI
   try {
-    const radioGroups = await page.evaluate(() => {
-      const radios = Array.from(document.querySelectorAll('input[type="radio"]'));
+    const radioGroups = await root.evaluate((rootEl) => {
+      const parent = rootEl === window ? document : rootEl;
+      const radios = Array.from(parent.querySelectorAll('input[type="radio"]'));
       const groups = {};
       for (const r of radios) {
         if (!r.name) continue;
@@ -383,7 +588,7 @@ async function fillFormSmart(page, config) {
   }
 
   // ── Checkboxes: consent/terms auto-check ─────────────────────────────
-  const checkboxes = await page.locator('input[type="checkbox"]').all();
+  const checkboxes = activeScope ? await root.locator('input[type="checkbox"]').all() : await page.locator('input[type="checkbox"]').all();
   for (const cb of checkboxes) {
     try {
       if (!await cb.isVisible()) continue;
@@ -420,8 +625,10 @@ async function fillFormSmart(page, config) {
 
   // ── Resume Upload ─────────────────────────────────────────────────────
   const resumeAbs = resumePath ? path.resolve(process.cwd(), resumePath) : null;
-  if (resumeAbs && fs.existsSync(resumeAbs)) {
-    const fileInputs = await page.locator('input[type="file"]').all();
+  
+  // Prevent blindly attaching a resume to every single chatbot question
+  if (resumeAbs && fs.existsSync(resumeAbs) && !unmatched.chatbotInteracted && !config.blockResumeUpload) {
+    const fileInputs = activeScope ? await root.locator('input[type="file"]').all() : await page.locator('input[type="file"]').all();
     for (const fi of fileInputs) {
       try {
         await fi.setInputFiles(resumeAbs);
@@ -432,7 +639,7 @@ async function fillFormSmart(page, config) {
         logger.warn(`[FormFiller] Resume upload failed: ${err.message}`);
       }
     }
-  } else if (resumePath) {
+  } else if (resumePath && !config.blockResumeUpload && !unmatched.chatbotInteracted) {
     logger.warn(`[FormFiller] Resume not found at: ${resumePath}`);
   }
 

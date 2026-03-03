@@ -1,270 +1,709 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AutoApply – Job Tracker Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <link rel="stylesheet" href="styles.css"/>
-</head>
-<body data-theme="dark">
-
-<!-- Effects -->
-<div class="bg-pattern"></div>
-
-<!-- ═══════════════════════════════════════════════════ SIDEBAR -->
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
-    <span class="logo-icon">🤖</span>
-    <span class="logo-text">AutoApply</span>
-  </div>
-
-  <nav class="sidebar-nav">
-    <a class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
-      <span class="nav-icon">▣</span><span>Dashboard</span>
-    </a>
-    <a class="nav-item" data-view="jobs" onclick="switchView('jobs')">
-      <span class="nav-icon">📋</span><span>All Jobs</span>
-    </a>
-    <a class="nav-item" data-view="live" onclick="switchView('live')">
-      <span class="nav-icon">⚡</span><span>Live Feed</span>
-      <span class="badge-dot" id="live-dot"></span>
-    </a>
-    <a class="nav-item" data-view="learning" onclick="switchView('learning')">
-      <span class="nav-icon">🧠</span><span>Learning List</span>
-      <span class="badge-count" id="learning-badge" style="display:none"></span>
-    </a>
-
-    <!-- Theme Toggles -->
-    <div class="theme-toggles">
-      <button class="toggle-btn active" onclick="setTheme('dark')" id="theme-dark">
-        <span>🌑 DARK / CRT</span>
-      </button>
-      <button class="toggle-btn" onclick="setTheme('transparent')" id="theme-transparent">
-        <span>🌌 TRANSPARENT</span>
-      </button>
-      <button class="toggle-btn" onclick="setTheme('light')" id="theme-light">
-        <span>☀️ LIGHT</span>
-      </button>
-    </div>
-  </nav>
-
-  <div class="sidebar-footer">
-    <div class="status-pill" id="status-pill">
-      <span class="status-dot" id="status-dot"></span>
-      <span id="status-text">Connecting…</span>
-    </div>
-    <button class="export-btn" onclick="exportCsv()">⬇ Export CSV</button>
-  </div>
-</aside>
-
-<!-- ═══════════════════════════════════════════════════ MAIN -->
-<main class="main">
-
-  <!-- Top bar -->
-  <header class="topbar">
-    <div class="topbar-left">
-      <h1 class="page-title" id="page-title">JOB APPLICATION TRACKER</h1>
-      <span class="page-subtitle" id="last-updated">—</span>
-    </div>
-    <div class="topbar-right">
-      <button class="refresh-btn" onclick="refreshAll()" title="Refresh">↺ Refresh</button>
-    </div>
-  </header>
-
-  <!-- ── DASHBOARD VIEW ── -->
-  <section class="view active" id="view-dashboard">
-
-    <!-- Stat cards -->
-    <div class="stats-grid">
-      <div class="stat-card kpi-card" id="card-scanned">
-        <div class="kpi-val" id="stat-scanned">—</div>
-        <div class="kpi-label">TOTAL SCANNED</div>
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>AutoApply — AI Job Bot v3</title>
+    <meta
+      name="description"
+      content="AI-powered job application bot dashboard"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <!-- ══════ SIDEBAR ══════════════════════════════════════════ -->
+    <aside class="sidebar" id="sidebar">
+      <!-- Brand -->
+      <div class="sidebar-brand">
+        <div class="brand-logo">🤖</div>
+        <div>
+          <div class="brand-name">AutoApply</div>
+          <div class="brand-tagline">AI Job Bot v3</div>
+        </div>
       </div>
-      <div class="stat-card kpi-card green" id="card-applied">
-        <div class="kpi-val" id="stat-applied">—</div>
-        <div class="kpi-label" id="stat-applied-rate">success rate</div>
-      </div>
-      <div class="stat-card kpi-card yellow" id="card-skipped">
-        <div class="kpi-val" id="stat-skipped">—</div>
-        <div class="kpi-label">SKIPPED</div>
-      </div>
-      <div class="stat-card kpi-card red" id="card-errors">
-        <div class="kpi-val" id="stat-errors">—</div>
-        <div class="kpi-label">FAILED</div>
-      </div>
-    </div>
 
-    <!-- Charts row -->
-    <div class="charts-row">
-      <!-- Trend chart (big) -->
-      <div class="chart-card wide">
-        <div class="chart-header">
-          <span class="chart-title">📈 APPLICATION TREND — LAST 14 DAYS</span>
-          <div class="chart-legend">
-            <span class="leg green">■ Applied</span>
-            <span class="leg yellow">■ Skipped</span>
-            <span class="leg red">■ Failed</span>
+      <!-- Bot card -->
+      <div class="bot-card" id="botCard">
+        <div class="bot-card-top">
+          <div class="bot-dot idle" id="botDot"></div>
+          <span class="bot-label" id="botLabel">Idle</span>
+          <span class="bot-uptime" id="botUptime"></span>
+        </div>
+        <div class="bot-controls">
+          <button class="bot-btn start" id="btnStart">▶ Start</button>
+          <button class="bot-btn stop" id="btnStop" disabled>■ Stop</button>
+          <button
+            class="bot-btn restart"
+            id="btnRestart"
+            disabled
+            title="Restart"
+          >
+            ↺
+          </button>
+        </div>
+      </div>
+
+      <!-- Nav -->
+      <nav class="sidebar-nav">
+        <a class="nav-item active" data-tab="dashboard"
+          ><span class="nav-icon">📊</span><span>Dashboard</span
+          ><span class="nav-count" id="nc-total">–</span></a
+        >
+        <a class="nav-item" data-tab="jobs"
+          ><span class="nav-icon">💼</span><span>Jobs</span
+          ><span class="nav-count" id="nc-jobs">–</span></a
+        >
+        <a class="nav-item" data-tab="learning"
+          ><span class="nav-icon">🧠</span><span>AI Learning</span
+          ><span class="nav-count" id="nc-learning">–</span></a
+        >
+        <a class="nav-item" data-tab="activity"
+          ><span class="nav-icon">⚡</span><span>Live Log</span
+          ><span class="nav-badge">LIVE</span></a
+        >
+        <a class="nav-item" data-tab="liveview"
+          ><span class="nav-icon">📸</span><span>Live Browser</span></a
+        >
+        <a class="nav-item" data-tab="config"
+          ><span class="nav-icon">⚙️</span><span>Settings</span></a
+        >
+        <a class="nav-item" data-tab="keywords"
+          ><span class="nav-icon">🔤</span><span>Keywords</span></a
+        >
+        <a class="nav-item" data-tab="profile"
+          ><span class="nav-icon">👤</span><span>Profile</span></a
+        >
+        <a class="nav-item" data-tab="selectors"
+          ><span class="nav-icon">🎯</span><span>Selectors</span></a
+        >
+        <a class="nav-item" data-tab="blocklist"
+          ><span class="nav-icon">🚫</span><span>Blocklist</span
+          ><span class="nav-count" id="nc-block">–</span></a
+        >
+      </nav>
+
+      <!-- Footer -->
+      <div class="sidebar-footer">
+        <div class="ai-pill">
+          <span>✨</span>
+          <div>
+            <div class="ai-pill-label">AI ENGINE</div>
+            <div class="ai-pill-val" id="aiModelName">qwen2.5:7b</div>
           </div>
         </div>
-        <div class="chart-wrap">
-          <canvas id="trendChart"></canvas>
+        <div class="footer-row">
+          <button
+            class="theme-toggle"
+            id="themeToggle"
+            title="Toggle dark/light"
+          >
+            🌙
+          </button>
+          <button class="footer-btn" id="btnExportCsv">⬇ Export</button>
         </div>
       </div>
+    </aside>
 
-      <!-- Donut (small) -->
-      <div class="chart-card narrow">
-        <div class="chart-header">
-          <span class="chart-title">STATUS BREAKDOWN</span>
-        </div>
-        <div class="chart-wrap donut-wrap">
-          <canvas id="donutChart"></canvas>
-        </div>
-        <div class="donut-legend" id="donut-legend"></div>
+    <!-- ══════ MAIN ══════════════════════════════════════════════ -->
+    <main class="main" id="main">
+      <div class="conn-badge" id="connBadge">
+        <span class="conn-dot" id="connDot"></span
+        ><span id="connLabel">Connecting…</span>
       </div>
-    </div>
+      <div id="toasts" class="toasts"></div>
 
-    <!-- Bottom row: companies + score dist -->
-    <div class="charts-row">
-      <!-- Top companies -->
-      <div class="chart-card">
-        <div class="chart-header">
-          <span class="chart-title">🏢 TOP COMPANIES</span>
+      <!-- ─── DASHBOARD ─────────────────────────── -->
+      <section class="page active" id="page-dashboard">
+        <div class="page-hdr">
+          <div>
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-sub" id="lastRefresh">–</p>
+          </div>
+          <button class="btn-outline sm" id="btnRefreshDash">↻ Refresh</button>
         </div>
-        <div class="chart-wrap short">
-          <canvas id="companiesChart"></canvas>
+
+        <!-- ── Apply Section ── -->
+        <div class="card apply-section" style="margin-bottom: 24px">
+          <div class="card-hdr" style="margin-bottom: 16px">
+            <h3>🚀 Target Platforms</h3>
+            <p class="page-sub">
+              Select a platform to start the automated application process.
+            </p>
+          </div>
+          <div style="display: flex; gap: 16px; flex-wrap: wrap">
+            <button
+              class="btn-primary"
+              id="btnApplyNaukri"
+              style="
+                flex: 1;
+                padding: 20px;
+                font-size: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                background: linear-gradient(135deg, #2563eb, #1d4ed8);
+              "
+            >
+              <span style="font-size: 24px">🏢</span> Start Naukri.com
+            </button>
+            <button
+              class="btn-outline"
+              id="btnApplyLinkedIn"
+              style="
+                flex: 1;
+                padding: 20px;
+                font-size: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                border-color: #3b82f6;
+                color: #3b82f6;
+              "
+            >
+              <span style="font-size: 24px">💼</span> Start LinkedIn
+            </button>
+          </div>
         </div>
-      </div>
-
-      <!-- AI Score Distribution -->
-      <div class="chart-card">
-        <div class="chart-header">
-          <span class="chart-title">🎯 AI SCORE DISTRIBUTION</span>
+        <div class="kpi-row">
+          <div class="kpi" data-color="blue">
+            <div class="kpi-icon">📋</div>
+            <div>
+              <div class="kpi-val" id="kTotal">0</div>
+              <div class="kpi-lbl">Total Scanned</div>
+            </div>
+          </div>
+          <div class="kpi" data-color="green">
+            <div class="kpi-icon">✅</div>
+            <div>
+              <div class="kpi-val" id="kApplied">0</div>
+              <div class="kpi-lbl">Applied</div>
+            </div>
+          </div>
+          <div class="kpi" data-color="amber">
+            <div class="kpi-icon">⏭</div>
+            <div>
+              <div class="kpi-val" id="kSkipped">0</div>
+              <div class="kpi-lbl">Skipped</div>
+            </div>
+          </div>
+          <div class="kpi" data-color="red">
+            <div class="kpi-icon">❌</div>
+            <div>
+              <div class="kpi-val" id="kFailed">0</div>
+              <div class="kpi-lbl">Failed</div>
+            </div>
+          </div>
+          <div class="kpi" data-color="purple">
+            <div class="kpi-icon">🎯</div>
+            <div>
+              <div class="kpi-val" id="kRate">0%</div>
+              <div class="kpi-lbl">Success Rate</div>
+            </div>
+          </div>
+          <div class="kpi" data-color="cyan">
+            <div class="kpi-icon">🧠</div>
+            <div>
+              <div class="kpi-val" id="kLearning">0</div>
+              <div class="kpi-lbl">Q&amp;A Learned</div>
+            </div>
+          </div>
         </div>
-        <div class="chart-wrap short">
-          <canvas id="scoreChart"></canvas>
+        <div class="charts-grid">
+          <div class="card lg">
+            <div class="card-hdr"><h3>Application Trend</h3></div>
+            <div class="chart-box"><canvas id="cTrend"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-hdr"><h3>Status Mix</h3></div>
+            <div class="chart-box donut"><canvas id="cDonut"></canvas></div>
+          </div>
         </div>
-      </div>
-    </div>
+        <div class="charts-grid">
+          <div class="card">
+            <div class="card-hdr"><h3>Top Companies</h3></div>
+            <div class="chart-box"><canvas id="cCompanies"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-hdr"><h3>Score Distribution</h3></div>
+            <div class="chart-box"><canvas id="cScores"></canvas></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><h3>Recent Activity</h3></div>
+          <div id="recentList" class="recent-list"></div>
+        </div>
+      </section>
 
-  </section>
+      <!-- ─── JOBS ──────────────────────────────── -->
+      <section class="page" id="page-jobs">
+        <div class="page-hdr">
+          <h1 class="page-title">Jobs</h1>
+          <div class="hdr-actions">
+            <input
+              class="input-search"
+              id="jobSearch"
+              placeholder="🔍 Search…"
+            />
+            <select class="select" id="jobFilter">
+              <option value="">All Status</option>
+              <option value="success">Applied</option>
+              <option value="skipped">Skipped</option>
+              <option value="failed">Failed</option>
+              <option value="pending">Pending</option>
+            </select>
+            <select class="select" id="jobSort">
+              <option value="created_at-desc">Newest</option>
+              <option value="created_at-asc">Oldest</option>
+              <option value="score-desc">Score ↓</option>
+              <option value="score-asc">Score ↑</option>
+              <option value="company-asc">Company A–Z</option>
+            </select>
+            <button class="btn-outline sm" id="btnRefreshJobs">↻</button>
+            <button class="btn-outline sm" id="btnJobExport">
+              ⬇ Export CSV
+            </button>
+            <label class="btn-outline sm" style="cursor: pointer"
+              >⬆ Import CSV<input
+                type="file"
+                id="jobImportFile"
+                accept=".csv"
+                style="display: none"
+            /></label>
+          </div>
+        </div>
+        <div class="card p0">
+          <table class="tbl" id="tblJobs">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Company</th>
+                <th>Location</th>
+                <th>Score</th>
+                <th>Status</th>
+                <th>Reason</th>
+                <th>Date</th>
+                <th>Job Link</th>
+              </tr>
+            </thead>
+            <tbody id="tblJobsBody"></tbody>
+          </table>
+          <div class="empty-state" id="jobsEmpty">No jobs yet.</div>
+        </div>
+      </section>
 
-  <!-- ── ALL JOBS VIEW ── -->
-  <section class="view" id="view-jobs">
-    <div class="table-toolbar">
-      <input class="search-input" id="jobs-search" placeholder="🔍  Filter by title, company, status…" oninput="filterJobs()"/>
-      <select class="filter-select" id="jobs-status-filter" onchange="filterJobs()">
-        <option value="">All Statuses</option>
-        <option value="success">Applied ✅</option>
-        <option value="skipped">Skipped</option>
-        <option value="failed">Failed ❌</option>
-        <option value="pending">Pending</option>
-      </select>
-    </div>
-    <div class="table-wrap">
-      <table class="jobs-table" id="jobs-table">
-        <thead>
-          <tr>
-            <th>Title</th><th>Company</th><th>Score</th>
-            <th>Status</th><th>Scanned</th><th>Applied</th>
-          </tr>
-        </thead>
-        <tbody id="jobs-tbody"></tbody>
-      </table>
-    </div>
-  </section>
+      <!-- ─── LEARNING ─────────────────────────── -->
+      <section class="page" id="page-learning">
+        <div class="page-hdr">
+          <h1 class="page-title">AI Learning List</h1>
+          <div class="hdr-actions">
+            <input class="input-search" id="lSearch" placeholder="🔍 Search…" />
+            <select class="select" id="lFilter">
+              <option value="">All</option>
+              <option value="answered">Answered</option>
+              <option value="unanswered">Unanswered</option>
+            </select>
+            <button class="btn-primary sm" id="btnSelfLearn">
+              ✨ Auto-Learn
+            </button>
+            <button class="btn-outline sm" id="btnRefreshL">↻</button>
+            <button class="btn-outline sm" id="btnLearningExport">⬇ CSV</button>
+            <label class="btn-outline sm" style="cursor: pointer"
+              >⬆ Import<input
+                type="file"
+                id="lImportFile"
+                accept=".csv"
+                style="display: none"
+            /></label>
+          </div>
+        </div>
 
-  <!-- ── LIVE FEED VIEW ── -->
-  <section class="view" id="view-live">
-    <div class="live-header">
-      <span class="pulse-dot"></span>
-      <span style="color:#39ff14;font-weight:600">LIVE FEED</span>
-      <span style="color:#666;font-size:12px;margin-left:10px">Real-time job events</span>
-    </div>
-    <div class="live-feed" id="live-feed"></div>
-  </section>
+        <!-- Resume Upload -->
+        <div class="card resume-card">
+          <div class="resume-hdr">
+            <div>
+              <h3>📄 Resume → AI Auto-Learn</h3>
+              <p class="page-sub">
+                Upload your resume to auto-generate Q&amp;A pairs for all common
+                job application questions.
+              </p>
+            </div>
+            <div class="resume-actions">
+              <label class="btn-primary sm" style="cursor: pointer"
+                >📎 Upload Resume<input
+                  type="file"
+                  id="resumeUpload"
+                  accept=".pdf,.txt,.doc"
+                  style="display: none"
+              /></label>
+              <button class="btn-primary sm" id="btnAutoLearnResume" disabled>
+                🤖 AI Auto-Generate Q&amp;A
+              </button>
+            </div>
+          </div>
+          <textarea
+            class="input resume-editor"
+            id="resumeEditor"
+            placeholder="Resume text will appear here after upload. You can also paste/type your resume directly and click Auto-Generate…"
+            rows="8"
+          ></textarea>
+        </div>
 
-  <!-- ── LEARNING LIST VIEW ── -->
-  <section class="view" id="view-learning">
-    <div class="table-toolbar">
-      <span class="learning-title">🧠 QUESTIONS THE AI COULDN'T ANSWER</span>
-      <span class="learning-subtitle" id="learning-subtitle">Loading…</span>
-      <button class="add-btn" onclick="openAddModal()">➕ Add New</button>
-      <button class="selflearn-btn" id="selflearn-btn" onclick="triggerSelfLearn()">🤖 Self-Learn</button>
-      <span class="selflearn-status" id="selflearn-status"></span>
-    </div>
-    <div class="table-wrap">
-      <table class="jobs-table learning-table" id="learning-table">
-        <thead>
-          <tr>
-            <th style="width:40%">Question</th>
-            <th>Type</th>
-            <th>Times Seen</th>
-            <th>Status</th>
-            <th style="width:30%">Answer / Action</th>
-          </tr>
-        </thead>
-        <tbody id="learning-tbody"></tbody>
-      </table>
-    </div>
-  </section>
+        <!-- Add Q&A -->
+        <details class="card add-qa" id="addQaPanel">
+          <summary>➕ Add Q&amp;A Manually</summary>
+          <div class="add-qa-grid" style="margin-top: 12px">
+            <input
+              class="input"
+              id="lNewQ"
+              placeholder="Question / field label"
+            />
+            <input
+              class="input"
+              id="lNewKey"
+              placeholder="Answer key (optional)"
+            />
+            <textarea
+              class="input"
+              id="lNewA"
+              placeholder="Answer"
+              rows="2"
+            ></textarea>
+            <button class="btn-primary" id="btnAddQA">Add Entry</button>
+          </div>
+        </details>
 
-</main>
+        <div class="card p0">
+          <div class="tbl-meta" id="lMeta"></div>
+          <table class="tbl learning-tbl" id="tblLearning">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Question</th>
+                <th>Key</th>
+                <th>Answer</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tblLBody"></tbody>
+          </table>
+          <div class="empty-state" id="lEmpty">No entries found.</div>
+        </div>
+      </section>
 
-<!-- ═══════════════════════════════════════════════════ COMPONENTS -->
+      <!-- ─── LIVE LOG ─────────────────────────── -->
+      <section class="page" id="page-activity">
+        <div class="page-hdr">
+          <h1 class="page-title">Live Log</h1>
+          <div class="hdr-actions">
+            <span class="live-chip">● LIVE</span>
+            <button class="btn-outline sm" id="btnLoadLogs">
+              📄 Load File Logs
+            </button>
+            <button class="btn-outline sm" id="btnClearLog">🗑 Clear</button>
+          </div>
+        </div>
+        <div class="card log-card">
+          <div class="log-viewport" id="logVP"></div>
+        </div>
+      </section>
 
-<!-- Toast Notifications -->
-<div class="toast-container" id="toast-container"></div>
+      <!-- ─── LIVE BROWSER ─────────────────────── -->
+      <section class="page" id="page-liveview">
+        <div class="page-hdr">
+          <h1 class="page-title">Live Browser View</h1>
+          <div class="hdr-actions">
+            <span class="page-sub"
+              >Auto-refreshes every 3 seconds while bot is running</span
+            >
+            <button class="btn-outline sm" id="btnRefreshScreenshot">
+              ↻ Refresh Now
+            </button>
+            <select class="select" id="screenshotInterval">
+              <option value="3000">Every 3s</option>
+              <option value="5000">Every 5s</option>
+              <option value="10000">Every 10s</option>
+              <option value="0">Manual only</option>
+            </select>
+          </div>
+        </div>
+        <div class="card liveview-card">
+          <div class="liveview-frame" id="liveviewFrame">
+            <div class="liveview-placeholder" id="lvPlaceholder">
+              <div style="font-size: 48px">📸</div>
+              <p>
+                No screenshot yet. Start the bot to see the live browser view.
+              </p>
+            </div>
+            <img
+              id="lvImg"
+              class="liveview-img"
+              style="display: none"
+              alt="Live browser screenshot"
+            />
+          </div>
+          <div class="liveview-meta" id="lvMeta">–</div>
+        </div>
+      </section>
 
-<!-- Debug Console -->
-<div class="debug-console collapsed" id="debug-console">
-  <div class="debug-console-header" onclick="toggleDebugConsole()">
-    <div class="debug-console-title">
-      <span>TERMINAL</span>
-      <span class="badge" id="debug-count">0</span>
-    </div>
-    <div class="debug-console-controls">
-      <button class="debug-console-btn" onclick="clearDebugConsole(event)">Clear</button>
-      <span id="debug-toggle-icon">▲</span>
-    </div>
-  </div>
-  <div class="debug-console-body" id="debug-logs">
-    <!-- Logs appended here -->
-  </div>
-</div>
+      <!-- ─── SETTINGS ─────────────────────────── -->
+      <section class="page" id="page-config">
+        <div class="page-hdr">
+          <h1 class="page-title">Settings</h1>
+          <div class="hdr-actions">
+            <button class="btn-primary" id="btnSaveConfig">💾 Save</button>
+            <button class="btn-outline sm" id="btnRefreshConfig">↻</button>
+          </div>
+        </div>
+        <div class="settings-grid">
+          <div class="card settings-card">
+            <h3 class="settings-section">🔍 Job Search</h3>
+            <label class="field-label">Job Title</label
+            ><input class="input" id="cfgJobTitle" placeholder="QA Engineer" />
+            <label class="field-label">Search Location</label
+            ><input class="input" id="cfgLocation" placeholder="Pune" />
+            <label class="field-label">Max Applications Per Run</label
+            ><input
+              class="input"
+              type="number"
+              id="cfgMaxJobs"
+              placeholder="20"
+            />
+            <label class="field-label">Max Pages Per Search</label
+            ><input
+              class="input"
+              type="number"
+              id="cfgMaxPages"
+              placeholder="5"
+            />
+            <label class="field-label">Score Threshold (skip below)</label
+            ><input
+              class="input"
+              type="number"
+              id="cfgThreshold"
+              placeholder="40"
+            />
+            <label class="field-label">Min Delay (ms)</label
+            ><input
+              class="input"
+              type="number"
+              id="cfgDelayMin"
+              placeholder="1500"
+            />
+            <label class="field-label">Max Delay (ms)</label
+            ><input
+              class="input"
+              type="number"
+              id="cfgDelayMax"
+              placeholder="3000"
+            />
+          </div>
+          <div class="card settings-card">
+            <h3 class="settings-section">🤖 AI &amp; Browser</h3>
+            <label class="field-label">AI Model (Ollama)</label
+            ><input
+              class="input"
+              id="cfgAiModel"
+              placeholder="qwen2.5:7b"
+            />
+            <label class="field-label">Ollama Base URL</label
+            ><input
+              class="input"
+              id="cfgOllama"
+              placeholder="http://localhost:11434"
+            />
+            <label class="field-label">Ollama Timeout (ms)</label
+            ><input
+              class="input"
+              type="number"
+              id="cfgTimeout"
+              placeholder="60000"
+            />
+            <label class="field-label">Slow Motion (ms)</label
+            ><input
+              class="input"
+              type="number"
+              id="cfgSlowMo"
+              placeholder="20"
+            />
+            <label class="field-label">Headless Browser</label>
+            <select class="select" id="cfgHeadless">
+              <option value="false">Visible (No)</option>
+              <option value="true">Hidden (Yes)</option>
+            </select>
+            <label class="field-label">Skip AI (keyword-only mode)</label>
+            <select class="select" id="cfgSkipAI">
+              <option value="false">No (use AI)</option>
+              <option value="true">Yes (faster)</option>
+            </select>
+            <label class="field-label">Safety Mode (extra delays)</label>
+            <select class="select" id="cfgSafety">
+              <option value="false">Off</option>
+              <option value="true">On</option>
+            </select>
+          </div>
+        </div>
+      </section>
 
-<!-- ═══════════════════════════════════════════════════ MODALS -->
-<div class="modal-overlay" id="add-modal">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-title">➕ ADD MANUAL QUESTION</span>
-      <button class="modal-close" onclick="closeAddModal()">&times;</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label>Question / Label</label>
-        <input type="text" id="add-question" placeholder="e.g. How many years of experience in Java?" />
-      </div>
-      <div class="form-group">
-        <label>Answer</label>
-        <input type="text" id="add-answer" placeholder="e.g. 5" />
-      </div>
-      <div class="form-group">
-        <label>Answer Key (Optional)</label>
-        <input type="text" id="add-key" placeholder="e.g. javaExperience" />
-        <small style="color:var(--text-secondary);font-size:0.7rem">Used for internal mapping (like 'notice', 'salary')</small>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="cancel-btn" onclick="closeAddModal()">Cancel</button>
-      <button class="save-btn" onclick="submitManualQuestion()">Save Answer</button>
-    </div>
-  </div>
-</div>
+      <!-- ─── KEYWORDS ─────────────────────────── -->
+      <section class="page" id="page-keywords">
+        <div class="page-hdr">
+          <h1 class="page-title">Keywords</h1>
+          <div class="hdr-actions">
+            <button class="btn-primary" id="btnSaveKeywords">
+              💾 Save All Keywords
+            </button>
+            <button class="btn-outline sm" id="btnRefreshKeywords">↻</button>
+          </div>
+        </div>
+        <div class="keywords-grid">
+          <div class="card">
+            <h3 class="settings-section">✅ Required Keywords</h3>
+            <p class="page-sub mb-8">
+              Jobs must contain at least one of these to get a high score.
+            </p>
+            <div class="tag-input-area" id="reqTagArea"></div>
+            <div class="tag-add-row">
+              <input
+                class="input"
+                id="reqInput"
+                placeholder="Add required keyword…"
+              /><button class="btn-primary sm" id="btnAddReq">Add</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3 class="settings-section">⭐ Preferred Keywords</h3>
+            <p class="page-sub mb-8">Boost score if job contains these.</p>
+            <div class="tag-input-area" id="prefTagArea"></div>
+            <div class="tag-add-row">
+              <input
+                class="input"
+                id="prefInput"
+                placeholder="Add preferred keyword…"
+              /><button class="btn-primary sm" id="btnAddPref">Add</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3 class="settings-section">🚫 Excluded Keywords</h3>
+            <p class="page-sub mb-8">
+              Skip jobs containing these phrases (e.g. "10 years", "senior
+              architect").
+            </p>
+            <div class="tag-input-area" id="exclTagArea"></div>
+            <div class="tag-add-row">
+              <input
+                class="input"
+                id="exclInput"
+                placeholder="Add excluded phrase…"
+              /><button class="btn-danger sm" id="btnAddExcl">Block</button>
+            </div>
+          </div>
+        </div>
+      </section>
 
-<script src="app.js"></script>
-</body>
+      <!-- ─── PROFILE ──────────────────────────── -->
+      <section class="page" id="page-profile">
+        <div class="page-hdr">
+          <h1 class="page-title">My Profile</h1>
+          <div class="hdr-actions">
+            <button class="btn-primary" id="btnSaveProfile">
+              💾 Save Profile
+            </button>
+            <button class="btn-outline sm" id="btnRefreshProfile">↻</button>
+          </div>
+        </div>
+        <div class="settings-grid">
+          <div class="card settings-card">
+            <h3 class="settings-section">👤 Personal Info</h3>
+            <label class="field-label">Full Name</label
+            ><input class="input" id="pfName" placeholder="Atul Patil" />
+            <label class="field-label">Email</label
+            ><input class="input" type="email" id="pfEmail" />
+            <label class="field-label">Phone</label
+            ><input class="input" id="pfPhone" />
+            <label class="field-label">Current Location</label
+            ><input class="input" id="pfLocation" />
+            <label class="field-label">📄 Resume File Path</label
+            ><input class="input" id="pfResumePath" placeholder="C:\path\to\resume.pdf" />
+            <label class="field-label">LinkedIn URL</label
+            ><input class="input" id="pfLinkedIn" />
+            <label class="field-label">GitHub URL</label
+            ><input class="input" id="pfGitHub" />
+            <label class="field-label">Portfolio URL</label
+            ><input class="input" id="pfPortfolio" />
+          </div>
+          <div class="card settings-card">
+            <h3 class="settings-section">💼 Work Details</h3>
+            <label class="field-label">Current Company</label
+            ><input class="input" id="pfCompany" />
+            <label class="field-label">Current Role</label
+            ><input class="input" id="pfRole" />
+            <label class="field-label">Years of Experience</label
+            ><input class="input" id="pfYears" />
+            <label class="field-label">Expected Salary (LPA)</label
+            ><input class="input" id="pfSalary" />
+            <label class="field-label">Notice Period</label
+            ><input class="input" id="pfNotice" />
+            <label class="field-label">Summary (1–2 sentences)</label
+            ><textarea class="input" id="pfSummary" rows="3"></textarea>
+            <label class="field-label">Cover Letter</label
+            ><textarea class="input" id="pfCoverLetter" rows="4"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── SELECTORS ──────────────────────────── -->
+      <section class="page" id="page-selectors">
+        <div class="page-hdr">
+          <h1 class="page-title">CSS Selectors</h1>
+          <div class="hdr-actions">
+            <button class="btn-primary" id="btnSaveSelectors">
+              💾 Save Selectors
+            </button>
+            <button class="btn-outline sm" id="btnRefreshSelectors">↻</button>
+          </div>
+        </div>
+        <div class="card">
+          <p class="page-sub" style="margin-bottom: 16px">
+            Customize the CSS selectors the bot uses to interact with job portal
+            pages. These are specific to Naukri.com by default.
+          </p>
+          <div class="selectors-grid" id="selectorsGrid"></div>
+        </div>
+      </section>
+
+      <!-- ─── BLOCKLIST ────────────────────────── -->
+      <section class="page" id="page-blocklist">
+        <div class="page-hdr">
+          <h1 class="page-title">Company Blocklist</h1>
+          <p class="page-sub">Companies to always skip.</p>
+        </div>
+        <div class="card add-qa">
+          <h3>➕ Block Company</h3>
+          <div class="block-add-row">
+            <input
+              class="input"
+              id="blockInput"
+              placeholder="Company name…"
+            /><button class="btn-danger" id="btnAddBlock">🚫 Block</button>
+          </div>
+        </div>
+        <div class="card p0">
+          <ul class="block-list" id="blockList"></ul>
+          <div class="empty-state" id="blockEmpty">No companies blocked.</div>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>

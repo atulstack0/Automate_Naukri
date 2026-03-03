@@ -22,6 +22,7 @@ let _geminiApiKey  = '';
 let _ollamaBaseUrl = 'http://localhost:11434';
 let _ollamaModel   = 'qwen2.5:7b';
 let _geminiModel   = 'gemini-2.0-flash';
+let _ollamaTimeout = 300000; // Increased to 5 mins default
 let _useGemini     = true;
 let _useOllama     = true;
 let _geminiClient  = null;   // lazy-loaded
@@ -34,6 +35,7 @@ function initAIProvider(config = {}) {
   _ollamaBaseUrl = config.ollamaBaseUrl || 'http://localhost:11434';
   _ollamaModel   = config.aiModel       || 'qwen2.5:7b';
   _geminiModel   = config.geminiModel   || 'gemini-2.0-flash';
+  _ollamaTimeout = config.ollamaTimeout || 300000;
   _useGemini     = !!_geminiApiKey;
   _useOllama     = !config.skipAI;
 
@@ -43,7 +45,7 @@ function initAIProvider(config = {}) {
     logger.info('[AIProvider] Gemini disabled (no GEMINI_API_KEY). Using Ollama only.');
   }
   if (_useOllama) {
-    logger.info(`[AIProvider] Fallback: Ollama (${_ollamaModel} @ ${_ollamaBaseUrl})`);
+    logger.info(`[AIProvider] Fallback: Ollama (${_ollamaModel} @ ${_ollamaBaseUrl}, timeout:${_ollamaTimeout}ms)`);
   }
 }
 
@@ -74,6 +76,13 @@ async function _askGemini(prompt, opts = {}) {
 // Ollama caller
 // ─────────────────────────────────────────────────────────────────────────────
 async function _askOllama(prompt, opts = {}) {
+  // For deepseek models, we need higher minimum predict tokens so it can finish <think> 
+  // Ensure numPredict isn't forcing models to generate endlessly when evaluating yes/no forms
+  let numPredict = opts.num_predict ?? opts.maxTokens ?? 100;
+
+  logger.info(`[AIProvider] Sending prompt to ${_ollamaModel}, length: ${prompt?.length}`);
+  logger.debug(`[AIProvider] Prompt preview: ${prompt?.substring(0, 150)}...`);
+
   const response = await axios.post(
     `${_ollamaBaseUrl}/api/generate`,
     {
@@ -83,12 +92,16 @@ async function _askOllama(prompt, opts = {}) {
       options: {
         temperature: opts.temperature  ?? 0.2,
         top_p:       opts.top_p        ?? 0.95,
-        num_predict: opts.num_predict  ?? opts.maxTokens ?? 500,
+        num_predict: numPredict,
       },
     },
-    { timeout: 120000, headers: { 'Content-Type': 'application/json' } }
+    { timeout: _ollamaTimeout, headers: { 'Content-Type': 'application/json' } }
   );
-  return response.data?.response || '';
+
+  const raw = response.data?.response || '';
+  // deepseek-r1 emits <think>...</think> reasoning blocks — strip them out.
+  // Also handle cases where generation stopped mid-thought (missing </think>)
+  return raw.replace(/<think>[\s\S]*?(<\/think>|$)/gi, '').trim();
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -124,9 +137,9 @@ async function askAI(prompt, opts = {}) {
                      : err.message;
         
         logger.warn(`[AIProvider] Gemini failed (${reason}) – falling back to local model`);
-        if (status === 401 || status === 403) {
+        if (status === 401 || status === 403 || status === 429) {
           _useGemini = false;
-          logger.warn('[AIProvider] Gemini disabled for this session');
+          logger.warn(`[AIProvider] Gemini disabled for this session (status:${status})`);
         }
         break; // fall through to Ollama
       }
@@ -136,13 +149,17 @@ async function askAI(prompt, opts = {}) {
   // ── 2. Try Ollama ──────────────────────────────────────────────────────
   if (_useOllama) {
     try {
-      logger.debug(`[AIProvider] Fallback: Ollama (${_ollamaModel})`);
+      logger.debug(`[AIProvider] Fallback: Ollama (${_ollamaModel}) ...`);
       const start = Date.now();
       const response = await _askOllama(prompt, opts);
       logger.info(`[AIProvider] Ollama response received in ${Date.now() - start}ms`);
       return response;
     } catch (err) {
-      logger.error(`[AIProvider] Ollama fallback failed: ${err.message}`);
+      if (err.code === 'ECONNABORTED' || err.message.includes('timeout')) {
+        logger.error(`[AIProvider] Ollama TIMEOUT after ${_ollamaTimeout}ms`);
+      } else {
+        logger.error(`[AIProvider] Ollama failed: ${err.message}`);
+      }
     }
   }
 

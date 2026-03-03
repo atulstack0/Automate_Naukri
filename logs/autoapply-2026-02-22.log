@@ -1,0 +1,860 @@
+2026-02-22 19:30:00 [INFO] === AutoApply Auth Saver ===
+2026-02-22 19:30:00 [INFO] Opening browser. Please log into: https://www.naukri.com/qa-engineer-jobs
+2026-02-22 19:30:00 [INFO] When done, press ENTER in this terminal to save auth.json and close.
+2026-02-22 19:30:01 [INFO] Browser is open. Log in manually now.
+2026-02-22 19:30:01 [INFO] Press ENTER here when login is complete...
+2026-02-22 19:30:37 [INFO] ✅ auth.json saved to C:\AAATTTTUUUULLL\Project\autoapply\auth.json
+2026-02-22 19:30:37 [INFO] Browser closed. You can now run: npm start
+2026-02-22 19:30:42 [INFO] ====================================
+2026-02-22 19:30:42 [INFO]   AutoApply – Job Application Bot
+2026-02-22 19:30:42 [INFO] ====================================
+2026-02-22 19:30:42 [INFO] Dashboard running at http://localhost:3000
+2026-02-22 19:30:43 [INFO] === AutoApply Worker Starting ===
+2026-02-22 19:30:44 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-22 19:30:44 [INFO] Loading session from auth.json
+2026-02-22 19:30:44 [INFO] Browser launched: headless=false, slowMo=50ms
+2026-02-22 19:30:49 [INFO] Navigated: https://www.naukri.com/qa-engineer-jobs
+2026-02-22 19:30:49 [INFO] Scraping page 1...
+2026-02-22 19:30:54 [INFO] Found 20 cards on page 1
+2026-02-22 19:30:54 [INFO] [1] "QA Engineer - Zenara Health" @ Xponentiate
+2026-02-22 19:30:57 [INFO] Sending job to Ollama (model: mistral)
+2026-02-22 19:31:57 [ERROR] Ollama request failed timeout of 60000ms exceeded
+2026-02-22 19:31:57 [INFO] AI: SKIP (0) – Ollama unavailable: timeout of 60000ms exceeded
+2026-02-22 19:31:57 [INFO] Skipped: "QA Engineer - Zenara Health" (score: 0)
+2026-02-22 19:32:01 [INFO] [2] "QA Engineer" @ THE Talent Keepers
+2026-02-22 19:32:04 [INFO] Sending job to Ollama (model: mistral)
+2026-02-22 19:33:04 [ERROR] Ollama request failed timeout of 60000ms exceeded
+2026-02-22 19:33:04 [INFO] AI: SKIP (0) – Ollama unavailable: timeout of 60000ms exceeded
+2026-02-22 19:33:04 [INFO] Skipped: "QA Engineer" (score: 0)
+2026-02-22 19:33:10 [INFO] [3] "QA Engineer" @ Lektronix
+2026-02-22 19:33:13 [INFO] Sending job to Ollama (model: mistral)
+2026-02-22 19:34:13 [ERROR] Ollama request failed timeout of 60000ms exceeded
+2026-02-22 19:34:13 [INFO] AI: SKIP (0) – Ollama unavailable: timeout of 60000ms exceeded
+2026-02-22 19:34:13 [INFO] Skipped: "QA Engineer" (score: 0)
+2026-02-22 19:34:17 [INFO] [4] "QA Engineer" @ Lektronix
+2026-02-22 19:34:19 [INFO] Sending job to Ollama (model: mistral)
+2026-02-22 19:35:19 [ERROR] Ollama request failed timeout of 60000ms exceeded
+2026-02-22 19:35:19 [INFO] AI: SKIP (0) – Ollama unavailable: timeout of 60000ms exceeded
+2026-02-22 19:35:19 [INFO] Skipped: "QA Engineer" (score: 0)
+2026-02-22 19:35:24 [INFO] [5] "QA Engineer" @ Kalypso A Rockwell Automation Business
+2026-02-22 19:35:27 [INFO] Sending job to Ollama (model: mistral)
+2026-02-22 19:36:27 [ERROR] Ollama request failed timeout of 60000ms exceeded
+2026-02-22 19:36:27 [INFO] AI: SKIP (0) – Ollama unavailable: timeout of 60000ms exceeded
+2026-02-22 19:36:27 [INFO] Skipped: "QA Engineer" (score: 0)
+2026-02-22 19:36:32 [INFO] [6] "QA Engineer" @ Kalypso A Rockwell Automation Business
+2026-02-22 19:36:34 [INFO] Sending job to Ollama (model: mistral)
+2026-02-22 19:37:09 [INFO] Received SIGINT – shutting down
+2026-02-22 19:37:26 [INFO] ====================================
+2026-02-22 19:37:26 [INFO]   AutoApply – Job Application Bot
+2026-02-22 19:37:26 [INFO] ====================================
+2026-02-22 19:37:26 [INFO] Checking Ollama availability before starting worker...
+2026-02-22 19:37:26 [INFO] Warming up Ollama (model: mistral) – this may take 1-2 min for large models...
+2026-02-22 19:37:26 [INFO] Dashboard running at http://localhost:3000
+2026-02-22 19:39:07 [INFO] Ollama warm-up OK (attempt 1): "READY"
+2026-02-22 19:39:08 [INFO] === AutoApply Worker Starting ===
+2026-02-22 19:39:08 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-22 19:39:08 [INFO] Loading session from auth.json
+2026-02-22 19:39:09 [INFO] Browser launched: headless=false, slowMo=50ms
+2026-02-22 19:39:13 [INFO] Navigated: https://www.naukri.com/qa-engineer-jobs
+2026-02-22 19:39:13 [INFO] Scraping page 1...
+2026-02-22 19:39:20 [INFO] Found 20 cards on page 1
+2026-02-22 19:39:20 [INFO] [1] "QA Engineer - Zenara Health" @ Xponentiate
+2026-02-22 19:39:22 [INFO] Sending job to Ollama (model: mistral)
+2026-02-22 19:40:56 [INFO] SIGINT – shutting down
+2026-02-22 19:41:04 [INFO] ====================================
+2026-02-22 19:41:04 [INFO]   AutoApply – Job Application Bot
+2026-02-22 19:41:04 [INFO] ====================================
+2026-02-22 19:41:04 [INFO] Checking Ollama availability before starting worker...
+2026-02-22 19:41:04 [INFO] Warming up Ollama (model: qwen2.5:7b) – this may take 1-2 min for large models...
+2026-02-22 19:41:04 [INFO] Dashboard running at http://localhost:3000
+2026-02-22 19:41:19 [INFO] Ollama warm-up OK (attempt 1): "READY"
+2026-02-22 19:41:20 [INFO] === AutoApply Worker Starting ===
+2026-02-22 19:41:20 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-22 19:41:21 [INFO] Loading session from auth.json
+2026-02-22 19:41:22 [INFO] Browser launched: headless=false, slowMo=50ms
+2026-02-22 19:41:25 [INFO] Navigated: https://www.naukri.com/qa-engineer-jobs
+2026-02-22 19:41:25 [INFO] Scraping page 1...
+2026-02-22 19:41:31 [INFO] Found 20 cards on page 1
+2026-02-22 19:41:31 [INFO] [1] "QA Engineer - Zenara Health" @ Xponentiate
+2026-02-22 19:41:34 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 19:43:34 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-22 19:43:34 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-22 19:43:34 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-22 19:43:38 [INFO] Applying: "QA Engineer - Zenara Health" @ Xponentiate
+2026-02-22 19:43:41 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-22 19:43:44 [WARN] External tab opened: https://apply.workable.com/xponentiate/j/09FA10F549/
+2026-02-22 19:43:44 [WARN] Screenshot failed [external] {"err":"CHECK constraint failed: stage IN ('opened', 'form_filled', 'submitted', 'error')"}
+2026-02-22 19:43:44 [WARN] ↗ External site – skipped: QA Engineer - Zenara Health
+2026-02-22 19:43:49 [INFO] [2] "QA Engineer" @ THE Talent Keepers
+2026-02-22 19:43:52 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 19:45:33 [INFO] AI decision {"decision":"APPLY","score":95,"reason":"matches keywords QA, automation, Playwright, Selenium, testing, SDET, TestNG, REST, good fit for candidate"}
+2026-02-22 19:45:33 [INFO] AI: APPLY (95) – matches keywords QA, automation, Playwright, Selenium, testing, SDET, TestNG, REST, good fit for candidate
+2026-02-22 19:45:36 [INFO] Applying: "QA Engineer" @ THE Talent Keepers
+2026-02-22 19:45:39 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-22 19:45:42 [WARN] External tab opened: https://thetalentkeepers.com/job-openings/?job_id=z5G7h3l6a1kMvyS65NP3cyazC9SBtUWncIz4G-YLJKA=
+2026-02-22 19:45:42 [WARN] Screenshot failed [external] {"err":"CHECK constraint failed: stage IN ('opened', 'form_filled', 'submitted', 'error')"}
+2026-02-22 19:45:42 [WARN] ↗ External site – skipped: QA Engineer
+2026-02-22 19:45:48 [INFO] [3] "QA Engineer" @ Lektronix
+2026-02-22 19:45:50 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 19:46:47 [INFO] SIGINT – shutting down
+2026-02-22 19:51:24 [INFO] ====================================
+2026-02-22 19:51:24 [INFO]   AutoApply – Job Application Bot
+2026-02-22 19:51:24 [INFO] ====================================
+2026-02-22 19:51:24 [INFO] Checking Ollama availability before starting worker...
+2026-02-22 19:51:24 [INFO] Warming up Ollama (model: qwen2.5:7b) – this may take 1-2 min for large models...
+2026-02-22 19:51:24 [INFO] Dashboard running at http://localhost:3000
+2026-02-22 19:51:26 [INFO] Ollama warm-up OK (attempt 1): "READY"
+2026-02-22 19:51:27 [INFO] === AutoApply Worker Starting ===
+2026-02-22 19:51:27 [INFO] Migrating screenshots table to remove stage CHECK constraint...
+2026-02-22 19:51:27 [INFO] screenshots table migration complete
+2026-02-22 19:51:27 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-22 19:51:27 [INFO] Loading session from auth.json
+2026-02-22 19:51:27 [INFO] Browser launched: headless=false, slowMo=50ms
+2026-02-22 19:51:31 [INFO] Navigated: https://www.naukri.com/qa-engineer-jobs
+2026-02-22 19:51:31 [INFO] Scraping page 1...
+2026-02-22 19:51:37 [INFO] Found 20 cards on page 1
+2026-02-22 19:51:37 [INFO] [1] "QA Engineer" @ Lektronix
+2026-02-22 19:51:39 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 19:53:39 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-22 19:53:39 [INFO] Fallback keyword score {"decision":"APPLY","score":92,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-22 19:53:39 [INFO] AI: APPLY (92) – keyword match: qa, automation, selenium, testing
+2026-02-22 19:53:42 [INFO] Applying: "QA Engineer" @ Lektronix
+2026-02-22 19:53:44 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-22 19:53:47 [INFO] External tab opened: https://rockwellautomation.wd1.myworkdayjobs.com/en-US/External_Rockwell_Automation/job/Pune-India/QA-Engineer_R26-371 – attempting to apply
+2026-02-22 19:53:50 [INFO] [ExtApply] External site: workday | https://rockwellautomation.wd1.myworkdayjobs.com/en-US/External_Rockwell_Automation/job/Pune-India/QA-Engineer_R26-371
+2026-02-22 19:53:52 [INFO] [ExtApply] Workday detected
+2026-02-22 19:53:52 [INFO] [ExtApply] Form step 1 – URL: https://rockwellautomation.wd1.myworkdayjobs.com/en-US/External_Rockwell_Automation/job/Pune-India/QA-Engineer_R26-371
+2026-02-22 19:53:52 [INFO] [FormFiller] Starting smart form fill...
+2026-02-22 19:53:52 [INFO] [FormFiller] Done. Matched fields filled. Unmatched: 0
+2026-02-22 19:53:53 [INFO] [ExtApply] No next/submit button found – assuming done
+2026-02-22 19:53:53 [INFO] [ExtApply] Result: failed
+2026-02-22 19:53:53 [ERROR] ❌ Failed: QA Engineer
+2026-02-22 19:53:59 [INFO] [2] "QA Engineer" @ Lektronix
+2026-02-22 19:54:07 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 19:56:07 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-22 19:56:07 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-22 19:56:07 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-22 19:56:10 [INFO] Applying: "QA Engineer" @ Lektronix
+2026-02-22 19:56:10 [WARN] No apply button found for QA_Engineer_Lektronix_1771770239520
+2026-02-22 19:56:10 [INFO] Retry 1/3 for QA_Engineer_Lektronix_1771770239520
+2026-02-22 19:56:18 [WARN] No apply button found for QA_Engineer_Lektronix_1771770239520
+2026-02-22 19:56:18 [INFO] Retry 2/3 for QA_Engineer_Lektronix_1771770239520
+2026-02-22 19:56:30 [WARN] No apply button found for QA_Engineer_Lektronix_1771770239520
+2026-02-22 19:56:30 [INFO] Retry 3/3 for QA_Engineer_Lektronix_1771770239520
+2026-02-22 19:56:51 [WARN] No apply button found for QA_Engineer_Lektronix_1771770239520
+2026-02-22 19:56:51 [ERROR] ❌ Failed: QA Engineer
+2026-02-22 19:57:00 [INFO] [3] "Unknown" @ Unknown
+2026-02-22 19:57:30 [WARN] Could not open job detail: Unknown_Unknown_1771770420593
+2026-02-22 19:57:33 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 19:57:55 [INFO] AI decision {"decision":"APPLY","score":85,"reason":"matches keywords QA, automation, Playwright, Selenium, SDET, test framework, CI/CD, TestNG"}
+2026-02-22 19:57:55 [INFO] AI: APPLY (85) – matches keywords QA, automation, Playwright, Selenium, SDET, test framework, CI/CD, TestNG
+2026-02-22 19:57:58 [INFO] Applying: "Unknown" @ Unknown
+2026-02-22 19:57:58 [WARN] No apply button found for Unknown_Unknown_1771770420593
+2026-02-22 19:57:58 [INFO] Retry 1/3 for Unknown_Unknown_1771770420593
+2026-02-22 19:58:05 [WARN] No apply button found for Unknown_Unknown_1771770420593
+2026-02-22 19:58:05 [INFO] Retry 2/3 for Unknown_Unknown_1771770420593
+2026-02-22 19:58:16 [WARN] No apply button found for Unknown_Unknown_1771770420593
+2026-02-22 19:58:16 [INFO] Retry 3/3 for Unknown_Unknown_1771770420593
+2026-02-22 19:58:36 [WARN] No apply button found for Unknown_Unknown_1771770420593
+2026-02-22 19:58:36 [ERROR] ❌ Failed: Unknown
+2026-02-22 19:58:45 [INFO] [4] "Unknown" @ Unknown
+2026-02-22 19:59:15 [WARN] Could not open job detail: Unknown_Unknown_1771770525325
+2026-02-22 19:59:17 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 19:59:24 [INFO] AI decision {"decision":"APPLY","score":85,"reason":"matches keywords QA, automation, Playwright, Selenium, SDET, test framework, CI/CD, TestNG"}
+2026-02-22 19:59:24 [INFO] AI: APPLY (85) – matches keywords QA, automation, Playwright, Selenium, SDET, test framework, CI/CD, TestNG
+2026-02-22 19:59:28 [INFO] Applying: "Unknown" @ Unknown
+2026-02-22 19:59:28 [WARN] No apply button found for Unknown_Unknown_1771770525325
+2026-02-22 19:59:28 [INFO] Retry 1/3 for Unknown_Unknown_1771770525325
+2026-02-22 19:59:35 [WARN] No apply button found for Unknown_Unknown_1771770525325
+2026-02-22 19:59:35 [INFO] Retry 2/3 for Unknown_Unknown_1771770525325
+2026-02-22 19:59:46 [WARN] No apply button found for Unknown_Unknown_1771770525325
+2026-02-22 19:59:46 [INFO] Retry 3/3 for Unknown_Unknown_1771770525325
+2026-02-22 20:00:07 [WARN] No apply button found for Unknown_Unknown_1771770525325
+2026-02-22 20:00:07 [ERROR] ❌ Failed: Unknown
+2026-02-22 20:00:16 [INFO] [5] "Unknown" @ Unknown
+2026-02-22 20:00:46 [WARN] Could not open job detail: Unknown_Unknown_1771770616665
+2026-02-22 20:00:49 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 20:00:56 [INFO] AI decision {"decision":"APPLY","score":85,"reason":"matches keywords QA, automation, Playwright, Selenium, SDET, test framework, CI/CD, TestNG"}
+2026-02-22 20:00:56 [INFO] AI: APPLY (85) – matches keywords QA, automation, Playwright, Selenium, SDET, test framework, CI/CD, TestNG
+2026-02-22 20:01:01 [INFO] Applying: "Unknown" @ Unknown
+2026-02-22 20:01:01 [WARN] No apply button found for Unknown_Unknown_1771770616665
+2026-02-22 20:01:01 [INFO] Retry 1/3 for Unknown_Unknown_1771770616665
+2026-02-22 20:01:08 [WARN] No apply button found for Unknown_Unknown_1771770616665
+2026-02-22 20:01:08 [INFO] Retry 2/3 for Unknown_Unknown_1771770616665
+2026-02-22 20:01:19 [WARN] No apply button found for Unknown_Unknown_1771770616665
+2026-02-22 20:01:19 [INFO] Retry 3/3 for Unknown_Unknown_1771770616665
+2026-02-22 20:01:39 [WARN] No apply button found for Unknown_Unknown_1771770616665
+2026-02-22 20:01:39 [ERROR] ❌ Failed: Unknown
+2026-02-22 20:01:49 [INFO] [6] "Unknown" @ Unknown
+2026-02-22 20:02:19 [WARN] Could not open job detail: Unknown_Unknown_1771770709283
+2026-02-22 20:02:20 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 20:02:28 [INFO] AI decision {"decision":"APPLY","score":85,"reason":"matches keywords QA, automation, Playwright, Selenium, SDET, CI/CD, TestNG"}
+2026-02-22 20:02:28 [INFO] AI: APPLY (85) – matches keywords QA, automation, Playwright, Selenium, SDET, CI/CD, TestNG
+2026-02-22 20:02:30 [INFO] Applying: "Unknown" @ Unknown
+2026-02-22 20:02:30 [WARN] No apply button found for Unknown_Unknown_1771770709283
+2026-02-22 20:02:30 [INFO] Retry 1/3 for Unknown_Unknown_1771770709283
+2026-02-22 20:02:36 [WARN] No apply button found for Unknown_Unknown_1771770709283
+2026-02-22 20:02:36 [INFO] Retry 2/3 for Unknown_Unknown_1771770709283
+2026-02-22 20:02:43 [INFO] SIGINT – shutting down
+2026-02-22 20:06:51 [INFO] ====================================
+2026-02-22 20:06:51 [INFO]   AutoApply – Job Application Bot
+2026-02-22 20:06:51 [INFO] ====================================
+2026-02-22 20:06:51 [INFO] Checking Ollama availability before starting worker...
+2026-02-22 20:06:51 [INFO] Warming up Ollama (model: qwen2.5:7b) – this may take 1-2 min for large models...
+2026-02-22 20:06:51 [INFO] Dashboard running at http://localhost:3000
+2026-02-22 20:06:53 [INFO] Ollama warm-up OK (attempt 1): "READY"
+2026-02-22 20:06:54 [INFO] === AutoApply Worker Starting ===
+2026-02-22 20:06:54 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-22 20:06:54 [INFO] Loading session from auth.json
+2026-02-22 20:06:55 [INFO] Browser launched: headless=false, slowMo=50ms
+2026-02-22 20:06:58 [INFO] Navigated: https://www.naukri.com/qa-engineer-jobs
+2026-02-22 20:06:58 [INFO] Scraping page 1...
+2026-02-22 20:07:04 [INFO] Found 20 cards on page 1
+2026-02-22 20:07:04 [INFO] [1] "QA Engineer" @ Lektronix
+2026-02-22 20:07:07 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 20:08:58 [INFO] AI decision {"decision":"APPLY","score":85,"reason":"matches keywords QA, automation, Playwright, Selenium, testing, SDET, CI/CD, TestNG"}
+2026-02-22 20:08:58 [INFO] AI: APPLY (85) – matches keywords QA, automation, Playwright, Selenium, testing, SDET, CI/CD, TestNG
+2026-02-22 20:09:02 [INFO] Applying: "QA Engineer" @ Lektronix
+2026-02-22 20:09:03 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-22 20:09:07 [INFO] External tab opened: https://rockwellautomation.wd1.myworkdayjobs.com/en-US/External_Rockwell_Automation/job/Pune-India/QA-Engineer_R26-371 – attempting to apply
+2026-02-22 20:09:11 [INFO] [ExtApply] External site: workday | https://rockwellautomation.wd1.myworkdayjobs.com/en-US/External_Rockwell_Automation/job/Pune-India/QA-Engineer_R26-371
+2026-02-22 20:09:13 [INFO] [ExtApply] Workday detected
+2026-02-22 20:09:13 [INFO] [ExtApply] Form step 1 – URL: https://rockwellautomation.wd1.myworkdayjobs.com/en-US/External_Rockwell_Automation/job/Pune-India/QA-Engineer_R26-371
+2026-02-22 20:09:38 [INFO] [AI] isApplicationComplete: NO
+2026-02-22 20:09:38 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 20:11:32 [INFO] [AI] Form analysis: 10 field answers generated
+2026-02-22 20:11:32 [INFO] [FormFiller] AI pre-built 10 answers
+2026-02-22 20:11:32 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 20:12:33 [INFO] [AI] Next action: click → "Search for Jobs" (redirect to job search page)
+2026-02-22 20:12:33 [INFO] [ExtApply] AI navigation: click "Search for Jobs"
+2026-02-22 20:12:35 [INFO] [ExtApply] AI navigation click succeeded
+2026-02-22 20:12:35 [INFO] [ExtApply] Form step 2 – URL: https://rockwellautomation.wd1.myworkdayjobs.com/en-US/External_Rockwell_Automation
+2026-02-22 20:14:06 [INFO] [AI] isApplicationComplete: NO
+2026-02-22 20:14:06 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 20:16:06 [WARN] [AI] analyzeFormAndAnswer failed: timeout of 120000ms exceeded
+2026-02-22 20:16:06 [INFO] [FormFiller] AI pre-built 0 answers
+2026-02-22 20:18:06 [WARN] [AI] answerField failed: timeout of 120000ms exceeded
+2026-02-22 20:18:06 [WARN] [FormFiller] Truly unmatched (AI + keyword both failed): {"unmatched":[{"label":"Search for jobs or keywords","type":"text"}]}
+2026-02-22 20:18:06 [INFO] [FormFiller] Done. Unmatched: 1
+2026-02-22 20:18:11 [INFO] [ExtApply] Clicked submit: "button[type="submit"]"
+2026-02-22 20:20:02 [INFO] [AI] isApplicationComplete: NO
+2026-02-22 20:20:02 [INFO] [ExtApply] Form step 3 – URL: https://rockwellautomation.wd1.myworkdayjobs.com/en-US/External_Rockwell_Automation
+2026-02-22 20:20:02 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 20:22:03 [WARN] [AI] analyzeFormAndAnswer failed: timeout of 120000ms exceeded
+2026-02-22 20:22:03 [INFO] [FormFiller] AI pre-built 0 answers
+2026-02-22 20:22:03 [WARN] [ExtApply] fillFormSmart error {"err":"locator.all: Target page, context or browser has been closed"}
+2026-02-22 20:22:37 [INFO] [AI] Next action: click → "Apply" (submit job application)
+2026-02-22 20:22:37 [INFO] [ExtApply] AI navigation: click "Apply"
+2026-02-22 20:22:37 [INFO] [ExtApply] No next/submit/AI-action found – assuming done
+2026-02-22 20:22:37 [INFO] [ExtApply] Result: failed
+2026-02-22 20:22:37 [WARN] Screenshot failed [error] {"err":"page.screenshot: Target page, context or browser has been closed"}
+2026-02-22 20:22:37 [ERROR] ❌ Failed: QA Engineer
+2026-02-22 20:22:42 [INFO] [2] "QA Engineer" @ TestoMeter
+2026-02-22 20:22:45 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 20:24:45 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-22 20:24:45 [INFO] Fallback keyword score {"decision":"APPLY","score":99,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-22 20:24:45 [INFO] AI: APPLY (99) – keyword match: qa, automation, playwright, selenium
+2026-02-22 20:24:48 [INFO] Applying: "QA Engineer" @ TestoMeter
+2026-02-22 20:24:51 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-22 20:24:54 [INFO] External tab opened: https://www.testometer.co.in/jobs/qa-engineer-0415 – attempting to apply
+2026-02-22 20:24:59 [INFO] [ExtApply] External site: generic | https://www.testometer.co.in/jobs/qa-engineer-0415
+2026-02-22 20:25:01 [INFO] [ExtApply] Generic site – attempting smart apply
+2026-02-22 20:25:04 [INFO] [ExtApply] Clicked: "a:has-text("Apply")"
+2026-02-22 20:25:04 [INFO] [ExtApply] Form step 1 – URL: https://www.testometer.co.in/jobs/qa-engineer-0415
+2026-02-22 20:25:04 [INFO] [ExtApply] Success selector matched
+2026-02-22 20:25:04 [INFO] [ExtApply] Success page detected ✅
+2026-02-22 20:25:04 [INFO] [ExtApply] Result: success
+2026-02-22 20:25:05 [INFO] ✅ Applied [1]: QA Engineer
+2026-02-22 20:25:10 [INFO] [3] "QA Engineer" @ Kalypso A Rockwell Automation Business
+2026-02-22 20:25:13 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 20:27:13 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-22 20:27:13 [INFO] Fallback keyword score {"decision":"APPLY","score":92,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-22 20:27:13 [INFO] AI: APPLY (92) – keyword match: qa, automation, selenium, testing
+2026-02-22 20:27:17 [INFO] Applying: "QA Engineer" @ Kalypso A Rockwell Automation Business
+2026-02-22 20:27:19 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-22 20:27:21 [INFO] External tab opened: https://rockwellautomation.wd1.myworkdayjobs.com/en-US/External_Rockwell_Automation/job/Pune-India/QA-Engineer_R26-371 – attempting to apply
+2026-02-22 20:27:26 [INFO] [ExtApply] External site: workday | https://rockwellautomation.wd1.myworkdayjobs.com/en-US/External_Rockwell_Automation/job/Pune-India/QA-Engineer_R26-371
+2026-02-22 20:27:28 [INFO] [ExtApply] Workday detected
+2026-02-22 20:27:28 [INFO] [ExtApply] Form step 1 – URL: https://rockwellautomation.wd1.myworkdayjobs.com/en-US/External_Rockwell_Automation/job/Pune-India/QA-Engineer_R26-371
+2026-02-22 20:28:23 [INFO] [AI] isApplicationComplete: NO
+2026-02-22 20:28:23 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 20:28:51 [INFO] SIGINT – shutting down
+2026-02-22 20:28:58 [INFO] ====================================
+2026-02-22 20:28:58 [INFO]   AutoApply – Job Application Bot
+2026-02-22 20:28:58 [INFO] ====================================
+2026-02-22 20:28:58 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-22 20:28:58 [INFO] [AIProvider] Fallback: Ollama (qwen2.5:7b @ http://localhost:11434)
+2026-02-22 20:28:58 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-22 20:28:58 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-22 20:28:58 [INFO] Dashboard running at http://localhost:3000
+2026-02-22 20:28:59 [INFO] === AutoApply Worker Starting ===
+2026-02-22 20:28:59 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-22 20:29:00 [INFO] Loading session from auth.json
+2026-02-22 20:29:01 [INFO] Browser launched: headless=false, slowMo=50ms
+2026-02-22 20:29:04 [INFO] Navigated: https://www.naukri.com/qa-engineer-jobs
+2026-02-22 20:29:04 [INFO] Scraping page 1...
+2026-02-22 20:29:09 [INFO] Found 20 cards on page 1
+2026-02-22 20:29:10 [INFO] [1] "QA Engineer" @ TestoMeter
+2026-02-22 20:29:12 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 20:31:12 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-22 20:31:12 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-22 20:31:12 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-22 20:31:17 [INFO] Applying: "QA Engineer" @ TestoMeter
+2026-02-22 20:31:20 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-22 20:31:22 [INFO] External tab opened: chrome-error://chromewebdata/ – attempting to apply
+2026-02-22 20:31:26 [INFO] [ExtApply] External site: generic | chrome-error://chromewebdata/
+2026-02-22 20:31:29 [INFO] [ExtApply] Generic site – attempting smart apply
+2026-02-22 20:31:29 [INFO] [ExtApply] Form step 1 – URL: chrome-error://chromewebdata/
+2026-02-22 20:31:29 [WARN] [AIProvider] Gemini failed (rate limited) – falling back to Ollama
+2026-02-22 20:32:34 [INFO] [AI] isApplicationComplete: NO
+2026-02-22 20:32:34 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 20:32:34 [WARN] [AIProvider] Gemini failed (rate limited) – falling back to Ollama
+2026-02-22 20:34:34 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-22 20:34:34 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-22 20:34:34 [INFO] [FormFiller] AI pre-built 0 answers
+2026-02-22 20:34:35 [WARN] [AIProvider] Gemini failed (rate limited) – falling back to Ollama
+2026-02-22 20:35:35 [INFO] [AI] Field "What do you want to learn?" → "No"
+2026-02-22 20:35:35 [INFO] [FormFiller] AI-field "What do you want to learn?" → "No"
+2026-02-22 20:35:35 [WARN] [ExtApply] fillFormSmart error {"err":"locator.all: Target page, context or browser has been closed"}
+2026-02-22 20:35:35 [WARN] [AIProvider] Gemini failed (rate limited) – falling back to Ollama
+2026-02-22 20:36:13 [INFO] [AI] Next action: click → "Apply" (submit job application)
+2026-02-22 20:36:13 [INFO] [ExtApply] AI navigation: click "Apply"
+2026-02-22 20:36:13 [INFO] [ExtApply] No next/submit/AI-action found – assuming done
+2026-02-22 20:36:13 [INFO] [ExtApply] Result: failed
+2026-02-22 20:36:13 [WARN] Screenshot failed [error] {"err":"page.screenshot: Target page, context or browser has been closed"}
+2026-02-22 20:36:13 [ERROR] ❌ Failed: QA Engineer
+2026-02-22 20:36:19 [INFO] [2] "QA Engineer" @ Kalypso A Rockwell Automation Business
+2026-02-22 20:36:22 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 20:38:22 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-22 20:38:22 [INFO] Fallback keyword score {"decision":"APPLY","score":92,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-22 20:38:22 [INFO] AI: APPLY (92) – keyword match: qa, automation, selenium, testing
+2026-02-22 20:38:25 [INFO] Applying: "QA Engineer" @ Kalypso A Rockwell Automation Business
+2026-02-22 20:38:28 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-22 20:38:33 [INFO] Form step 1 for QA_Engineer_Kalypso_A_Rockwell_Automation_Business_1771772779176
+2026-02-22 20:38:33 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 20:38:33 [WARN] [AIProvider] Gemini failed (rate limited) – falling back to Ollama
+2026-02-22 20:40:33 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-22 20:40:33 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-22 20:40:33 [INFO] [FormFiller] AI pre-built 0 answers
+2026-02-22 20:40:34 [WARN] [AIProvider] Gemini failed (rate limited) – falling back to Ollama
+2026-02-22 20:42:34 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-22 20:42:34 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-22 20:42:34 [INFO] [AI] Field "Enter keyword / designation / companies" → ""
+2026-02-22 20:42:35 [WARN] [AIProvider] Gemini failed (rate limited) – falling back to Ollama
+2026-02-22 20:44:35 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-22 20:44:35 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-22 20:44:35 [INFO] [AI] Field "Select experience" → ""
+2026-02-22 20:44:35 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-22 20:45:05 [WARN] [FormFiller] Truly unmatched (AI + keyword both failed): {"unmatched":[{"label":"Enter keyword / designation / companies","type":"text"},{"label":"Select experience","type":"text"}]}
+2026-02-22 20:45:05 [INFO] [FormFiller] Done. Unmatched: 2
+2026-02-22 20:45:09 [WARN] No next/submit button on step 1 – breaking
+2026-02-22 20:45:09 [INFO] ✅ Applied [1]: QA Engineer
+2026-02-22 20:45:16 [INFO] [3] "QA Engineer" @ Rockwell Automation
+2026-02-22 20:45:21 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 20:47:21 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-22 20:47:21 [INFO] Fallback keyword score {"decision":"APPLY","score":84,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-22 20:47:21 [INFO] AI: APPLY (84) – keyword match: qa, automation, selenium, testing
+2026-02-22 20:47:23 [INFO] Applying: "QA Engineer" @ Rockwell Automation
+2026-02-22 20:47:26 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-22 20:47:29 [INFO] Form step 1 for QA_Engineer_Rockwell_Automation_1771773316324
+2026-02-22 20:47:29 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 20:47:30 [WARN] [AIProvider] Gemini failed (rate limited) – falling back to Ollama
+2026-02-22 20:49:30 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-22 20:49:30 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-22 20:49:30 [INFO] [FormFiller] AI pre-built 0 answers
+2026-02-22 20:49:30 [WARN] [AIProvider] Gemini failed (rate limited) – falling back to Ollama
+2026-02-22 20:50:26 [INFO] SIGINT – shutting down
+2026-02-22 21:08:14 [INFO] ====================================
+2026-02-22 21:08:14 [INFO]   AutoApply – Job Application Bot
+2026-02-22 21:08:14 [INFO] ====================================
+2026-02-22 21:08:14 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-22 21:08:14 [INFO] [AIProvider] Fallback: Ollama (qwen2.5:7b @ http://localhost:11434)
+2026-02-22 21:08:14 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-22 21:08:14 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-22 21:08:14 [INFO] Dashboard running at http://localhost:3000
+2026-02-22 21:08:15 [INFO] === AutoApply Worker Starting ===
+2026-02-22 21:08:15 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-22 21:08:16 [INFO] Loading session from auth.json
+2026-02-22 21:08:16 [INFO] Browser launched: headless=false, slowMo=20ms
+2026-02-22 21:08:16 [INFO] 
+=== Searching for: "QA Engineer" in "Pune" ===
+2026-02-22 21:08:16 [INFO] 
+[Search] ── Searching: "QA Engineer" in "Pune" ──
+2026-02-22 21:08:19 [INFO] [Search] Naukri homepage loaded
+2026-02-22 21:08:20 [INFO] [Search] Expanded header search bar
+2026-02-22 21:08:21 [WARN] [Search] ⚠️  Keyword input not found – using URL fallback
+2026-02-22 21:08:21 [INFO] [Search] Fallback URL: https://www.naukri.com/qa-engineer-jobs-in-pune
+2026-02-22 21:08:21 [INFO] Scraping page 1 [QA Engineer]...
+2026-02-22 21:08:26 [INFO] Found 20 cards on page 1
+2026-02-22 21:08:27 [INFO] [1] "QA Engineer" @ Appsierra Solutions
+2026-02-22 21:08:29 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 21:10:29 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-22 21:10:29 [INFO] Fallback keyword score {"decision":"APPLY","score":92,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-22 21:10:29 [INFO] AI: APPLY (92) – keyword match: qa, automation, selenium, testing
+2026-02-22 21:10:32 [INFO] Applying: "QA Engineer" @ Appsierra Solutions
+2026-02-22 21:10:33 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-22 21:10:35 [INFO] External tab opened: chrome-error://chromewebdata/ – attempting to apply
+2026-02-22 21:10:38 [INFO] [ExtApply] External site: generic | chrome-error://chromewebdata/
+2026-02-22 21:10:39 [INFO] [ExtApply] Generic site – attempting smart apply
+2026-02-22 21:10:39 [INFO] [ExtApply] Form step 1 – URL: chrome-error://chromewebdata/
+2026-02-22 21:10:39 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:10:40 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:11:46 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:13:46 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-22 21:13:46 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-22 21:13:46 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-22 21:13:46 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:13:47 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:14:53 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:15:50 [INFO] [AI] Next action: click → "Reload" (Attempt to access the job application page again)
+2026-02-22 21:15:50 [INFO] [ExtApply] AI navigation: click "Reload"
+2026-02-22 21:15:53 [INFO] [ExtApply] AI navigation click succeeded
+2026-02-22 21:15:53 [INFO] [ExtApply] Form step 2 – URL: chrome-error://chromewebdata/
+2026-02-22 21:15:53 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:15:53 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:15:53 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:15:54 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:17:00 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:17:05 [INFO] [AI] Next action: click → "Reload" (Attempt to access the job application page again)
+2026-02-22 21:17:05 [INFO] [ExtApply] AI navigation: click "Reload"
+2026-02-22 21:17:07 [INFO] [ExtApply] AI navigation click succeeded
+2026-02-22 21:17:07 [INFO] [ExtApply] Form step 3 – URL: chrome-error://chromewebdata/
+2026-02-22 21:17:07 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:17:07 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:17:07 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:17:09 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:18:14 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:18:19 [INFO] [AI] Next action: click → "Reload" (Attempt to access the job application page again)
+2026-02-22 21:18:19 [INFO] [ExtApply] AI navigation: click "Reload"
+2026-02-22 21:18:22 [INFO] [ExtApply] AI navigation click succeeded
+2026-02-22 21:18:22 [INFO] [ExtApply] Form step 4 – URL: chrome-error://chromewebdata/
+2026-02-22 21:18:22 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:18:22 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:18:22 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:18:23 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:19:28 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:19:34 [INFO] [AI] Next action: click → "Reload" (Attempt to access the page again)
+2026-02-22 21:19:34 [INFO] [ExtApply] AI navigation: click "Reload"
+2026-02-22 21:19:37 [INFO] [ExtApply] AI navigation click succeeded
+2026-02-22 21:19:37 [INFO] [ExtApply] Form step 5 – URL: chrome-error://chromewebdata/
+2026-02-22 21:19:37 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:19:37 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:19:37 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:19:38 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:20:43 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:20:48 [INFO] [AI] Next action: click → "Reload" (Attempt to access the job application page again)
+2026-02-22 21:20:48 [INFO] [ExtApply] AI navigation: click "Reload"
+2026-02-22 21:20:50 [INFO] [ExtApply] AI navigation click succeeded
+2026-02-22 21:20:50 [INFO] [ExtApply] Form step 6 – URL: chrome-error://chromewebdata/
+2026-02-22 21:20:50 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:20:50 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:20:50 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:20:51 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:21:57 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:22:01 [INFO] [AI] Next action: click → "Reload" (Attempt to access the page again)
+2026-02-22 21:22:01 [INFO] [ExtApply] AI navigation: click "Reload"
+2026-02-22 21:22:03 [INFO] [ExtApply] AI navigation click succeeded
+2026-02-22 21:22:03 [INFO] [ExtApply] Form step 7 – URL: chrome-error://chromewebdata/
+2026-02-22 21:22:03 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:22:03 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:22:03 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:22:05 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:23:10 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:23:15 [INFO] [AI] Next action: click → "Reload" (Attempt to access the job application page again)
+2026-02-22 21:23:15 [INFO] [ExtApply] AI navigation: click "Reload"
+2026-02-22 21:23:17 [INFO] [ExtApply] AI navigation click succeeded
+2026-02-22 21:23:17 [INFO] [ExtApply] Form step 8 – URL: chrome-error://chromewebdata/
+2026-02-22 21:23:17 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:23:17 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:23:17 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:23:19 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:24:24 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:24:29 [INFO] [AI] Next action: click → "Reload" (Attempt to access the job application page again)
+2026-02-22 21:24:29 [INFO] [ExtApply] AI navigation: click "Reload"
+2026-02-22 21:24:32 [INFO] [ExtApply] AI navigation click succeeded
+2026-02-22 21:24:32 [INFO] [ExtApply] Form step 9 – URL: chrome-error://chromewebdata/
+2026-02-22 21:24:32 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:24:32 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:24:32 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:24:33 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:25:39 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:25:42 [INFO] [AI] Next action: wait → "captcha" (manual intervention needed)
+2026-02-22 21:25:42 [WARN] [ExtApply] AI says wait: manual intervention needed – pausing 30s
+2026-02-22 21:26:12 [INFO] [ExtApply] Form step 10 – URL: chrome-error://chromewebdata/
+2026-02-22 21:26:12 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:26:12 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:26:12 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:26:13 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:27:19 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:27:23 [INFO] [AI] Next action: wait → "captcha" (manual intervention needed)
+2026-02-22 21:27:23 [WARN] [ExtApply] AI says wait: manual intervention needed – pausing 30s
+2026-02-22 21:27:53 [INFO] [ExtApply] Result: failed
+2026-02-22 21:27:53 [ERROR] ❌ Failed: QA Engineer
+2026-02-22 21:27:55 [INFO] [2] "QA Engineer" @ Digitalflake Solutions
+2026-02-22 21:27:57 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 21:29:57 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-22 21:29:57 [INFO] Fallback keyword score {"decision":"APPLY","score":84,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-22 21:29:57 [INFO] AI: APPLY (84) – keyword match: qa, automation, selenium, testing
+2026-02-22 21:30:00 [INFO] Applying: "QA Engineer" @ Digitalflake Solutions
+2026-02-22 21:30:00 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-22 21:30:02 [INFO] External tab opened: https://digitalflake.com/careers/ – attempting to apply
+2026-02-22 21:30:04 [INFO] [ExtApply] External site: generic | https://digitalflake.com/careers/
+2026-02-22 21:30:06 [INFO] [ExtApply] Generic site – attempting smart apply
+2026-02-22 21:30:09 [INFO] [ExtApply] Clicked: "a:has-text("Apply Now")"
+2026-02-22 21:30:09 [INFO] [ExtApply] Form step 1 – URL: https://digitalflake.com/careers/
+2026-02-22 21:30:09 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:30:09 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:31:15 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:33:15 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-22 21:33:15 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-22 21:33:15 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-22 21:33:15 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:34:20 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:35:08 [INFO] [AI] Field "Name" → "Atul Patil"
+2026-02-22 21:35:08 [INFO] [FormFiller] AI-field "Name" → "Atul Patil"
+2026-02-22 21:35:10 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:36:15 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:36:43 [INFO] [AI] Field "Role" → "QA Lead"
+2026-02-22 21:36:43 [INFO] [FormFiller] AI-field "Role" → "QA Lead"
+2026-02-22 21:36:44 [INFO] [FormFiller] Keyword "Email" → email
+2026-02-22 21:36:45 [INFO] [FormFiller] Keyword "Mobile" → phone
+2026-02-22 21:36:47 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-22 21:36:49 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:36:51 [INFO] [ExtApply] Clicked submit: "button[type="submit"]"
+2026-02-22 21:36:53 [INFO] [ExtApply] Form step 2 – URL: https://digitalflake.com/careers/
+2026-02-22 21:36:53 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:36:53 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:36:54 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:37:59 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:38:11 [INFO] [AI] Field "Name" → "Atul Patil"
+2026-02-22 21:38:11 [INFO] [FormFiller] AI-field "Name" → "Atul Patil"
+2026-02-22 21:38:13 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:39:18 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:39:35 [INFO] [AI] Field "Role" → "QA Lead"
+2026-02-22 21:39:35 [INFO] [FormFiller] AI-field "Role" → "QA Lead"
+2026-02-22 21:39:36 [INFO] [FormFiller] Keyword "Email" → email
+2026-02-22 21:39:38 [INFO] [FormFiller] Keyword "Mobile" → phone
+2026-02-22 21:39:40 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-22 21:39:41 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:39:44 [INFO] [ExtApply] Clicked submit: "button[type="submit"]"
+2026-02-22 21:39:46 [INFO] [ExtApply] Form step 3 – URL: https://digitalflake.com/careers/
+2026-02-22 21:39:46 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:39:46 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:39:47 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:40:52 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:41:05 [INFO] [AI] Field "Name" → "Atul Patil"
+2026-02-22 21:41:05 [INFO] [FormFiller] AI-field "Name" → "Atul Patil"
+2026-02-22 21:41:06 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:42:11 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:42:25 [INFO] [AI] Field "Role" → "QA Engineer"
+2026-02-22 21:42:25 [INFO] [FormFiller] AI-field "Role" → "QA Engineer"
+2026-02-22 21:42:27 [INFO] [FormFiller] Keyword "Email" → email
+2026-02-22 21:42:28 [INFO] [FormFiller] Keyword "Mobile" → phone
+2026-02-22 21:42:29 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-22 21:42:31 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:42:34 [INFO] [ExtApply] Clicked submit: "button[type="submit"]"
+2026-02-22 21:42:36 [INFO] [ExtApply] Form step 4 – URL: https://digitalflake.com/careers/
+2026-02-22 21:42:36 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:42:36 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:42:36 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:43:41 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:43:53 [INFO] [AI] Field "Name" → "Atul Patil"
+2026-02-22 21:43:53 [INFO] [FormFiller] AI-field "Name" → "Atul Patil"
+2026-02-22 21:43:54 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:44:59 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:45:10 [INFO] [AI] Field "Role" → "QA Lead"
+2026-02-22 21:45:10 [INFO] [FormFiller] AI-field "Role" → "QA Lead"
+2026-02-22 21:45:11 [INFO] [FormFiller] Keyword "Email" → email
+2026-02-22 21:45:13 [INFO] [FormFiller] Keyword "Mobile" → phone
+2026-02-22 21:45:14 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-22 21:45:16 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:45:20 [INFO] [ExtApply] Clicked submit: "button[type="submit"]"
+2026-02-22 21:45:22 [INFO] [ExtApply] Form step 5 – URL: https://digitalflake.com/careers/
+2026-02-22 21:45:22 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:45:22 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:45:22 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:46:27 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:46:40 [INFO] [AI] Field "Name" → "Atul Patil"
+2026-02-22 21:46:40 [INFO] [FormFiller] AI-field "Name" → "Atul Patil"
+2026-02-22 21:46:41 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:47:46 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:47:57 [INFO] [AI] Field "Role" → "QA Lead"
+2026-02-22 21:47:57 [INFO] [FormFiller] AI-field "Role" → "QA Lead"
+2026-02-22 21:47:58 [INFO] [FormFiller] Keyword "Email" → email
+2026-02-22 21:48:01 [INFO] [FormFiller] Keyword "Mobile" → phone
+2026-02-22 21:48:02 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-22 21:48:03 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:48:07 [INFO] [ExtApply] Clicked submit: "button[type="submit"]"
+2026-02-22 21:48:09 [INFO] [ExtApply] Form step 6 – URL: https://digitalflake.com/careers/
+2026-02-22 21:48:09 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:48:09 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:48:09 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:49:14 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:49:25 [INFO] [AI] Field "Name" → "Atul Patil"
+2026-02-22 21:49:25 [INFO] [FormFiller] AI-field "Name" → "Atul Patil"
+2026-02-22 21:49:27 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:50:32 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:50:43 [INFO] [AI] Field "Role" → "QA Lead"
+2026-02-22 21:50:43 [INFO] [FormFiller] AI-field "Role" → "QA Lead"
+2026-02-22 21:50:44 [INFO] [FormFiller] Keyword "Email" → email
+2026-02-22 21:50:47 [INFO] [FormFiller] Keyword "Mobile" → phone
+2026-02-22 21:50:48 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-22 21:50:49 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:50:52 [INFO] [ExtApply] Clicked submit: "button[type="submit"]"
+2026-02-22 21:50:54 [INFO] [ExtApply] Form step 7 – URL: https://digitalflake.com/careers/
+2026-02-22 21:50:54 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:50:54 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:50:54 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:52:00 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:52:11 [INFO] [AI] Field "Name" → "Atul Patil"
+2026-02-22 21:52:11 [INFO] [FormFiller] AI-field "Name" → "Atul Patil"
+2026-02-22 21:52:13 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:53:18 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:53:29 [INFO] [AI] Field "Role" → "QA Lead"
+2026-02-22 21:53:29 [INFO] [FormFiller] AI-field "Role" → "QA Lead"
+2026-02-22 21:53:30 [INFO] [FormFiller] Keyword "Email" → email
+2026-02-22 21:53:31 [INFO] [FormFiller] Keyword "Mobile" → phone
+2026-02-22 21:53:33 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-22 21:53:34 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:53:38 [INFO] [ExtApply] Clicked submit: "button[type="submit"]"
+2026-02-22 21:53:40 [INFO] [ExtApply] Form step 8 – URL: https://digitalflake.com/careers/
+2026-02-22 21:53:40 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:53:40 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:53:40 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:54:46 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:54:57 [INFO] [AI] Field "Name" → "Atul Patil"
+2026-02-22 21:54:57 [INFO] [FormFiller] AI-field "Name" → "Atul Patil"
+2026-02-22 21:54:58 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:56:03 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:56:14 [INFO] [AI] Field "Role" → "QA Lead"
+2026-02-22 21:56:14 [INFO] [FormFiller] AI-field "Role" → "QA Lead"
+2026-02-22 21:56:15 [INFO] [FormFiller] Keyword "Email" → email
+2026-02-22 21:56:17 [INFO] [FormFiller] Keyword "Mobile" → phone
+2026-02-22 21:56:18 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-22 21:56:20 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:56:22 [INFO] [ExtApply] Clicked submit: "button[type="submit"]"
+2026-02-22 21:56:24 [INFO] [ExtApply] Form step 9 – URL: https://digitalflake.com/careers/
+2026-02-22 21:56:24 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:56:24 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:56:25 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:57:30 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:57:41 [INFO] [AI] Field "Name" → "Atul Patil"
+2026-02-22 21:57:41 [INFO] [FormFiller] AI-field "Name" → "Atul Patil"
+2026-02-22 21:57:43 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 21:58:48 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 21:58:59 [INFO] [AI] Field "Role" → "QA Lead"
+2026-02-22 21:58:59 [INFO] [FormFiller] AI-field "Role" → "QA Lead"
+2026-02-22 21:59:00 [INFO] [FormFiller] Keyword "Email" → email
+2026-02-22 21:59:03 [INFO] [FormFiller] Keyword "Mobile" → phone
+2026-02-22 21:59:04 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-22 21:59:05 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 21:59:08 [INFO] [ExtApply] Clicked submit: "button[type="submit"]"
+2026-02-22 21:59:10 [INFO] [ExtApply] Form step 10 – URL: https://digitalflake.com/careers/
+2026-02-22 21:59:10 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 21:59:10 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-22 21:59:10 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:00:15 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:00:27 [INFO] [AI] Field "Name" → "Atul Patil"
+2026-02-22 22:00:27 [INFO] [FormFiller] AI-field "Name" → "Atul Patil"
+2026-02-22 22:00:28 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:01:33 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:01:44 [INFO] [AI] Field "Role" → "QA Lead"
+2026-02-22 22:01:44 [INFO] [FormFiller] AI-field "Role" → "QA Lead"
+2026-02-22 22:01:46 [INFO] [FormFiller] Keyword "Email" → email
+2026-02-22 22:01:47 [INFO] [FormFiller] Keyword "Mobile" → phone
+2026-02-22 22:01:49 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-22 22:01:50 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 22:01:53 [INFO] [ExtApply] Clicked submit: "button[type="submit"]"
+2026-02-22 22:01:55 [INFO] [ExtApply] Result: failed
+2026-02-22 22:01:55 [ERROR] ❌ Failed: QA Engineer
+2026-02-22 22:01:57 [INFO] [3] "QA Engineer" @ Solytics Partners
+2026-02-22 22:02:01 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 22:03:59 [INFO] AI decision {"decision":"APPLY","score":85,"reason":"matches keywords QA, automation, Selenium, Python, good fit for candidate"}
+2026-02-22 22:03:59 [INFO] AI: APPLY (85) – matches keywords QA, automation, Selenium, Python, good fit for candidate
+2026-02-22 22:04:01 [INFO] Applying: "QA Engineer" @ Solytics Partners
+2026-02-22 22:04:02 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-22 22:04:03 [INFO] Form step 1 for QA_Engineer_Solytics_Partners_1771777917982
+2026-02-22 22:04:03 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 22:04:04 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:05:09 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:07:09 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-22 22:07:09 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-22 22:07:09 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-22 22:07:09 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:08:15 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:09:24 [INFO] [AI] Field "Enter keyword / designation / companies" → "QA Lead / Chat360 / Pune, India"
+2026-02-22 22:09:24 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Lead / Chat360 / Pune, India"
+2026-02-22 22:09:55 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:11:00 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:11:11 [INFO] [AI] Field "Select experience" → "3"
+2026-02-22 22:11:11 [INFO] [FormFiller] AI-field "Select experience" → "3"
+2026-02-22 22:11:41 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-22 22:12:11 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 22:12:13 [WARN] No next/submit button on step 1 – breaking
+2026-02-22 22:12:13 [INFO] ✅ Applied [1]: QA Engineer
+2026-02-22 22:12:15 [INFO] [4] "QA Engineer" @ Orbiz.one
+2026-02-22 22:12:20 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 22:14:18 [INFO] AI decision {"decision":"APPLY","score":85,"reason":"matches keywords QA, automation, Selenium, TestComplete, and quality assurance"}
+2026-02-22 22:14:18 [INFO] AI: APPLY (85) – matches keywords QA, automation, Selenium, TestComplete, and quality assurance
+2026-02-22 22:14:21 [INFO] Applying: "QA Engineer" @ Orbiz.one
+2026-02-22 22:14:22 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-22 22:14:25 [INFO] Form step 1 for QA_Engineer_Orbiz_one_1771778535848
+2026-02-22 22:14:25 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 22:14:25 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:15:30 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:17:30 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-22 22:17:30 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-22 22:17:30 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-22 22:17:31 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:18:36 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:20:36 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-22 22:20:36 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-22 22:20:36 [INFO] [AI] Field "Enter keyword / designation / companies" → ""
+2026-02-22 22:20:37 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:21:42 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:21:56 [INFO] [AI] Field "Select experience" → "3"
+2026-02-22 22:21:56 [INFO] [FormFiller] AI-field "Select experience" → "3"
+2026-02-22 22:22:26 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-22 22:22:56 [WARN] [FormFiller] Truly unmatched (AI + keyword both failed): {"unmatched":[{"label":"Enter keyword / designation / companies","type":"text"}]}
+2026-02-22 22:22:56 [INFO] [FormFiller] Done. Unmatched: 1
+2026-02-22 22:22:57 [WARN] No next/submit button on step 1 – breaking
+2026-02-22 22:22:58 [INFO] ✅ Applied [2]: QA Engineer
+2026-02-22 22:23:00 [INFO] [5] "QA Engineer - Performance Engineering" @ Photon
+2026-02-22 22:23:02 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 22:25:02 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-22 22:25:02 [INFO] Fallback keyword score {"decision":"APPLY","score":61,"reason":"keyword match: qa, automation, testing, quality assurance"}
+2026-02-22 22:25:02 [INFO] AI: APPLY (61) – keyword match: qa, automation, testing, quality assurance
+2026-02-22 22:25:04 [INFO] Applying: "QA Engineer - Performance Engineering" @ Photon
+2026-02-22 22:25:05 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-22 22:25:07 [INFO] External tab opened: https://fa-ertb-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2/job/20557 – attempting to apply
+2026-02-22 22:25:10 [INFO] [ExtApply] External site: generic | https://fa-ertb-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2/job/20557
+2026-02-22 22:25:13 [INFO] [ExtApply] Generic site – attempting smart apply
+2026-02-22 22:25:17 [INFO] [ExtApply] Clicked: "button:has-text("Apply Now")"
+2026-02-22 22:25:17 [INFO] [ExtApply] Form step 1 – URL: https://fa-ertb-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2/job/20557/apply/email
+2026-02-22 22:25:17 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 22:25:17 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:26:22 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:28:01 [INFO] [AI] Form analysis: 9 field answers generated
+2026-02-22 22:28:01 [INFO] [FormFiller] AI pre-built 9 answers (cached)
+2026-02-22 22:28:01 [INFO] [FormFiller] Keyword "Email Address" → email
+2026-02-22 22:28:03 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 22:28:07 [INFO] [ExtApply] Clicked submit: "button[type="submit"]"
+2026-02-22 22:28:08 [INFO] [ExtApply] Form step 2 – URL: https://fa-ertb-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2/job/20557/apply/section/1
+2026-02-22 22:28:08 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 22:28:09 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:29:14 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:31:14 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-22 22:31:14 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-22 22:31:14 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-22 22:31:14 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:32:20 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:33:31 [INFO] [AI] Field "
+    Phone Number
+    
+    
+    
+" → "+918552078787"
+2026-02-22 22:33:31 [INFO] [FormFiller] AI-field "Phone Number" → "+918552078787"
+2026-02-22 22:33:34 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:34:40 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:34:55 [INFO] [AI] Field "
+        
+            Country
+            
+       " → "India"
+2026-02-22 22:34:55 [INFO] [FormFiller] AI-field "Country
+            
+            *" → "India"
+2026-02-22 22:34:56 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:36:01 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:36:16 [INFO] [AI] Field "
+        
+            State
+            
+         " → "Yes"
+2026-02-22 22:36:16 [INFO] [FormFiller] AI-field "State
+            
+            *" → "Yes"
+2026-02-22 22:36:47 [INFO] [FormFiller] Keyword "Email Address" → email
+2026-02-22 22:36:48 [INFO] [FormFiller] Keyword "Phone Number" → phone
+2026-02-22 22:36:50 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:37:55 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:38:12 [INFO] [AI] Field "
+    Link 1
+    
+" → "https://atulpatil87.netlify.app/"
+2026-02-22 22:38:12 [INFO] [FormFiller] AI-field "Link 1" → "https://atulpatil87.netlify.app/"
+2026-02-22 22:38:15 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:39:20 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:39:32 [INFO] [AI] Field "
+    Comments
+    
+" → "Yes"
+2026-02-22 22:39:32 [INFO] [FormFiller] AI-field "Comments" → "Yes"
+2026-02-22 22:40:32 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-22 22:40:33 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:41:39 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:42:29 [INFO] [AI] Next action: click → "Photon Career Site 20557 Apply Again" (reapply for the job position)
+2026-02-22 22:42:29 [INFO] [ExtApply] AI navigation: click "Photon Career Site 20557 Apply Again"
+2026-02-22 22:42:29 [WARN] [ExtApply] AI navigation failed {"err":"locator.count: Target page, context or browser has been closed"}
+2026-02-22 22:42:29 [INFO] [ExtApply] No next/submit/AI-action found – assuming done
+2026-02-22 22:42:29 [INFO] [ExtApply] Result: failed
+2026-02-22 22:42:29 [WARN] Screenshot failed [error] {"err":"page.screenshot: Target page, context or browser has been closed"}
+2026-02-22 22:42:29 [ERROR] ❌ Failed: QA Engineer - Performance Engineering
+2026-02-22 22:42:32 [INFO] [6] "Qa Engineer" @ D-Techworks Pvt Ltd
+2026-02-22 22:42:35 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 22:44:35 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-22 22:44:35 [INFO] Fallback keyword score {"decision":"APPLY","score":99,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-22 22:44:35 [INFO] AI: APPLY (99) – keyword match: qa, automation, playwright, selenium
+2026-02-22 22:44:37 [INFO] Applying: "Qa Engineer" @ D-Techworks Pvt Ltd
+2026-02-22 22:44:37 [INFO] Clicked apply: "#apply-button"
+2026-02-22 22:44:38 [INFO] Form step 1 for Qa_Engineer_D-Techworks_Pvt_Ltd_1771780352070
+2026-02-22 22:44:38 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 22:44:39 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:45:44 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:47:44 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-22 22:47:44 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-22 22:47:44 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-22 22:47:44 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:48:49 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 22:50:49 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-22 22:50:49 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-22 22:50:49 [INFO] [AI] Field "Enter keyword / designation / companies" → ""
+2026-02-22 22:50:50 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:54:54 [INFO] ====================================
+2026-02-22 22:54:54 [INFO]   AutoApply – Job Application Bot
+2026-02-22 22:54:54 [INFO] ====================================
+2026-02-22 22:54:54 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-22 22:54:54 [INFO] [AIProvider] Fallback: Ollama (qwen2.5:7b @ http://localhost:11434)
+2026-02-22 22:54:54 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-22 22:54:54 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-22 22:54:54 [INFO] Dashboard running at http://localhost:3000
+2026-02-22 22:54:55 [INFO] === AutoApply Worker Starting ===
+2026-02-22 22:54:55 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-22 22:54:56 [INFO] Loading session from auth.json
+2026-02-22 22:54:56 [INFO] Browser launched: headless=false, slowMo=20ms
+2026-02-22 22:54:56 [INFO] 
+=== Searching for: "QA Engineer" in "Pune" ===
+2026-02-22 22:54:56 [INFO] 
+[Search] ── Searching: "QA Engineer" in "Pune" ──
+2026-02-22 22:54:59 [INFO] [Search] Naukri homepage loaded
+2026-02-22 22:55:00 [INFO] [Search] Expanded header search bar
+2026-02-22 22:55:01 [WARN] [Search] ⚠️  Keyword input not found – using URL fallback
+2026-02-22 22:55:01 [INFO] [Search] Fallback URL: https://www.naukri.com/qa-engineer-jobs-in-pune
+2026-02-22 22:55:01 [INFO] Scraping page 1 [QA Engineer]...
+2026-02-22 22:55:06 [INFO] Found 20 cards on page 1
+2026-02-22 22:55:06 [INFO] [1] "Qa Engineer" @ D-Techworks Pvt Ltd
+2026-02-22 22:55:08 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-22 22:57:08 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-22 22:57:08 [INFO] Fallback keyword score {"decision":"APPLY","score":99,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-22 22:57:08 [INFO] AI: APPLY (99) – keyword match: qa, automation, playwright, selenium
+2026-02-22 22:57:11 [INFO] Applying: "Qa Engineer" @ D-Techworks Pvt Ltd
+2026-02-22 22:57:13 [INFO] Clicked apply: "#apply-button"
+2026-02-22 22:57:15 [INFO] Form step 1 for Qa_Engineer_D-Techworks_Pvt_Ltd_1771781106513
+2026-02-22 22:57:15 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-22 22:57:15 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-22 22:58:20 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-22 23:00:20 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-22 23:00:20 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-22 23:00:20 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-22 23:00:21 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...

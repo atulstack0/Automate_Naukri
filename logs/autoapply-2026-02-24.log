@@ -1,0 +1,2094 @@
+2026-02-24 09:55:01 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 09:55:02 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 09:55:02 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 09:55:02 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 09:55:02 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 09:55:05 [INFO] Applying: "QA Engineer" @ Prgx India
+2026-02-24 09:55:10 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-24 09:55:12 [INFO] External tab opened: chrome-error://chromewebdata/ – attempting to apply
+2026-02-24 09:55:20 [INFO] [ExtApply] External site: generic | chrome-error://chromewebdata/
+2026-02-24 09:55:22 [INFO] [ExtApply] Generic site – attempting smart apply
+2026-02-24 09:55:22 [INFO] [ExtApply] Form step 1 – URL: chrome-error://chromewebdata/
+2026-02-24 09:55:22 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 09:55:25 [WARN] [FormFiller] AI batch analysis failed, continuing with keyword match {"err":"no such column: answer_key"}
+2026-02-24 09:55:25 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 09:55:39 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 09:56:43 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 09:57:27 [ERROR] [AIProvider] Ollama also failed: Request failed with status code 500
+2026-02-24 09:57:27 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 09:57:27 [INFO] [ExtApply] AI says done: AI could not determine next action
+2026-02-24 09:57:27 [INFO] [ExtApply] Result: failed
+2026-02-24 11:15:27 [INFO] ====================================
+2026-02-24 11:15:27 [INFO]   AutoApply – Job Application Bot
+2026-02-24 11:15:27 [INFO] ====================================
+2026-02-24 11:15:27 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-24 11:15:27 [INFO] [AIProvider] Fallback: Ollama (qwen2.5:7b @ http://localhost:11434)
+2026-02-24 11:15:27 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-24 11:15:27 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-24 11:15:27 [INFO] Dashboard running at http://localhost:3000
+2026-02-24 11:15:27 [WARN] [Seed] Could not seed learning list {"err":"no such column: answer_key"}
+2026-02-24 11:15:28 [INFO] === AutoApply Worker Starting ===
+2026-02-24 11:15:28 [INFO] Loading session from auth.json
+2026-02-24 11:15:29 [INFO] Browser launched: headless=false, slowMo=20ms
+2026-02-24 11:15:30 [INFO] 
+=== Searching for: "QA Engineer" in "Pune" ===
+2026-02-24 11:15:30 [INFO] 
+[Search] ── Searching: "QA Engineer" in "Pune" ──
+2026-02-24 11:15:32 [INFO] [Search] Naukri homepage loaded
+2026-02-24 11:15:34 [INFO] [Search] Expanded header search bar
+2026-02-24 11:15:35 [WARN] [Search] ⚠️  Keyword input not found – using URL fallback
+2026-02-24 11:15:35 [INFO] [Search] Fallback URL: https://www.naukri.com/qa-engineer-jobs-in-pune
+2026-02-24 11:15:35 [INFO] Scraping page 1 [QA Engineer]...
+2026-02-24 11:15:41 [INFO] Found 20 cards on page 1
+2026-02-24 11:15:41 [INFO] [1] "QA Engineer" @ Prgx India
+2026-02-24 11:15:45 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 11:15:57 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 11:15:57 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 11:17:45 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 11:17:45 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 11:17:45 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 11:17:47 [INFO] Applying: "QA Engineer" @ Prgx India
+2026-02-24 11:17:49 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-24 11:17:50 [INFO] External tab opened: http://www.hirebridge.com/jobseeker2/viewdetail.asp?joblistid=604001&cid=7765&jobloc=1217 – attempting to apply
+2026-02-24 11:17:53 [INFO] [ExtApply] External site: generic | http://www.hirebridge.com/jobseeker2/viewdetail.asp?joblistid=604001&cid=7765&jobloc=1217
+2026-02-24 11:17:54 [INFO] [ExtApply] Generic site – attempting smart apply
+2026-02-24 11:17:57 [INFO] [ExtApply] Clicked: "a:has-text("Apply")"
+2026-02-24 11:17:57 [INFO] [ExtApply] Form step 1 – URL: http://www.hirebridge.com/jobseeker2/viewdetail.asp?joblistid=604001&cid=7765&jobloc=1217
+2026-02-24 11:17:58 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 11:17:58 [WARN] [FormFiller] AI batch analysis failed, continuing with keyword match {"err":"no such column: answer_key"}
+2026-02-24 11:17:58 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 11:18:00 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 11:19:06 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 11:20:27 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 11:20:27 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 11:21:06 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 11:21:06 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 11:21:06 [INFO] [ExtApply] AI says done: AI could not determine next action
+2026-02-24 11:21:06 [INFO] [ExtApply] Result: failed
+2026-02-24 11:21:06 [ERROR] ❌ Failed: QA Engineer
+2026-02-24 11:21:09 [INFO] [2] "QA Engineer" @ Varstreet Software
+2026-02-24 11:21:11 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 11:23:11 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 11:23:11 [INFO] Fallback keyword score {"decision":"APPLY","score":68,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-24 11:23:11 [INFO] AI: APPLY (68) – keyword match: qa, automation, selenium, testing
+2026-02-24 11:23:14 [INFO] Applying: "QA Engineer" @ Varstreet Software
+2026-02-24 11:23:15 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-24 11:23:17 [INFO] Form step 1 for QA_Engineer_Varstreet_Software_1771912269217
+2026-02-24 11:23:17 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 11:23:17 [WARN] [FormFiller] AI batch analysis failed, continuing with keyword match {"err":"no such column: answer_key"}
+2026-02-24 11:23:17 [INFO] [Learning] Reusing saved answer for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 11:23:17 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 11:23:48 [INFO] [Learning] Reusing saved answer for "Select experience" → "3"
+2026-02-24 11:23:48 [INFO] [FormFiller] AI-field "Select experience" → "3"
+2026-02-24 11:24:18 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 11:24:23 [INFO] Clicked submit: "[class*="submit-btn"]"
+2026-02-24 11:24:23 [INFO] Form step 2 for QA_Engineer_Varstreet_Software_1771912269217
+2026-02-24 11:24:23 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 11:24:23 [WARN] [FormFiller] AI batch analysis failed, continuing with keyword match {"err":"no such column: answer_key"}
+2026-02-24 11:24:23 [INFO] [Learning] Reusing saved answer for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 11:24:23 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 11:24:53 [INFO] [Learning] Reusing saved answer for "Select experience" → "3"
+2026-02-24 11:24:53 [INFO] [FormFiller] AI-field "Select experience" → "3"
+2026-02-24 11:25:23 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 11:25:27 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 11:25:27 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 11:25:28 [INFO] Clicked submit: "[class*="submit-btn"]"
+2026-02-24 11:25:28 [INFO] Form step 3 for QA_Engineer_Varstreet_Software_1771912269217
+2026-02-24 11:25:28 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 11:25:28 [WARN] [FormFiller] AI batch analysis failed, continuing with keyword match {"err":"no such column: answer_key"}
+2026-02-24 11:25:28 [INFO] [Learning] Reusing saved answer for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 11:25:28 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 11:25:41 [INFO] Migration: added answer_key column to learning_questions
+2026-02-24 11:25:41 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 11:25:41 [INFO] [Seed] Learning list seeded: 38 Q&A pairs from config.json
+2026-02-24 11:25:58 [INFO] [Learning] Reusing saved answer for "Select experience" → "3"
+2026-02-24 11:25:58 [INFO] [FormFiller] AI-field "Select experience" → "3"
+2026-02-24 11:26:28 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 11:26:58 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 11:27:02 [INFO] Clicked submit: "[class*="submit-btn"]"
+2026-02-24 11:27:02 [INFO] Form step 4 for QA_Engineer_Varstreet_Software_1771912269217
+2026-02-24 11:27:02 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 11:27:02 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 11:28:07 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 11:30:07 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 11:30:07 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 11:30:07 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 11:30:07 [INFO] [Learning] Reusing saved answer for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 11:30:07 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 11:30:27 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 11:30:27 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 11:30:37 [INFO] [Learning] Reusing saved answer for "Select experience" → "3"
+2026-02-24 11:30:37 [INFO] [FormFiller] AI-field "Select experience" → "3"
+2026-02-24 11:31:09 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 11:31:39 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 11:31:44 [INFO] Clicked submit: "[class*="submit-btn"]"
+2026-02-24 11:31:44 [INFO] Form step 5 for QA_Engineer_Varstreet_Software_1771912269217
+2026-02-24 11:31:44 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 11:31:44 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-24 11:31:44 [INFO] [Learning] Reusing saved answer for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 11:31:44 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 11:32:14 [INFO] [Learning] Reusing saved answer for "Select experience" → "3"
+2026-02-24 11:32:14 [INFO] [FormFiller] AI-field "Select experience" → "3"
+2026-02-24 11:32:44 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 11:33:14 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 11:33:19 [INFO] Clicked submit: "[class*="submit-btn"]"
+2026-02-24 11:33:19 [INFO] Form step 6 for QA_Engineer_Varstreet_Software_1771912269217
+2026-02-24 11:33:19 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 11:33:19 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-24 11:33:19 [INFO] [Learning] Reusing saved answer for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 11:33:19 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 11:33:49 [INFO] [Learning] Reusing saved answer for "Select experience" → "3"
+2026-02-24 11:33:49 [INFO] [FormFiller] AI-field "Select experience" → "3"
+2026-02-24 11:34:19 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 11:34:49 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 11:34:53 [INFO] Clicked submit: "[class*="submit-btn"]"
+2026-02-24 11:34:53 [INFO] Form step 7 for QA_Engineer_Varstreet_Software_1771912269217
+2026-02-24 11:34:53 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 11:34:53 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-24 11:34:53 [INFO] [Learning] Reusing saved answer for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 11:34:53 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 11:35:24 [INFO] [Learning] Reusing saved answer for "Select experience" → "3"
+2026-02-24 11:35:24 [INFO] [FormFiller] AI-field "Select experience" → "3"
+2026-02-24 11:35:27 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 11:35:27 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 11:35:54 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 11:36:24 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 11:36:28 [INFO] Clicked submit: "[class*="submit-btn"]"
+2026-02-24 11:36:28 [INFO] Form step 8 for QA_Engineer_Varstreet_Software_1771912269217
+2026-02-24 11:36:28 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 11:36:28 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-24 11:36:28 [INFO] [Learning] Reusing saved answer for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 11:36:28 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 11:36:58 [INFO] [Learning] Reusing saved answer for "Select experience" → "3"
+2026-02-24 11:36:58 [INFO] [FormFiller] AI-field "Select experience" → "3"
+2026-02-24 11:37:28 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 11:37:58 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 11:38:02 [INFO] Clicked submit: "[class*="submit-btn"]"
+2026-02-24 11:38:03 [INFO] ✅ Applied [1]: QA Engineer
+2026-02-24 11:38:05 [INFO] [3] "QA Engineer" @ Coditation Systems
+2026-02-24 11:38:11 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 11:40:11 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 11:40:11 [INFO] Fallback keyword score {"decision":"APPLY","score":76,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-24 11:40:11 [INFO] AI: APPLY (76) – keyword match: qa, automation, selenium, testing
+2026-02-24 11:40:14 [INFO] Applying: "QA Engineer" @ Coditation Systems
+2026-02-24 11:40:16 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-24 11:40:18 [INFO] External tab opened: https://coditation.keka.com/careers/jobdetails/14193 – attempting to apply
+2026-02-24 11:40:21 [INFO] [ExtApply] External site: generic | https://coditation.keka.com/careers/jobdetails/14193
+2026-02-24 11:40:23 [INFO] [ExtApply] Generic site – attempting smart apply
+2026-02-24 11:40:26 [INFO] [ExtApply] Clicked: "button:has-text("Apply for this job")"
+2026-02-24 11:40:26 [INFO] [ExtApply] Form step 1 – URL: https://coditation.keka.com/careers/applyjob/14193
+2026-02-24 11:40:26 [INFO] [ExtApply] Success selector matched
+2026-02-24 11:40:26 [INFO] [ExtApply] Success page detected ✅
+2026-02-24 11:40:26 [INFO] [ExtApply] Result: success
+2026-02-24 11:40:27 [INFO] ✅ Applied [2]: QA Engineer
+2026-02-24 11:40:27 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 11:40:27 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 11:40:29 [INFO] [4] "QA Engineer" @ Hubengage
+2026-02-24 11:40:32 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 11:42:32 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 11:42:32 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 11:42:32 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 11:42:34 [INFO] Applying: "QA Engineer" @ Hubengage
+2026-02-24 11:42:35 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-24 11:42:37 [INFO] External tab opened: https://www.hubengage.com/careers/ – attempting to apply
+2026-02-24 11:42:39 [INFO] [ExtApply] External site: generic | https://www.hubengage.com/careers/
+2026-02-24 11:42:41 [INFO] [ExtApply] Generic site – attempting smart apply
+2026-02-24 11:42:41 [INFO] [ExtApply] Form step 1 – URL: https://www.hubengage.com/careers/
+2026-02-24 11:42:42 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 11:42:43 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 11:43:48 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 11:45:27 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 11:45:27 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 11:45:48 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 11:45:48 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 11:45:48 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 11:45:48 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 11:45:49 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 11:46:55 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 11:48:55 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 11:48:55 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 11:48:55 [INFO] [ExtApply] AI says done: AI could not determine next action
+2026-02-24 11:48:55 [INFO] [ExtApply] Result: failed
+2026-02-24 11:48:56 [ERROR] ❌ Failed: QA Engineer
+2026-02-24 11:48:58 [INFO] [5] "QA ENGINEER" @ Congregate Technologies
+2026-02-24 11:49:02 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 11:50:27 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 11:50:27 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 11:51:03 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 11:51:03 [INFO] Fallback keyword score {"decision":"APPLY","score":84,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-24 11:51:03 [INFO] AI: APPLY (84) – keyword match: qa, automation, selenium, testing
+2026-02-24 11:51:05 [INFO] Applying: "QA ENGINEER" @ Congregate Technologies
+2026-02-24 11:51:06 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-24 11:51:08 [INFO] External tab opened: https://congregatetechnologies.com/jobs/ – attempting to apply
+2026-02-24 11:51:12 [INFO] [ExtApply] External site: generic | https://congregatetechnologies.com/jobs/
+2026-02-24 11:51:15 [INFO] [ExtApply] Generic site – attempting smart apply
+2026-02-24 11:51:18 [INFO] [ExtApply] Clicked: "a:has-text("Apply")"
+2026-02-24 11:51:18 [INFO] [ExtApply] Form step 1 – URL: https://congregatetechnologies.com/job-application/
+2026-02-24 11:51:18 [INFO] [ExtApply] Success selector matched
+2026-02-24 11:51:18 [INFO] [ExtApply] Success page detected ✅
+2026-02-24 11:51:18 [INFO] [ExtApply] Result: success
+2026-02-24 11:51:19 [INFO] ✅ Applied [3]: QA ENGINEER
+2026-02-24 11:51:21 [INFO] [6] "QA Engineer - AI" @ Velsera
+2026-02-24 11:51:25 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 11:53:25 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 11:53:25 [INFO] Fallback keyword score {"decision":"APPLY","score":84,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-24 11:53:25 [INFO] AI: APPLY (84) – keyword match: qa, automation, selenium, testing
+2026-02-24 11:53:27 [INFO] Applying: "QA Engineer - AI" @ Velsera
+2026-02-24 11:53:28 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-24 11:53:30 [INFO] External tab opened: https://velsera.wd103.myworkdayjobs.com/en-US/Velsera/job/Pune-India/QA-Engineer---AI_JR100344 – attempting to apply
+2026-02-24 11:53:33 [INFO] [ExtApply] External site: workday | https://velsera.wd103.myworkdayjobs.com/en-US/Velsera/job/Pune-India/QA-Engineer---AI_JR100344
+2026-02-24 11:53:35 [INFO] [ExtApply] Workday detected
+2026-02-24 11:53:35 [INFO] [ExtApply] Form step 1 – URL: https://velsera.wd103.myworkdayjobs.com/en-US/Velsera/job/Pune-India/QA-Engineer---AI_JR100344
+2026-02-24 11:53:36 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 11:53:37 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 11:54:42 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 11:55:27 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 11:55:27 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 11:56:42 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 11:56:42 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 11:56:42 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 11:56:42 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 11:56:44 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 11:57:49 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 11:59:49 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 11:59:49 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 11:59:49 [INFO] [ExtApply] AI says done: AI could not determine next action
+2026-02-24 11:59:49 [INFO] [ExtApply] Result: failed
+2026-02-24 11:59:50 [ERROR] ❌ Failed: QA Engineer - AI
+2026-02-24 11:59:51 [INFO] [7] "QA Engineer" @ Gurucul Solutions
+2026-02-24 11:59:55 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 12:00:27 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 12:00:27 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 12:01:55 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 12:01:55 [INFO] Fallback keyword score {"decision":"APPLY","score":76,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-24 12:01:55 [INFO] AI: APPLY (76) – keyword match: qa, automation, selenium, testing
+2026-02-24 12:01:57 [INFO] Applying: "QA Engineer" @ Gurucul Solutions
+2026-02-24 12:01:58 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-24 12:02:01 [INFO] Form step 1 for QA_Engineer_Gurucul_Solutions_1771914591886
+2026-02-24 12:02:01 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 12:02:01 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 12:03:07 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 12:05:07 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 12:05:07 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 12:05:07 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 12:05:08 [INFO] [Learning] Reusing saved answer for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 12:05:08 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 12:05:27 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 12:05:27 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 12:05:38 [INFO] [Learning] Reusing saved answer for "Select experience" → "3"
+2026-02-24 12:05:38 [INFO] [FormFiller] AI-field "Select experience" → "3"
+2026-02-24 12:06:08 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 12:06:38 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 12:06:40 [WARN] No next/submit button on step 1 – breaking
+2026-02-24 12:06:41 [INFO] ✅ Applied [4]: QA Engineer
+2026-02-24 12:06:43 [INFO] [8] "QA Engineer" @ Enzigma Software
+2026-02-24 12:06:48 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 12:08:22 [INFO] ====================================
+2026-02-24 12:08:22 [INFO]   AutoApply – Job Application Bot
+2026-02-24 12:08:22 [INFO] ====================================
+2026-02-24 12:08:22 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-24 12:08:22 [INFO] [AIProvider] Fallback: Ollama (qwen2.5:7b @ http://localhost:11434)
+2026-02-24 12:08:22 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-24 12:08:22 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-24 12:08:22 [INFO] Dashboard running at http://localhost:3000
+2026-02-24 12:08:22 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 12:08:22 [INFO] [Seed] Learning list seeded: 38 Q&A pairs from config.json
+2026-02-24 12:08:23 [INFO] === AutoApply Worker Starting ===
+2026-02-24 12:08:24 [INFO] Loading session from auth.json
+2026-02-24 12:08:25 [INFO] Browser launched: headless=false, slowMo=20ms
+2026-02-24 12:08:26 [INFO] 
+=== Searching for: "QA Engineer" in "Pune" ===
+2026-02-24 12:08:26 [INFO] 
+[Search] ── Searching: "QA Engineer" in "Pune" ──
+2026-02-24 12:08:29 [INFO] [Search] Naukri homepage loaded
+2026-02-24 12:08:32 [INFO] [Search] Expanded header search bar
+2026-02-24 12:08:32 [WARN] [Search] ⚠️  Keyword input not found – using URL fallback
+2026-02-24 12:08:33 [INFO] [Search] Fallback URL: https://www.naukri.com/qa-engineer-jobs-in-pune
+2026-02-24 12:08:33 [INFO] Scraping page 1 [QA Engineer]...
+2026-02-24 12:08:39 [INFO] Found 20 cards on page 1
+2026-02-24 12:08:39 [INFO] [1] "Engineer - Quality Assurance" @ Easebuzz
+2026-02-24 12:08:42 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 12:08:52 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 12:08:52 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 12:10:44 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 12:10:44 [INFO] Fallback keyword score {"decision":"APPLY","score":76,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-24 12:10:44 [INFO] AI: APPLY (76) – keyword match: qa, automation, selenium, testing
+2026-02-24 12:10:47 [INFO] Applying: "Engineer - Quality Assurance" @ Easebuzz
+2026-02-24 12:11:13 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-24 12:12:40 [INFO] Form step 1 for Engineer_-_Quality_Assurance_Easebuzz_1771915119949
+2026-02-24 12:12:40 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 12:12:42 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 12:13:23 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 12:13:24 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 12:13:47 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 12:15:47 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 12:15:47 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 12:15:47 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 12:15:48 [INFO] [Learning] Reusing saved answer for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 12:15:48 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 12:16:18 [INFO] [Learning] Reusing saved answer for "Select experience" → "3"
+2026-02-24 12:16:18 [INFO] [FormFiller] AI-field "Select experience" → "3"
+2026-02-24 12:16:48 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 12:17:18 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 12:17:21 [WARN] No next/submit button on step 1 – breaking
+2026-02-24 12:17:22 [INFO] ✅ Applied [1]: Engineer - Quality Assurance
+2026-02-24 12:17:24 [INFO] [2] "Quality Assurance Engineer" @ Remote Office
+2026-02-24 12:17:29 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 12:18:23 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 12:18:23 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 12:19:29 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 12:19:29 [INFO] Fallback keyword score {"decision":"APPLY","score":92,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-24 12:19:29 [INFO] AI: APPLY (92) – keyword match: qa, automation, selenium, testing
+2026-02-24 12:19:31 [INFO] Applying: "Quality Assurance Engineer" @ Remote Office
+2026-02-24 12:19:31 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-24 12:19:33 [INFO] External tab opened: https://jobs.cvviz.com/remote_office/job_69237_quality_assurance_engineer&urlhash=dipi&trk=public_jobs_apply-link-offsite_sign-up-modal-sign-up-later – attempting to apply
+2026-02-24 12:19:35 [INFO] [ExtApply] External site: generic | https://jobs.cvviz.com/remote_office/job_69237_quality_assurance_engineer&urlhash=dipi&trk=public_jobs_apply-link-offsite_sign-up-modal-sign-up-later
+2026-02-24 12:19:37 [INFO] [ExtApply] Generic site – attempting smart apply
+2026-02-24 12:19:37 [INFO] [ExtApply] Form step 1 – URL: https://jobs.cvviz.com/remote_office/job_69237_quality_assurance_engineer&urlhash=dipi&trk=public_jobs_apply-link-offsite_sign-up-modal-sign-up-later
+2026-02-24 12:19:37 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 12:19:38 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 12:20:43 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 12:22:43 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 12:22:43 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 12:22:43 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 12:22:43 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 12:22:44 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 12:23:23 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 12:23:23 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 12:23:50 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 12:24:50 [INFO] [AI] Next action: click → "View all jobs" (redirect to job listing)
+2026-02-24 12:24:50 [INFO] [ExtApply] AI navigation: click "View all jobs"
+2026-02-24 12:24:53 [INFO] [ExtApply] AI navigation click succeeded
+2026-02-24 12:24:53 [INFO] [ExtApply] Form step 2 – URL: https://jobs.cvviz.com/remote_office
+2026-02-24 12:24:53 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 12:24:53 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 12:25:58 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 12:27:56 [INFO] [AI] Form analysis: 4 field answers generated
+2026-02-24 12:27:56 [INFO] [FormFiller] AI pre-built 3 answers (cached)
+2026-02-24 12:27:56 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 12:27:59 [INFO] [ExtApply] Clicked submit: "button:has-text("Apply")"
+2026-02-24 12:28:01 [INFO] [ExtApply] Form step 3 – URL: https://jobs.cvviz.com/remote_office/job_73441_Dynamics_365-_Senior_QA_Tester
+2026-02-24 12:28:01 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 12:28:01 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 12:28:23 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 12:28:23 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 12:29:07 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 12:31:07 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 12:31:07 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 12:31:07 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 12:31:07 [INFO] [FormFiller] Keyword "First Name *" → name
+2026-02-24 12:31:08 [INFO] [FormFiller] Keyword "Last Name *" → name
+2026-02-24 12:31:09 [INFO] [FormFiller] Keyword "Email Address *" → email
+2026-02-24 12:31:11 [INFO] [FormFiller] Keyword "Mobile Number *" → phone
+2026-02-24 12:31:12 [INFO] [Learning] Reusing saved answer for "Current Job Title" → "Pune, India"
+2026-02-24 12:31:12 [INFO] [FormFiller] AI-field "Current Job Title" → "Pune, India"
+2026-02-24 12:31:14 [INFO] [FormFiller] Keyword "Current Company" → currentRole
+2026-02-24 12:31:18 [INFO] [Learning] Reusing saved answer for "Current Job Duration" → "Pune, India"
+2026-02-24 12:31:18 [INFO] [FormFiller] AI-field "Current Job Duration" → "Pune, India"
+2026-02-24 12:31:19 [INFO] [Learning] Reusing saved answer for "Experience (in months)" → "3"
+2026-02-24 12:31:19 [INFO] [FormFiller] AI-field "Experience (in months)" → "3"
+2026-02-24 12:31:20 [INFO] [FormFiller] Keyword "Qualification" → education
+2026-02-24 12:31:26 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 12:32:31 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 12:33:23 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 12:33:23 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 12:33:43 [INFO] [AI] Field "Worked in Cities" → "Pune"
+2026-02-24 12:33:43 [INFO] [FormFiller] AI-field "Worked in Cities" → "Pune"
+2026-02-24 12:33:44 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 12:33:47 [INFO] [ExtApply] Clicked submit: "button:has-text("Apply")"
+2026-02-24 12:33:49 [INFO] [ExtApply] Success selector matched
+2026-02-24 12:33:49 [INFO] [ExtApply] Result: success
+2026-02-24 12:33:49 [INFO] ✅ Applied [2]: Quality Assurance Engineer
+2026-02-24 12:33:52 [INFO] [3] "QA Engineer" @ Enzigma Software
+2026-02-24 12:33:57 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 12:34:30 [INFO] ====================================
+2026-02-24 12:34:30 [INFO]   AutoApply – Job Application Bot
+2026-02-24 12:34:30 [INFO] ====================================
+2026-02-24 12:34:30 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-24 12:34:30 [INFO] [AIProvider] Fallback: Ollama (qwen2.5:7b @ http://localhost:11434)
+2026-02-24 12:34:30 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-24 12:34:30 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-24 12:34:30 [INFO] Dashboard running at http://localhost:3000
+2026-02-24 12:34:30 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 12:34:30 [INFO] [Seed] Learning list seeded: 14 Q&A pairs from config.json
+2026-02-24 12:34:31 [INFO] === AutoApply Worker Starting ===
+2026-02-24 12:34:31 [INFO] Loading session from auth.json
+2026-02-24 12:34:32 [INFO] Browser launched: headless=false, slowMo=20ms
+2026-02-24 12:34:33 [INFO] 
+=== Searching for: "QA Engineer" in "Pune" ===
+2026-02-24 12:34:33 [INFO] 
+[Search] ── Searching: "QA Engineer" in "Pune" ──
+2026-02-24 12:34:36 [INFO] [Search] Naukri homepage loaded
+2026-02-24 12:34:38 [WARN] [Search] ⚠️  Keyword input not found – using URL fallback
+2026-02-24 12:34:38 [INFO] [Search] Fallback URL: https://www.naukri.com/qa-engineer-jobs-in-pune
+2026-02-24 12:34:38 [INFO] Scraping page 1 [QA Engineer]...
+2026-02-24 12:34:44 [INFO] Found 20 cards on page 1
+2026-02-24 12:34:44 [INFO] [1] "Qa Engineer" @ Big Skill up
+2026-02-24 12:34:47 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 12:35:01 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 12:35:01 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 12:36:47 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 12:36:47 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-24 12:36:47 [INFO] AI: APPLY (100) – keyword match: qa, automation, selenium, testing
+2026-02-24 12:36:49 [INFO] Applying: "Qa Engineer" @ Big Skill up
+2026-02-24 12:36:50 [INFO] Clicked apply: "#apply-button"
+2026-02-24 12:36:56 [INFO] Form step 1 for Qa_Engineer_Big_Skill_up_1771916684351
+2026-02-24 12:36:56 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 12:36:57 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 12:38:02 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 12:39:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 12:39:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 12:39:50 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 12:40:02 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 12:40:02 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 12:40:02 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 12:40:02 [INFO] [Learning] Reusing saved answer for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 12:40:02 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 12:40:32 [INFO] [Learning] Reusing saved answer for "Select experience" → "3 Years 9 months"
+2026-02-24 12:40:32 [INFO] [FormFiller] AI-field "Select experience" → "3 Years 9 months"
+2026-02-24 12:40:56 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 12:41:02 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 12:41:32 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 12:41:34 [INFO] Success detected at step 1
+2026-02-24 12:41:34 [INFO] ✅ Applied [1]: Qa Engineer
+2026-02-24 12:41:37 [INFO] [2] "QA Engineer" @ Enzigma Software
+2026-02-24 12:41:40 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 12:43:40 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 12:43:40 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 12:43:40 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 12:43:40 [INFO] Skipped: "QA Engineer" (score: 5)
+2026-02-24 12:43:43 [INFO] [3] "QA Engineer Backend (Java Microservices)" @ Infracloud Technologies
+2026-02-24 12:43:45 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 12:44:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 12:44:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 12:45:45 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 12:45:45 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 12:45:45 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 12:45:45 [INFO] Skipped: "QA Engineer Backend (Java Microservices)" (score: 5)
+2026-02-24 12:45:47 [INFO] [4] "Teradata QA Engineer" @ Apptad
+2026-02-24 12:45:50 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 12:47:50 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 12:47:50 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 12:47:50 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 12:47:50 [INFO] Skipped: "Teradata QA Engineer" (score: 5)
+2026-02-24 12:47:53 [INFO] [5] "QA Engineer Backend" @ Infracloud Technologies
+2026-02-24 12:47:55 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 12:49:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 12:49:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 12:49:55 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 12:49:55 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 12:49:55 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 12:49:55 [INFO] Skipped: "QA Engineer Backend" (score: 5)
+2026-02-24 12:49:58 [INFO] [6] "QA Engineer Playwright" @ Logic Planet
+2026-02-24 12:50:01 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 12:52:01 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 12:52:01 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 12:52:01 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 12:52:01 [INFO] Skipped: "QA Engineer Playwright" (score: 5)
+2026-02-24 12:52:02 [INFO] [7] "Qa Engineer" @ Tata Consultancy Services
+2026-02-24 12:52:06 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 12:54:06 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 12:54:06 [INFO] Fallback keyword score {"decision":"APPLY","score":91,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 12:54:06 [INFO] AI: APPLY (91) – keyword match: qa, automation, playwright, selenium
+2026-02-24 12:54:08 [INFO] Applying: "Qa Engineer" @ Tata Consultancy Services
+2026-02-24 12:54:09 [INFO] Clicked apply: "#apply-button"
+2026-02-24 12:54:11 [INFO] Form step 1 for Qa_Engineer_Tata_Consultancy_Services_1771917722887
+2026-02-24 12:54:11 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 12:54:11 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 12:54:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 12:54:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 12:55:16 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 12:56:43 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 12:57:16 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 12:57:16 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 12:57:16 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 12:57:17 [INFO] [Learning] Reusing saved answer for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 12:57:17 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 12:57:47 [INFO] [Learning] Reusing saved answer for "Select experience" → "3 Years 9 months"
+2026-02-24 12:57:47 [INFO] [FormFiller] AI-field "Select experience" → "3 Years 9 months"
+2026-02-24 12:58:17 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 12:58:47 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-24 12:58:48 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 12:59:20 [WARN] No next/submit button on step 1 – breaking
+2026-02-24 12:59:20 [INFO] ✅ Applied [2]: Qa Engineer
+2026-02-24 12:59:22 [INFO] [8] "QA Engineer" @ Cognyte Analytics India
+2026-02-24 12:59:25 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 12:59:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 12:59:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 13:00:08 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 13:01:25 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 13:01:25 [INFO] Fallback keyword score {"decision":"APPLY","score":84,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-24 13:01:25 [INFO] AI: APPLY (84) – keyword match: qa, automation, selenium, testing
+2026-02-24 13:01:28 [INFO] Applying: "QA Engineer" @ Cognyte Analytics India
+2026-02-24 13:01:28 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-24 13:01:32 [INFO] Form step 1 for QA_Engineer_Cognyte_Analytics_India_1771918162055
+2026-02-24 13:01:32 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 13:01:32 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:02:37 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:04:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 13:04:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 13:04:37 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:04:37 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:04:37 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 13:04:37 [INFO] [Learning] Reusing saved answer for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 13:04:37 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 13:04:52 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 13:05:07 [INFO] [Learning] Reusing saved answer for "Select experience" → "3 Years 9 months"
+2026-02-24 13:05:07 [INFO] [FormFiller] AI-field "Select experience" → "3 Years 9 months"
+2026-02-24 13:05:38 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 13:06:08 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 13:06:10 [WARN] No next/submit button on step 1 – breaking
+2026-02-24 13:06:11 [INFO] ✅ Applied [3]: QA Engineer
+2026-02-24 13:06:15 [INFO] [9] "Qa Engineer" @ TSIT Digital
+2026-02-24 13:06:19 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 13:08:19 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 13:08:19 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 13:08:19 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 13:08:19 [INFO] Skipped: "Qa Engineer" (score: 5)
+2026-02-24 13:08:22 [INFO] [10] "ORAN Functional QA Engineer" @ MNC - ORAN Functional QA Engineer - Pune
+2026-02-24 13:08:26 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 13:09:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 13:09:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 13:10:26 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 13:10:26 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 13:10:26 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 13:10:28 [INFO] Applying: "ORAN Functional QA Engineer" @ MNC - ORAN Functional QA Engineer - Pune
+2026-02-24 13:10:28 [INFO] Clicked apply: "#apply-button"
+2026-02-24 13:10:30 [INFO] Form step 1 for ORAN_Functional_QA_Engineer_MNC_-_ORAN_Functional_QA_Engineer_-_Pune_1771918702497
+2026-02-24 13:10:30 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 13:10:31 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:11:36 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:13:30 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:13:30 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:13:36 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:13:36 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:13:36 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 13:13:36 [INFO] [Learning] Reusing saved answer for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 13:13:36 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 13:14:01 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 13:14:07 [INFO] [Learning] Reusing saved answer for "Select experience" → "3 Years 9 months"
+2026-02-24 13:14:07 [INFO] [FormFiller] AI-field "Select experience" → "3 Years 9 months"
+2026-02-24 13:14:29 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:14:30 [INFO] [SelfLearn] Starting cycle: 1 unanswered questions
+2026-02-24 13:14:30 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:14:37 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 13:15:07 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-24 13:15:08 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 13:15:30 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:15:30 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:15:34 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:15:35 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:15:40 [WARN] No next/submit button on step 1 – breaking
+2026-02-24 13:15:40 [INFO] ✅ Applied [4]: ORAN Functional QA Engineer
+2026-02-24 13:15:43 [INFO] [11] "Qa Engineer" @ TSIT Digital
+2026-02-24 13:15:48 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 13:17:31 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:17:31 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:17:34 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:17:34 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:17:34 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:17:35 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:17:35 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:17:35 [INFO] [SelfLearn] Cycle complete: 0/1 auto-answered
+2026-02-24 13:17:42 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:17:48 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 13:17:48 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 13:17:48 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 13:17:51 [INFO] Applying: "Qa Engineer" @ TSIT Digital
+2026-02-24 13:17:51 [INFO] Clicked apply: "#apply-button"
+2026-02-24 13:17:53 [INFO] Form step 1 for Qa_Engineer_TSIT_Digital_1771919143978
+2026-02-24 13:17:53 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 13:17:53 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:17:56 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:18:39 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:18:58 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:19:01 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:19:24 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-24 13:19:24 [INFO] [AIProvider] Fallback: Ollama (qwen2.5:7b @ http://localhost:11434)
+2026-02-24 13:19:24 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 13:19:24 [INFO] [Learning] Using exact match for "What is your full name?" → "Atul Patil"
+2026-02-24 13:19:30 [INFO] [SelfLearn] Starting cycle: 2 unanswered questions
+2026-02-24 13:19:30 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:19:31 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:19:31 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:20:35 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:20:40 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:20:40 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:20:40 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:20:58 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:20:58 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:20:58 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 13:20:58 [INFO] [Learning] Reusing saved answer for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 13:20:58 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 13:21:01 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:21:01 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:21:01 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:21:28 [INFO] [Learning] Reusing saved answer for "Select experience" → "3 Years 9 months"
+2026-02-24 13:21:28 [INFO] [FormFiller] AI-field "Select experience" → "3 Years 9 months"
+2026-02-24 13:21:31 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:21:31 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:21:45 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:21:58 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 13:22:06 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:22:29 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-24 13:22:30 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 13:22:35 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:22:35 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:22:35 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:23:02 [WARN] No next/submit button on step 1 – breaking
+2026-02-24 13:23:03 [INFO] ✅ Applied [5]: Qa Engineer
+2026-02-24 13:23:05 [INFO] [12] "Senior Quality Assurance (QA) Engineer" @ EU Tech Chamber
+2026-02-24 13:23:10 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 13:23:31 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:23:31 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:23:40 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:23:45 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:23:45 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:23:45 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:24:06 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:24:06 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:24:07 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:24:50 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:25:10 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 13:25:10 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-24 13:25:10 [INFO] AI: APPLY (100) – keyword match: qa, automation, selenium, testing
+2026-02-24 13:25:12 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:25:12 [INFO] Applying: "Senior Quality Assurance (QA) Engineer" @ EU Tech Chamber
+2026-02-24 13:25:13 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-24 13:25:14 [INFO] External tab opened: https://job.eutech.org/job/senior-quality-assurance-qa-engineer_m-f-d-100-remote/ – attempting to apply
+2026-02-24 13:25:17 [INFO] [ExtApply] External site: generic | https://job.eutech.org/job/senior-quality-assurance-qa-engineer_m-f-d-100-remote/
+2026-02-24 13:25:18 [INFO] [ExtApply] Generic site – attempting smart apply
+2026-02-24 13:25:21 [INFO] [ExtApply] Clicked: "button:has-text("Apply Now")"
+2026-02-24 13:25:21 [INFO] [ExtApply] Form step 1 – URL: https://job.eutech.org/job/senior-quality-assurance-qa-engineer_m-f-d-100-remote/
+2026-02-24 13:25:21 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 13:25:22 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:25:40 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:25:40 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:25:40 [INFO] [SelfLearn] Cycle complete: 0/2 auto-answered
+2026-02-24 13:26:27 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:26:51 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:26:51 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:26:51 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:27:12 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:27:12 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:27:12 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:27:56 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:28:17 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:28:27 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:28:27 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:28:27 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 13:28:27 [INFO] [Learning] Reusing saved answer for "Name" → "Atul Patil"
+2026-02-24 13:28:27 [INFO] [FormFiller] AI-field "Name" → "Atul Patil"
+2026-02-24 13:28:28 [INFO] [FormFiller] Keyword "Email" → email
+2026-02-24 13:28:30 [INFO] [FormFiller] Keyword "Phone" → phone
+2026-02-24 13:28:31 [INFO] [FormFiller] Keyword "Cover Letter(Optional)" → coverLetter
+2026-02-24 13:28:47 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-24 13:28:49 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 13:28:52 [INFO] [ExtApply] Clicked submit: "button:has-text("Submit")"
+2026-02-24 13:28:54 [INFO] [ExtApply] Form step 2 – URL: https://job.eutech.org/job/senior-quality-assurance-qa-engineer_m-f-d-100-remote/
+2026-02-24 13:28:54 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 13:28:54 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-24 13:28:54 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-24 13:28:56 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 13:29:13 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:29:30 [INFO] [SelfLearn] Starting cycle: 3 unanswered questions
+2026-02-24 13:29:30 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:29:56 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:29:56 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:29:56 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:30:17 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:30:17 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:30:17 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:30:19 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:30:35 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:31:01 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:31:23 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:32:19 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:32:19 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:32:19 [INFO] [ExtApply] AI says done: AI could not determine next action
+2026-02-24 13:32:19 [INFO] [ExtApply] Result: failed
+2026-02-24 13:32:19 [ERROR] ❌ Failed: Senior Quality Assurance (QA) Engineer
+2026-02-24 13:32:22 [INFO] [13] "QA Engineer" @ Lotusflare
+2026-02-24 13:32:26 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 13:32:35 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:32:35 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:32:35 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:33:01 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:33:01 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:33:23 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:33:23 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:33:23 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:33:40 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:34:26 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 13:34:26 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 13:34:26 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 13:34:28 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:34:29 [INFO] Applying: "QA Engineer" @ Lotusflare
+2026-02-24 13:34:29 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-24 13:34:31 [INFO] External tab opened: https://careers.lotusflare.com/jobs/519827-qa-engineer – attempting to apply
+2026-02-24 13:34:34 [INFO] [ExtApply] External site: generic | https://careers.lotusflare.com/jobs/519827-qa-engineer
+2026-02-24 13:34:36 [INFO] [ExtApply] Generic site – attempting smart apply
+2026-02-24 13:34:39 [INFO] [ExtApply] Clicked: "button:has-text("Apply for this job")"
+2026-02-24 13:34:39 [INFO] [ExtApply] Form step 1 – URL: https://careers.lotusflare.com/jobs/519827-qa-engineer
+2026-02-24 13:34:39 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 13:34:39 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:35:40 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:35:40 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:35:41 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:35:44 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:36:28 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:36:28 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:36:46 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:37:44 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:37:44 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:37:44 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 13:37:44 [INFO] [FormFiller] Keyword "First name*Required" → name
+2026-02-24 13:38:14 [INFO] [FormFiller] Keyword "Last name*Required" → name
+2026-02-24 13:38:44 [INFO] [FormFiller] Keyword "Email*Required" → email
+2026-02-24 13:38:46 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:38:46 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:38:46 [INFO] [SelfLearn] Cycle complete: 0/3 auto-answered
+2026-02-24 13:39:14 [INFO] [Learning] Reusing saved answer for "Phone number with country code" → "8552078787"
+2026-02-24 13:39:14 [INFO] [FormFiller] AI-field "Phone number with country code" → "8552078787"
+2026-02-24 13:39:30 [INFO] [SelfLearn] Starting cycle: 3 unanswered questions
+2026-02-24 13:39:30 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:39:45 [INFO] [Learning] Reusing saved answer for "Total experience Automation testing with Appium and/or Playw" → "3 Years 9 months"
+2026-02-24 13:39:45 [INFO] [FormFiller] AI-field "Total experience Automation testing with Appium an" → "3 Years 9 months"
+2026-02-24 13:40:15 [INFO] [Learning] Reusing saved answer for "Experience with project management and test management tools" → "3 Years 9 months"
+2026-02-24 13:40:15 [INFO] [FormFiller] AI-field "Experience with project management and test manage" → "3 Years 9 months"
+2026-02-24 13:40:35 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:40:45 [INFO] [Learning] Reusing saved answer for "Total years of experience with API testing tools such as SOA" → "3 Years 9 months"
+2026-02-24 13:40:45 [INFO] [FormFiller] AI-field "Total years of experience with API testing tools s" → "3 Years 9 months"
+2026-02-24 13:41:15 [INFO] [Learning] Reusing saved answer for "E\Total years of experience with version control systems and" → "3 Years 9 months"
+2026-02-24 13:41:15 [INFO] [FormFiller] AI-field "E\Total years of experience with version control s" → "3 Years 9 months"
+2026-02-24 13:41:36 [INFO] [SelfLearn] Auto-answered id=97 "Based on your background, what is your approach to" → "My approach to CI/CD integration involves automating testing processes using tools like Selenium and TestNG, integrating them with build automation tools such as Maven and Jenkins. I ensure that every code commit triggers an automated build and runs tests through pipelines, providing immediate feedback on the quality of the code changes. Additionally, I leverage REST Assured for API testing and Postman for API documentation to maintain a robust CI/CD pipeline."
+2026-02-24 13:41:37 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:41:45 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:42:42 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:42:50 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:43:18 [INFO] [SelfLearn] Auto-answered id=98 "How soon can you join us if selected?" → "30 days"
+2026-02-24 13:43:18 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:44:21 [INFO] [AI] Field "Total rears of Telco experience?*Required" → "3"
+2026-02-24 13:44:21 [INFO] [FormFiller] AI-field "Total rears of Telco experience?*Required" → "3"
+2026-02-24 13:44:23 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:44:51 [INFO] [Learning] Reusing saved answer for "Total years of experience in Develop and execute automation " → "My approach to CI/CD integration involves automating testing processes using tools like Selenium and TestNG, integrating them with build automation tools such as Maven and Jenkins. I ensure that every code commit triggers an automated build and runs tests through pipelines, providing immediate feedback on the quality of the code changes. Additionally, I leverage REST Assured for API testing and Postman for API documentation to maintain a robust CI/CD pipeline."
+2026-02-24 13:44:51 [INFO] [FormFiller] AI-field "Total years of experience in Develop and execute a" → "My approach to CI/CD integration involves automating testing"
+2026-02-24 13:45:16 [INFO] [SelfLearn] Auto-answered id=99 "List all test automation tools you have profession" → "Selenium, TestNG, Maven, Playwright, Ui-Licious"
+2026-02-24 13:45:16 [INFO] [SelfLearn] Cycle complete: 3/3 auto-answered
+2026-02-24 13:45:16 [INFO] [SelfLearn] Scheduled cycle auto-answered 3/3
+2026-02-24 13:45:21 [INFO] [FormFiller] Keyword "Current notice period*Required" → notice
+2026-02-24 13:45:51 [INFO] [FormFiller] Keyword "Cover letter" → coverLetter
+2026-02-24 13:46:21 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:47:26 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:48:28 [INFO] [AI] Field "candidate[answers attributes][0][boolean]" → "Yes"
+2026-02-24 13:48:28 [INFO] [FormFiller] Radio "candidate[answers attributes][0][boolean]" → "Yes"
+2026-02-24 13:48:29 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:49:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 13:49:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 13:49:34 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:49:51 [INFO] [AI] Field "candidate[answers attributes][1][boolean]" → "Yes"
+2026-02-24 13:49:51 [INFO] [FormFiller] Radio "candidate[answers attributes][1][boolean]" → "Yes"
+2026-02-24 13:50:52 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-24 13:50:53 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 13:50:57 [INFO] [ExtApply] Clicked submit: "button:has-text("Apply")"
+2026-02-24 13:50:59 [INFO] [ExtApply] Success selector matched
+2026-02-24 13:50:59 [INFO] [ExtApply] Result: success
+2026-02-24 13:50:59 [INFO] ✅ Applied [6]: QA Engineer
+2026-02-24 13:51:01 [INFO] [14] "Qa Engineer" @ Worldline
+2026-02-24 13:51:04 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 13:53:04 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 13:53:04 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 13:53:04 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 13:53:04 [INFO] Skipped: "Qa Engineer" (score: 5)
+2026-02-24 13:53:06 [INFO] [15] "QA Engineer" @ Mckinley Rice Creativity
+2026-02-24 13:53:09 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 13:54:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 13:54:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 13:55:09 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 13:55:09 [INFO] Fallback keyword score {"decision":"APPLY","score":91,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 13:55:09 [INFO] AI: APPLY (91) – keyword match: qa, automation, playwright, selenium
+2026-02-24 13:55:12 [INFO] Applying: "QA Engineer" @ Mckinley Rice Creativity
+2026-02-24 13:55:12 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-24 13:55:13 [INFO] External tab opened: https://mckinleyrice.com/careers#openRoles – attempting to apply
+2026-02-24 13:55:17 [INFO] [ExtApply] External site: generic | https://mckinleyrice.com/careers#openRoles
+2026-02-24 13:55:18 [INFO] [ExtApply] Generic site – attempting smart apply
+2026-02-24 13:55:18 [INFO] [ExtApply] Form step 1 – URL: https://mckinleyrice.com/careers#openRoles
+2026-02-24 13:55:18 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 13:55:19 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:56:24 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:58:24 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 13:58:24 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 13:58:24 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 13:58:24 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 13:59:29 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 13:59:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 13:59:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 14:00:31 [INFO] [AI] Field "English
+Korean" → "English"
+2026-02-24 14:00:31 [INFO] [FormFiller] Select "English
+Korean" → "English"
+2026-02-24 14:00:32 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 14:00:33 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 14:01:39 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 14:02:50 [INFO] [AI] Next action: click → "See Open Roles" (find available positions for application)
+2026-02-24 14:02:50 [INFO] [ExtApply] AI navigation: click "See Open Roles"
+2026-02-24 14:02:52 [INFO] [ExtApply] AI navigation click succeeded
+2026-02-24 14:02:52 [INFO] [ExtApply] Form step 2 – URL: https://mckinleyrice.com/careers#openRoles
+2026-02-24 14:02:52 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 14:02:52 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-24 14:02:53 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 14:03:58 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 14:04:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 14:04:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 14:04:57 [INFO] [AI] Field "English
+Korean" → "English"
+2026-02-24 14:04:57 [INFO] [FormFiller] Select "English
+Korean" → "English"
+2026-02-24 14:04:57 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 14:04:58 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 14:06:04 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 14:07:17 [INFO] [AI] Next action: click → "See Open Roles" (find available positions for application)
+2026-02-24 14:07:17 [INFO] [ExtApply] AI navigation: click "See Open Roles"
+2026-02-24 14:07:19 [INFO] [ExtApply] AI navigation click succeeded
+2026-02-24 14:07:19 [INFO] [ExtApply] Form step 3 – URL: https://mckinleyrice.com/careers#openRoles
+2026-02-24 14:07:19 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 14:07:19 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-24 14:07:20 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 14:08:25 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 14:09:25 [INFO] [AI] Field "English
+Korean" → "English"
+2026-02-24 14:09:26 [INFO] [FormFiller] Select "English
+Korean" → "English"
+2026-02-24 14:09:26 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 14:09:27 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 14:09:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 14:09:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 14:10:32 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 14:11:48 [INFO] [AI] Next action: click → "See Open Roles" (find available positions for application)
+2026-02-24 14:11:48 [INFO] [ExtApply] AI navigation: click "See Open Roles"
+2026-02-24 14:11:50 [INFO] [ExtApply] AI navigation click succeeded
+2026-02-24 14:11:50 [INFO] [ExtApply] Form step 4 – URL: https://mckinleyrice.com/careers#openRoles
+2026-02-24 14:11:50 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 14:11:50 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-24 14:11:50 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 14:12:55 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 14:13:55 [INFO] [AI] Field "English
+Korean" → "English"
+2026-02-24 14:13:56 [INFO] [FormFiller] Select "English
+Korean" → "English"
+2026-02-24 14:13:56 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 14:13:57 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 14:14:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 14:14:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 14:15:02 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 14:16:15 [INFO] [AI] Next action: click → "See Open Roles" (find available positions for application)
+2026-02-24 14:16:15 [INFO] [ExtApply] AI navigation: click "See Open Roles"
+2026-02-24 14:16:17 [INFO] [ExtApply] AI navigation click succeeded
+2026-02-24 14:16:17 [INFO] [ExtApply] Form step 5 – URL: https://mckinleyrice.com/careers#openRoles
+2026-02-24 14:16:17 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 14:16:17 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-24 14:16:17 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 14:17:22 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 14:18:24 [INFO] [AI] Field "English
+Korean" → "English"
+2026-02-24 14:18:24 [INFO] [FormFiller] Select "English
+Korean" → "English"
+2026-02-24 14:18:24 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 14:18:26 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 14:19:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 14:19:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 14:19:31 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 14:20:43 [INFO] [AI] Next action: click → "See Open Roles" (find available positions for application)
+2026-02-24 14:20:43 [INFO] [ExtApply] AI navigation: click "See Open Roles"
+2026-02-24 14:20:45 [INFO] [ExtApply] AI navigation click succeeded
+2026-02-24 14:20:45 [INFO] [ExtApply] Form step 6 – URL: https://mckinleyrice.com/careers#openRoles
+2026-02-24 14:20:45 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 14:20:45 [INFO] [FormFiller] AI answer map from cache (0 entries)
+2026-02-24 14:20:46 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 14:21:51 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 14:23:06 [INFO] [AI] Field "English
+Korean" → "English"
+2026-02-24 14:23:06 [INFO] [FormFiller] Select "English
+Korean" → "English"
+2026-02-24 14:23:06 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 14:23:07 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 14:24:13 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 14:24:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 14:24:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 14:25:33 [INFO] [AI] Next action: click → "See Open Roles" (find available positions for application)
+2026-02-24 14:25:33 [INFO] [ExtApply] AI navigation: click "See Open Roles"
+2026-02-24 14:25:33 [WARN] [ExtApply] AI navigation failed {"err":"locator.count: Target page, context or browser has been closed"}
+2026-02-24 14:25:33 [INFO] [ExtApply] No next/submit/AI-action found – assuming done
+2026-02-24 14:25:33 [INFO] [ExtApply] Result: failed
+2026-02-24 14:25:33 [WARN] Screenshot failed [error] {"err":"page.screenshot: Target page, context or browser has been closed"}
+2026-02-24 14:25:33 [ERROR] ❌ Failed: QA Engineer
+2026-02-24 14:25:34 [INFO] [16] "Unknown" @ Unknown
+2026-02-24 14:25:34 [WARN] Could not open job detail: Unknown_Unknown_1771923334617
+2026-02-24 14:25:36 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 14:26:13 [INFO] AI decision {"decision":"APPLY","score":85,"reason":"matches keywords QA, automation, Playwright, Selenium, SDET, test framework, CI/CD"}
+2026-02-24 14:26:13 [INFO] AI: APPLY (85) – matches keywords QA, automation, Playwright, Selenium, SDET, test framework, CI/CD
+2026-02-24 14:26:15 [INFO] Applying: "Unknown" @ Unknown
+2026-02-24 14:26:15 [ERROR] Apply attempt 0 error {"jobId":"Unknown_Unknown_1771923334617","err":"locator.count: Target page, context or browser has been closed"}
+2026-02-24 14:26:15 [WARN] Screenshot failed [error] {"err":"page.screenshot: Target page, context or browser has been closed"}
+2026-02-24 14:26:15 [INFO] Retry 1/3 for Unknown_Unknown_1771923334617
+2026-02-24 14:26:20 [ERROR] Apply attempt 1 error {"jobId":"Unknown_Unknown_1771923334617","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-24 14:26:20 [WARN] Screenshot failed [error] {"err":"page.screenshot: Target page, context or browser has been closed"}
+2026-02-24 14:26:20 [INFO] Retry 2/3 for Unknown_Unknown_1771923334617
+2026-02-24 14:26:28 [ERROR] Apply attempt 2 error {"jobId":"Unknown_Unknown_1771923334617","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-24 14:26:28 [WARN] Screenshot failed [error] {"err":"page.screenshot: Target page, context or browser has been closed"}
+2026-02-24 14:26:28 [INFO] Retry 3/3 for Unknown_Unknown_1771923334617
+2026-02-24 14:26:38 [INFO] [SelfLearn] Manual cycle triggered from dashboard
+2026-02-24 14:26:38 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 14:26:38 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 14:26:45 [ERROR] Apply attempt 3 error {"jobId":"Unknown_Unknown_1771923334617","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-24 14:26:45 [WARN] Screenshot failed [error] {"err":"page.screenshot: Target page, context or browser has been closed"}
+2026-02-24 14:26:45 [ERROR] ❌ Failed: Unknown
+2026-02-24 14:26:45 [ERROR] page.goto: Target page, context or browser has been closed
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\worker\worker.js:714:68
+    at async runWorker (C:\AAATTTTUUUULLL\Project\autoapply\src\worker\worker.js:714:13)
+    at async C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:62:5
+2026-02-24 14:26:46 [INFO] Browser closed
+2026-02-24 14:26:46 [INFO] === Session Summary ===
+2026-02-24 14:26:46 [INFO]   Total scanned : 16
+2026-02-24 14:26:46 [INFO]   Applied       : 6
+2026-02-24 14:26:46 [INFO]   Skipped (AI)  : 7
+2026-02-24 14:26:46 [INFO]   External sites: 0
+2026-02-24 14:26:46 [INFO]   Errors        : 3
+2026-02-24 14:26:46 [INFO]   Applied jobs:
+2026-02-24 14:26:46 [INFO]     ✅ Qa Engineer @ Big Skill up – https://www.naukri.com/job-listings-qa-engineer-big-skillup-india-pune-3-to-6-years-310126017155?src=directSearch&sid=17719166788531006&xp=1&px=1
+2026-02-24 14:26:46 [INFO]     ✅ Qa Engineer @ Tata Consultancy Services – https://www.naukri.com/job-listings-qa-engineer-tata-consultancy-services-hyderabad-pune-5-to-7-years-230226002980?src=directSearch&sid=17719166788531006&xp=7&px=1
+2026-02-24 14:26:46 [INFO]     ✅ QA Engineer @ Cognyte Analytics India – https://www.naukri.com/job-listings-qa-engineer-cognyte-analytics-india-private-limited-pune-4-to-8-years-200126500336?src=directSearch&sid=17719166788531006&xp=8&px=1
+2026-02-24 14:26:46 [INFO]     ✅ ORAN Functional QA Engineer @ MNC - ORAN Functional QA Engineer - Pune – https://www.naukri.com/job-listings-oran-functional-qa-engineer-ghrs-training-pune-5-to-8-years-120226035566?src=directSearch&sid=17719166788531006&xp=10&px=1
+2026-02-24 14:26:46 [INFO]     ✅ Qa Engineer @ TSIT Digital – https://www.naukri.com/job-listings-qa-engineer-tsit-digital-technologies-pune-chennai-bengaluru-5-to-8-years-040226025548?src=directSearch&sid=17719166788531006&xp=11&px=1
+2026-02-24 14:26:46 [INFO]     ✅ QA Engineer @ Lotusflare – https://www.naukri.com/job-listings-qa-engineer-lotusflare-pune-6-to-11-years-200126502290?src=directSearch&sid=17719166788531006&xp=13&px=1
+2026-02-24 14:26:46 [INFO] Session complete. Dashboard still running at http://localhost:3000
+2026-02-24 14:29:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 14:29:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 14:34:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 14:34:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 14:39:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 14:39:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 14:44:30 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 14:44:30 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 14:44:59 [INFO] ====================================
+2026-02-24 14:44:59 [INFO]   AutoApply – Job Application Bot
+2026-02-24 14:44:59 [INFO] ====================================
+2026-02-24 14:44:59 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-24 14:44:59 [INFO] [AIProvider] Fallback: Ollama (qwen2.5:7b @ http://localhost:11434)
+2026-02-24 14:44:59 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-24 14:44:59 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-24 14:44:59 [INFO] Dashboard running at http://localhost:3000
+2026-02-24 14:44:59 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 14:44:59 [INFO] [Seed] Learning list seeded: 14 Q&A pairs from config.json
+2026-02-24 14:45:00 [INFO] === AutoApply Worker Starting ===
+2026-02-24 14:45:01 [INFO] Loading session from auth.json
+2026-02-24 14:45:02 [INFO] Browser launched: headless=false, slowMo=20ms
+2026-02-24 14:45:02 [INFO] 
+=== Searching for: "QA Engineer" in "Pune" ===
+2026-02-24 14:45:02 [INFO] 
+[Search] ── Searching: "QA Engineer" in "Pune" ──
+2026-02-24 14:45:06 [INFO] [Search] Naukri homepage loaded
+2026-02-24 14:45:07 [INFO] [Search] Expanded header search bar
+2026-02-24 14:45:07 [WARN] [Search] ⚠️  Keyword input not found – using URL fallback
+2026-02-24 14:45:08 [INFO] [Search] Fallback URL: https://www.naukri.com/qa-engineer-jobs-in-pune
+2026-02-24 14:45:08 [INFO] Scraping page 1 [QA Engineer]...
+2026-02-24 14:45:13 [INFO] Found 20 cards on page 1
+2026-02-24 14:45:14 [INFO] [1] "Qa Engineer" @ Tata Consultancy Services
+2026-02-24 14:45:18 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 14:45:29 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 14:45:29 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 14:47:18 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 14:47:18 [INFO] Fallback keyword score {"decision":"APPLY","score":91,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 14:47:18 [INFO] AI: APPLY (91) – keyword match: qa, automation, playwright, selenium
+2026-02-24 14:47:20 [INFO] Applying: "Qa Engineer" @ Tata Consultancy Services
+2026-02-24 14:47:20 [INFO] Clicked apply: "#apply-button"
+2026-02-24 14:47:23 [INFO] Form step 1 for Qa_Engineer_Tata_Consultancy_Services_1771924514027
+2026-02-24 14:47:23 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 14:47:23 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 14:48:28 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 14:49:59 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 14:49:59 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 14:50:29 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 14:50:29 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 14:50:29 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 14:50:29 [INFO] [Learning] Using exact match for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 14:50:29 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 14:50:59 [INFO] [Learning] Using exact match for "Select experience" → "3 Years 9 months"
+2026-02-24 14:50:59 [INFO] [FormFiller] AI-field "Select experience" → "3 Years 9 months"
+2026-02-24 14:51:29 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 14:51:59 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-24 14:52:00 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 14:52:32 [WARN] No next/submit button on step 1 – breaking
+2026-02-24 14:52:32 [INFO] ✅ Applied [1]: Qa Engineer
+2026-02-24 14:52:34 [INFO] [2] "QA Engineer" @ Rockwell Automation
+2026-02-24 14:52:38 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 14:54:38 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 14:54:38 [INFO] Fallback keyword score {"decision":"APPLY","score":84,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-24 14:54:38 [INFO] AI: APPLY (84) – keyword match: qa, automation, selenium, testing
+2026-02-24 14:54:40 [INFO] Applying: "QA Engineer" @ Rockwell Automation
+2026-02-24 14:54:41 [INFO] Clicked apply: "button:has-text("Apply")"
+2026-02-24 14:54:43 [INFO] External tab opened: https://rockwellautomation.wd1.myworkdayjobs.com/en-US/External_Rockwell_Automation/job/Pune-India/QA-Engineer_R26-371 – attempting to apply
+2026-02-24 14:54:45 [INFO] [ExtApply] External site: workday | https://rockwellautomation.wd1.myworkdayjobs.com/en-US/External_Rockwell_Automation/job/Pune-India/QA-Engineer_R26-371
+2026-02-24 14:54:48 [INFO] [ExtApply] Workday detected
+2026-02-24 14:54:48 [INFO] [ExtApply] Form step 1 – URL: https://rockwellautomation.wd1.myworkdayjobs.com/en-US/External_Rockwell_Automation/job/Pune-India/QA-Engineer_R26-371
+2026-02-24 14:54:48 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 14:54:48 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 14:54:59 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 14:54:59 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 14:55:54 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 14:57:54 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 14:57:54 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 14:57:54 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 14:57:54 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 14:57:55 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 14:59:00 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 14:59:59 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 14:59:59 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 15:01:00 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 15:01:00 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 15:01:00 [INFO] [ExtApply] AI says done: AI could not determine next action
+2026-02-24 15:01:01 [INFO] [ExtApply] Result: failed
+2026-02-24 15:01:01 [ERROR] ❌ Failed: QA Engineer
+2026-02-24 15:01:03 [INFO] [3] "QA Engineer Playwright" @ Logic Planet
+2026-02-24 15:01:07 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 15:03:07 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 15:03:07 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 15:03:07 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 15:03:07 [INFO] Skipped: "QA Engineer Playwright" (score: 5)
+2026-02-24 15:03:09 [INFO] [4] "ORAN Functional QA Engineer" @ MNC - ORAN Functional QA Engineer - Pune
+2026-02-24 15:03:13 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 15:04:59 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 15:04:59 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 15:05:13 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 15:05:13 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 15:05:13 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 15:05:15 [INFO] Applying: "ORAN Functional QA Engineer" @ MNC - ORAN Functional QA Engineer - Pune
+2026-02-24 15:05:16 [INFO] Clicked apply: "#apply-button"
+2026-02-24 15:05:18 [INFO] Form step 1 for ORAN_Functional_QA_Engineer_MNC_-_ORAN_Functional_QA_Engineer_-_Pune_1771925589244
+2026-02-24 15:05:18 [INFO] [FormFiller] Starting AI-augmented smart form fill...
+2026-02-24 15:05:19 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 15:06:24 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to Ollama
+2026-02-24 15:08:24 [ERROR] [AIProvider] Ollama also failed: timeout of 120000ms exceeded
+2026-02-24 15:08:24 [ERROR] [AIProvider] All AI providers failed – returning empty response
+2026-02-24 15:08:24 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 15:08:25 [INFO] [Learning] Using exact match for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 15:08:25 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 15:08:55 [INFO] [Learning] Using exact match for "Select experience" → "3 Years 9 months"
+2026-02-24 15:08:55 [INFO] [FormFiller] AI-field "Select experience" → "3 Years 9 months"
+2026-02-24 15:09:41 [INFO] [Main] Configuration loaded successfully
+2026-02-24 15:09:41 [INFO] ====================================
+2026-02-24 15:09:41 [INFO]   AutoApply – Job Application Bot
+2026-02-24 15:09:41 [INFO] ====================================
+2026-02-24 15:09:41 [INFO] [Main] Starting Dashboard server on port 3000...
+2026-02-24 15:09:41 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-24 15:09:41 [INFO] [AIProvider] Fallback: Ollama (qwen2.5:7b @ http://localhost:11434)
+2026-02-24 15:09:41 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-24 15:09:41 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-24 15:09:41 [INFO] Dashboard running at http://localhost:3000
+2026-02-24 15:09:41 [INFO] [DB] Opened persistent connection: C:\AAATTTTUUUULLL\Project\autoapply\data\autoapply.db
+2026-02-24 15:09:41 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 15:09:41 [INFO] [Seed] Learning list seeded: 14 Q&A pairs from config.json
+2026-02-24 15:09:42 [INFO] [Main] Relaying control to Worker...
+2026-02-24 15:09:42 [INFO] === AutoApply Worker Starting ===
+2026-02-24 15:09:42 [INFO] [Browser] Launching chromium (headless=false, slowMo=20ms)
+2026-02-24 15:09:46 [INFO] [Browser] Loading persistent storage from auth.json
+2026-02-24 15:09:48 [INFO] [Browser] Launch successful
+2026-02-24 15:09:49 [INFO] 
+=== Searching for: "QA Engineer" in "Pune" ===
+2026-02-24 15:09:49 [INFO] 
+[Search] ── Searching: "QA Engineer" in "Pune" ──
+2026-02-24 15:09:52 [INFO] [Search] Naukri homepage loaded
+2026-02-24 15:09:52 [WARN] [Search] ⚠️  Keyword input not found – using URL fallback
+2026-02-24 15:09:53 [INFO] [Search] Fallback URL: https://www.naukri.com/qa-engineer-jobs-in-pune
+2026-02-24 15:09:53 [INFO] Scraping page 1 [QA Engineer]...
+2026-02-24 15:09:59 [INFO] Found 20 cards on page 1
+2026-02-24 15:09:59 [INFO] 
+[Worker] Processing Job 1/20 (Total Scanned: 1)
+2026-02-24 15:10:02 [INFO] [1] "Qa Engineer" @ Tata Consultancy Services
+2026-02-24 15:10:05 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 15:10:11 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 15:10:11 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 15:12:05 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 15:12:05 [INFO] Fallback keyword score {"decision":"APPLY","score":76,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-24 15:12:05 [INFO] AI: APPLY (76) – keyword match: qa, automation, selenium, testing
+2026-02-24 15:12:07 [INFO] Applying: "Qa Engineer" @ Tata Consultancy Services
+2026-02-24 15:12:07 [INFO] [Worker] Clicked APPLY: "#apply-button" - Clicking...
+2026-02-24 15:12:10 [INFO] 
+[Worker] Job Qa_Engineer_Tata_Consultancy_Services_1771926002580: Processing Form Step 1...
+2026-02-24 15:12:10 [INFO] [FormFiller] Starting AI-augmented fill: Hybrid AI
+2026-02-24 15:12:11 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 15:13:16 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 15:14:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 15:14:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 15:15:17 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 15:15:17 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 15:15:17 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 15:15:17 [ERROR] Apply attempt 0 error {"jobId":"Qa_Engineer_Tata_Consultancy_Services_1771926002580","err":"locator.all: Target page, context or browser has been closed"}
+2026-02-24 15:15:17 [WARN] Screenshot failed [error] {"err":"page.screenshot: Target page, context or browser has been closed"}
+2026-02-24 15:15:17 [INFO] Retry 1/3 for Qa_Engineer_Tata_Consultancy_Services_1771926002580
+2026-02-24 15:15:21 [ERROR] Apply attempt 1 error {"jobId":"Qa_Engineer_Tata_Consultancy_Services_1771926002580","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-24 15:15:21 [WARN] Screenshot failed [error] {"err":"page.screenshot: Target page, context or browser has been closed"}
+2026-02-24 15:15:21 [INFO] Retry 2/3 for Qa_Engineer_Tata_Consultancy_Services_1771926002580
+2026-02-24 15:15:25 [INFO] [Main] Configuration loaded successfully
+2026-02-24 15:15:25 [INFO] ====================================
+2026-02-24 15:15:25 [INFO]   AutoApply – Job Application Bot
+2026-02-24 15:15:25 [INFO] ====================================
+2026-02-24 15:15:25 [INFO] [Main] Starting Dashboard server on port 3000...
+2026-02-24 15:15:25 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-24 15:15:25 [INFO] [AIProvider] Fallback: Ollama (qwen2.5:7b @ http://localhost:11434)
+2026-02-24 15:15:25 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-24 15:15:25 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-24 15:15:25 [ERROR] Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at createDashboardServer (C:\AAATTTTUUUULLL\Project\autoapply\src\dashboard\server.js:225:10)
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:38:3
+    at Object.<anonymous> (C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:76:3)
+    at Module._compile (node:internal/modules/cjs/loader:1688:14)
+    at Object..js (node:internal/modules/cjs/loader:1820:10)
+    at Module.load (node:internal/modules/cjs/loader:1423:32)
+    at Function._load (node:internal/modules/cjs/loader:1246:12)
+2026-02-24 15:15:26 [INFO] [Main] Relaying control to Worker...
+2026-02-24 15:15:26 [INFO] === AutoApply Worker Starting ===
+2026-02-24 15:15:26 [INFO] [DB] Opened persistent connection: C:\AAATTTTUUUULLL\Project\autoapply\data\autoapply.db
+2026-02-24 15:15:26 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 15:15:26 [INFO] [Browser] Launching chromium (headless=false, slowMo=20ms)
+2026-02-24 15:15:27 [INFO] [Browser] Loading persistent storage from auth.json
+2026-02-24 15:15:29 [INFO] [Browser] Launch successful
+2026-02-24 15:15:29 [INFO] 
+=== Searching for: "QA Engineer" in "Pune" ===
+2026-02-24 15:15:29 [INFO] 
+[Search] ── Searching: "QA Engineer" in "Pune" ──
+2026-02-24 15:15:29 [ERROR] Apply attempt 2 error {"jobId":"Qa_Engineer_Tata_Consultancy_Services_1771926002580","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-24 15:15:29 [WARN] Screenshot failed [error] {"err":"page.screenshot: Target page, context or browser has been closed"}
+2026-02-24 15:15:29 [INFO] Retry 3/3 for Qa_Engineer_Tata_Consultancy_Services_1771926002580
+2026-02-24 15:15:32 [INFO] [Search] Naukri homepage loaded
+2026-02-24 15:15:34 [INFO] [Search] Expanded header search bar
+2026-02-24 15:15:35 [WARN] [Search] ⚠️  Keyword input not found – using URL fallback
+2026-02-24 15:15:35 [INFO] [Search] Fallback URL: https://www.naukri.com/qa-engineer-jobs-in-pune
+2026-02-24 15:15:35 [INFO] Scraping page 1 [QA Engineer]...
+2026-02-24 15:15:41 [INFO] Found 20 cards on page 1
+2026-02-24 15:15:41 [INFO] 
+[Worker] Processing Job 1/20 (Total Scanned: 1)
+2026-02-24 15:15:44 [INFO] [1] "QA Engineer Playwright" @ Logic Planet
+2026-02-24 15:15:47 [ERROR] Apply attempt 3 error {"jobId":"Qa_Engineer_Tata_Consultancy_Services_1771926002580","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-24 15:15:47 [WARN] Screenshot failed [error] {"err":"page.screenshot: Target page, context or browser has been closed"}
+2026-02-24 15:15:47 [ERROR] ❌ Failed: Qa Engineer
+2026-02-24 15:15:47 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 15:15:49 [INFO] 
+[Worker] Processing Job 2/20 (Total Scanned: 2)
+2026-02-24 15:15:49 [INFO] [2] "Unknown" @ Unknown
+2026-02-24 15:15:49 [WARN] Could not open job detail: Unknown_Unknown_1771926349200
+2026-02-24 15:15:50 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 15:17:47 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 15:17:47 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 15:17:47 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 15:17:48 [INFO] Skipped: "QA Engineer Playwright" (score: 5)
+2026-02-24 15:17:49 [INFO] 
+[Worker] Processing Job 2/20 (Total Scanned: 2)
+2026-02-24 15:17:50 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 15:17:50 [INFO] Fallback keyword score {"decision":"SKIP","score":0,"reason":"no keyword matches"}
+2026-02-24 15:17:50 [INFO] AI: SKIP (0) – no keyword matches
+2026-02-24 15:17:50 [INFO] Skipped: "Unknown" (score: 0)
+2026-02-24 15:17:50 [ERROR] page.goto: Target page, context or browser has been closed
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\worker\worker.js:722:68
+    at async runWorker (C:\AAATTTTUUUULLL\Project\autoapply\src\worker\worker.js:722:13)
+    at async C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:69:5
+2026-02-24 15:17:52 [INFO] Browser closed
+2026-02-24 15:17:52 [INFO] === Session Summary ===
+2026-02-24 15:17:52 [INFO]   Total scanned : 2
+2026-02-24 15:17:52 [INFO]   Applied       : 0
+2026-02-24 15:17:52 [INFO]   Skipped (AI)  : 1
+2026-02-24 15:17:52 [INFO]   External sites: 0
+2026-02-24 15:17:52 [INFO]   Errors        : 1
+2026-02-24 15:17:52 [INFO] === AutoApply Session Complete ===
+2026-02-24 15:17:52 [INFO] [Main] Dashboard remains active at http://localhost:3000
+2026-02-24 15:17:52 [INFO] [2] "ORAN Functional QA Engineer" @ MNC - ORAN Functional QA Engineer - Pune
+2026-02-24 15:17:57 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 15:19:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 15:19:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 15:19:57 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 15:19:57 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 15:19:57 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 15:20:00 [INFO] Applying: "ORAN Functional QA Engineer" @ MNC - ORAN Functional QA Engineer - Pune
+2026-02-24 15:20:00 [INFO] [Worker] Clicked APPLY: "#apply-button" - Clicking...
+2026-02-24 15:20:05 [INFO] 
+[Worker] Job ORAN_Functional_QA_Engineer_MNC_-_ORAN_Functional_QA_Engineer_-_Pune_1771926472805: Processing Form Step 1...
+2026-02-24 15:20:05 [INFO] [FormFiller] Starting AI-augmented fill: Hybrid AI
+2026-02-24 15:20:06 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 15:21:11 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 15:23:11 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 15:23:11 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 15:23:11 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 15:23:11 [INFO] [Learning] Using exact match for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 15:23:11 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 15:23:41 [INFO] [Learning] Using exact match for "Select experience" → "3 Years 9 months"
+2026-02-24 15:23:41 [INFO] [FormFiller] AI-field "Select experience" → "3 Years 9 months"
+2026-02-24 15:24:11 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 15:24:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 15:24:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 15:24:41 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-24 15:24:43 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 15:25:16 [WARN] No next/submit button on step 1 – breaking
+2026-02-24 15:25:19 [INFO] ✅ Applied [1]: ORAN Functional QA Engineer
+2026-02-24 15:25:22 [INFO] 
+[Worker] Processing Job 3/20 (Total Scanned: 3)
+2026-02-24 15:25:25 [INFO] [3] "QA Engineer Backend (Java Microservices)" @ Infracloud Technologies
+2026-02-24 15:25:30 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 15:27:30 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 15:27:30 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 15:27:30 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 15:27:30 [INFO] Skipped: "QA Engineer Backend (Java Microservices)" (score: 5)
+2026-02-24 15:27:32 [INFO] 
+[Worker] Processing Job 4/20 (Total Scanned: 4)
+2026-02-24 15:27:35 [INFO] [4] "QA Engineer Backend" @ Infracloud Technologies
+2026-02-24 15:27:39 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 15:29:39 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 15:29:39 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 15:29:39 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 15:29:39 [INFO] Skipped: "QA Engineer Backend" (score: 5)
+2026-02-24 15:29:41 [INFO] 
+[Worker] Processing Job 5/20 (Total Scanned: 5)
+2026-02-24 15:29:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 15:29:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 15:29:44 [INFO] [5] "Teradata QA Engineer" @ Apptad
+2026-02-24 15:29:50 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 15:31:18 [INFO] SIGINT – shutting down
+2026-02-24 15:34:30 [INFO] [Main] Configuration loaded successfully
+2026-02-24 15:34:30 [INFO] ====================================
+2026-02-24 15:34:30 [INFO]   AutoApply – Job Application Bot
+2026-02-24 15:34:30 [INFO] ====================================
+2026-02-24 15:34:30 [INFO] [Main] Starting Dashboard server on port 3000...
+2026-02-24 15:34:30 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-24 15:34:30 [INFO] [AIProvider] Fallback: Ollama (qwen2.5:7b @ http://localhost:11434)
+2026-02-24 15:34:30 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-24 15:34:30 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-24 15:34:30 [ERROR] Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at createDashboardServer (C:\AAATTTTUUUULLL\Project\autoapply\src\dashboard\server.js:225:10)
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:38:3
+    at Object.<anonymous> (C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:76:3)
+    at Module._compile (node:internal/modules/cjs/loader:1688:14)
+    at Object..js (node:internal/modules/cjs/loader:1820:10)
+    at Module.load (node:internal/modules/cjs/loader:1423:32)
+    at Function._load (node:internal/modules/cjs/loader:1246:12)
+2026-02-24 15:34:31 [INFO] [Main] Relaying control to Worker...
+2026-02-24 15:34:31 [INFO] === AutoApply Worker Starting ===
+2026-02-24 15:34:31 [INFO] [DB] Opened persistent connection: C:\AAATTTTUUUULLL\Project\autoapply\data\autoapply.db
+2026-02-24 15:34:31 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 15:34:31 [INFO] [Browser] Launching chromium (headless=false, slowMo=20ms)
+2026-02-24 15:34:31 [INFO] [Browser] Loading persistent storage from auth.json
+2026-02-24 15:34:32 [INFO] [Browser] Launch successful
+2026-02-24 15:34:32 [INFO] 
+=== Searching for: "QA Engineer" in "Pune" ===
+2026-02-24 15:34:32 [INFO] 
+[Search] ── Searching: "QA Engineer" in "Pune" ──
+2026-02-24 15:34:35 [INFO] [Search] Naukri homepage loaded
+2026-02-24 15:34:36 [INFO] [Search] Expanded header search bar
+2026-02-24 15:34:36 [WARN] [Search] ⚠️  Keyword input not found – using URL fallback
+2026-02-24 15:34:37 [INFO] [Search] Fallback URL: https://www.naukri.com/qa-engineer-jobs-in-pune
+2026-02-24 15:34:37 [INFO] Scraping page 1 [QA Engineer]...
+2026-02-24 15:34:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 15:34:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 15:34:43 [INFO] Found 20 cards on page 1
+2026-02-24 15:34:43 [INFO] 
+[Worker] Processing Job 1/20 (Total Scanned: 1)
+2026-02-24 15:34:46 [INFO] [1] "QA Engineer Playwright" @ Logic Planet
+2026-02-24 15:34:47 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 15:36:48 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 15:36:48 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 15:36:48 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 15:36:48 [INFO] Skipped: "QA Engineer Playwright" (score: 5)
+2026-02-24 15:36:50 [INFO] 
+[Worker] Processing Job 2/20 (Total Scanned: 2)
+2026-02-24 15:36:53 [INFO] [2] "ORAN Functional QA Engineer" @ MNC - ORAN Functional QA Engineer - Pune
+2026-02-24 15:36:55 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 15:38:55 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 15:38:55 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 15:38:55 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 15:38:58 [INFO] Applying: "ORAN Functional QA Engineer" @ MNC - ORAN Functional QA Engineer - Pune
+2026-02-24 15:38:58 [INFO] [Worker] Clicked APPLY: "#apply-button" - Clicking...
+2026-02-24 15:39:00 [INFO] 
+[Worker] Job ORAN_Functional_QA_Engineer_MNC_-_ORAN_Functional_QA_Engineer_-_Pune_1771927613153: Processing Form Step 1...
+2026-02-24 15:39:00 [INFO] [FormFiller] Starting AI-augmented fill: Hybrid AI
+2026-02-24 15:39:01 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 15:39:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 15:39:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 15:40:06 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 15:42:06 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 15:42:06 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 15:42:06 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 15:42:06 [INFO] [Learning] Using exact match for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 15:42:06 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 15:42:36 [INFO] [Learning] Using exact match for "Select experience" → "3 Years 9 months"
+2026-02-24 15:42:36 [INFO] [FormFiller] AI-field "Select experience" → "3 Years 9 months"
+2026-02-24 15:43:06 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 15:43:36 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-24 15:43:38 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 15:44:09 [WARN] No next/submit button on step 1 – breaking
+2026-02-24 15:44:10 [INFO] ✅ Applied [1]: ORAN Functional QA Engineer
+2026-02-24 15:44:12 [INFO] 
+[Worker] Processing Job 3/20 (Total Scanned: 3)
+2026-02-24 15:44:15 [INFO] [3] "QA Engineer Backend (Java Microservices)" @ Infracloud Technologies
+2026-02-24 15:44:18 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 15:44:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 15:44:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 15:46:18 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 15:46:18 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 15:46:18 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 15:46:18 [INFO] Skipped: "QA Engineer Backend (Java Microservices)" (score: 5)
+2026-02-24 15:46:21 [INFO] 
+[Worker] Processing Job 4/20 (Total Scanned: 4)
+2026-02-24 15:46:24 [INFO] [4] "QA Engineer Backend" @ Infracloud Technologies
+2026-02-24 15:46:26 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 15:48:26 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 15:48:26 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 15:48:26 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 15:48:26 [INFO] Skipped: "QA Engineer Backend" (score: 5)
+2026-02-24 15:48:29 [INFO] 
+[Worker] Processing Job 5/20 (Total Scanned: 5)
+2026-02-24 15:48:32 [INFO] [5] "Teradata QA Engineer" @ Apptad
+2026-02-24 15:48:34 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 15:49:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 15:49:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 15:50:34 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 15:50:34 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 15:50:34 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 15:50:34 [INFO] Skipped: "Teradata QA Engineer" (score: 5)
+2026-02-24 15:50:37 [INFO] 
+[Worker] Processing Job 6/20 (Total Scanned: 6)
+2026-02-24 15:50:41 [INFO] [6] "Qa Engineer" @ TSIT Digital
+2026-02-24 15:50:44 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 15:52:44 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 15:52:44 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 15:52:44 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 15:52:47 [INFO] Applying: "Qa Engineer" @ TSIT Digital
+2026-02-24 15:52:48 [INFO] [Worker] Clicked APPLY: "#apply-button" - Clicking...
+2026-02-24 15:52:50 [INFO] 
+[Worker] Job Qa_Engineer_TSIT_Digital_1771928441103: Processing Form Step 1...
+2026-02-24 15:52:50 [INFO] [FormFiller] Starting AI-augmented fill: Hybrid AI
+2026-02-24 15:52:51 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 15:53:57 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 15:54:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 15:54:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 15:55:57 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 15:55:57 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 15:55:57 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 15:55:57 [INFO] [Learning] Using exact match for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 15:55:57 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 15:56:27 [INFO] [Learning] Using exact match for "Select experience" → "3 Years 9 months"
+2026-02-24 15:56:27 [INFO] [FormFiller] AI-field "Select experience" → "3 Years 9 months"
+2026-02-24 15:56:57 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 15:57:27 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-24 15:57:29 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 15:58:00 [WARN] No next/submit button on step 1 – breaking
+2026-02-24 15:58:01 [INFO] ✅ Applied [2]: Qa Engineer
+2026-02-24 15:58:03 [INFO] 
+[Worker] Processing Job 7/20 (Total Scanned: 7)
+2026-02-24 15:58:06 [INFO] [7] "QA Engineer" @ Enzigma Software
+2026-02-24 15:58:10 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 15:59:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 15:59:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 16:00:10 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 16:00:10 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 16:00:10 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 16:00:10 [INFO] Skipped: "QA Engineer" (score: 5)
+2026-02-24 16:00:11 [INFO] 
+[Worker] Processing Job 8/20 (Total Scanned: 8)
+2026-02-24 16:00:14 [INFO] [8] "Qa Engineer" @ TSIT Digital
+2026-02-24 16:00:18 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 16:02:18 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 16:02:18 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 16:02:18 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 16:02:18 [INFO] Skipped: "Qa Engineer" (score: 5)
+2026-02-24 16:02:20 [INFO] 
+[Worker] Processing Job 9/20 (Total Scanned: 9)
+2026-02-24 16:02:23 [INFO] [9] "Qa Engineer" @ Tata Consultancy Services
+2026-02-24 16:02:25 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 16:04:25 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 16:04:25 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 16:04:25 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 16:04:27 [INFO] Applying: "Qa Engineer" @ Tata Consultancy Services
+2026-02-24 16:04:28 [INFO] [Worker] Clicked APPLY: "#apply-button" - Clicking...
+2026-02-24 16:04:33 [INFO] 
+[Worker] Job Qa_Engineer_Tata_Consultancy_Services_1771929143592: Processing Form Step 1...
+2026-02-24 16:04:33 [INFO] [FormFiller] Starting AI-augmented fill: Hybrid AI
+2026-02-24 16:04:34 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:04:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 16:04:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 16:05:39 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:07:39 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 16:07:39 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 16:07:39 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 16:07:39 [INFO] [Learning] Using exact match for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 16:07:39 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 16:08:09 [INFO] [Learning] Using exact match for "Select experience" → "3 Years 9 months"
+2026-02-24 16:08:09 [INFO] [FormFiller] AI-field "Select experience" → "3 Years 9 months"
+2026-02-24 16:08:39 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 16:09:09 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-24 16:09:11 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 16:09:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 16:09:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 16:09:43 [WARN] No next/submit button on step 1 – breaking
+2026-02-24 16:09:45 [INFO] ✅ Applied [3]: Qa Engineer
+2026-02-24 16:09:48 [INFO] 
+[Worker] Processing Job 10/20 (Total Scanned: 10)
+2026-02-24 16:09:51 [INFO] [10] "QA Engineer" @ Krazy Mantra It
+2026-02-24 16:09:56 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 16:11:56 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 16:11:56 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 16:11:56 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 16:11:56 [INFO] Skipped: "QA Engineer" (score: 5)
+2026-02-24 16:11:58 [INFO] 
+[Worker] Processing Job 11/20 (Total Scanned: 11)
+2026-02-24 16:12:01 [INFO] [11] "QA Engineer" @ Mundrisoft Solutions
+2026-02-24 16:12:04 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 16:14:04 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 16:14:04 [INFO] Fallback keyword score {"decision":"APPLY","score":84,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-24 16:14:04 [INFO] AI: APPLY (84) – keyword match: qa, automation, selenium, testing
+2026-02-24 16:14:07 [INFO] Applying: "QA Engineer" @ Mundrisoft Solutions
+2026-02-24 16:14:07 [INFO] [Worker] Clicked APPLY: "button:has-text("Apply")" - Clicking...
+2026-02-24 16:14:09 [INFO] External tab opened: https://mundrisoft.com/jobs/qa-engineer-pune-india/ – attempting to apply
+2026-02-24 16:14:15 [INFO] [ExtApply] Site Type: generic
+2026-02-24 16:14:15 [INFO] [ExtApply] External site: generic | https://mundrisoft.com/jobs/qa-engineer-pune-india/
+2026-02-24 16:14:17 [INFO] [ExtApply] Generic site handler started
+2026-02-24 16:14:17 [INFO] [ExtApply] Initial Apply match: "a:has-text("Apply Now")" - Clicking...
+2026-02-24 16:14:20 [INFO] [ExtApply] Form step 1 – URL: https://mundrisoft.com/jobs/qa-engineer-pune-india/
+2026-02-24 16:14:20 [INFO] [FormFiller] Starting AI-augmented fill: Hybrid AI
+2026-02-24 16:14:21 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:14:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 16:14:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 16:15:26 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:17:26 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 16:17:26 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 16:17:26 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 16:17:26 [INFO] [FormFiller] Keyword "Enter your Full Name*" → name
+2026-02-24 16:17:27 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:18:33 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:19:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 16:19:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 16:20:33 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 16:20:33 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 16:20:33 [INFO] [AI] Field "Enter your Current CTC" → ""
+2026-02-24 16:20:33 [INFO] [DB] Recording NEW unknown question: "Enter your Current CTC..."
+2026-02-24 16:20:33 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:21:38 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:23:38 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 16:23:38 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 16:23:38 [INFO] [AIAgent] Self-learned: "Enter your Current CTC..." -> "..."
+2026-02-24 16:23:39 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:24:41 [INFO] [SelfLearn] Starting cycle: 1 unanswered questions
+2026-02-24 16:24:42 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:24:44 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:24:59 [INFO] [AIProvider] Ollama response received in 15674ms
+2026-02-24 16:24:59 [INFO] [AI] Field "Enter your Expected CTC" → "10"
+2026-02-24 16:24:59 [INFO] [FormFiller] AI-field "Enter your Expected CTC" → "10"
+2026-02-24 16:25:00 [INFO] [FormFiller] Keyword "Enter your Total Experience" → experience
+2026-02-24 16:25:01 [INFO] [FormFiller] Keyword "Your Current Location" → location
+2026-02-24 16:25:02 [INFO] [FormFiller] Keyword "Your Notice period in months" → notice
+2026-02-24 16:25:03 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:25:47 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:26:08 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:27:47 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 16:27:47 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 16:27:47 [INFO] [AIAgent] Self-learned: "Enter your Current CTC..." -> "..."
+2026-02-24 16:27:47 [INFO] [SelfLearn] Cycle complete: 0/1 auto-answered
+2026-02-24 16:28:08 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 16:28:08 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 16:28:08 [INFO] [AI] Field "Technology Stack" → ""
+2026-02-24 16:28:08 [INFO] [DB] Recording NEW unknown question: "Technology Stack..."
+2026-02-24 16:28:09 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:29:14 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:29:41 [INFO] [SelfLearn] Starting cycle: 2 unanswered questions
+2026-02-24 16:29:41 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:30:47 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:31:14 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 16:31:14 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 16:31:14 [INFO] [AIAgent] Self-learned: "Technology Stack..." -> "..."
+2026-02-24 16:31:14 [INFO] [FormFiller] Keyword "Enter your Email" → email
+2026-02-24 16:31:17 [INFO] [FormFiller] Keyword "Enter your Phone" → phone
+2026-02-24 16:31:18 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-24 16:31:19 [WARN] [FormFiller] Truly unmatched (AI + keyword both failed): {"unmatched":[{"label":"Enter your Current CTC","type":"text"},{"label":"Technology Stack","type":"text"}]}
+2026-02-24 16:31:19 [INFO] [FormFiller] Done. Unmatched: 2
+2026-02-24 16:31:53 [INFO] [ExtApply] No basic buttons found, invoking AI Navigation fallback
+2026-02-24 16:31:53 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:32:47 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 16:32:47 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 16:32:47 [INFO] [AIAgent] Self-learned: "Enter your Current CTC..." -> "..."
+2026-02-24 16:32:47 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:32:58 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:33:52 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:34:58 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 16:34:58 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 16:34:58 [INFO] [ExtApply] AI says done: AI could not determine next action
+2026-02-24 16:34:58 [INFO] [ExtApply] Result: failed
+2026-02-24 16:34:59 [ERROR] ❌ Failed: QA Engineer
+2026-02-24 16:35:02 [INFO] 
+[Worker] Processing Job 12/20 (Total Scanned: 12)
+2026-02-24 16:35:05 [INFO] [12] "QA Engineer" @ TalentWell Solutions
+2026-02-24 16:35:08 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 16:35:52 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 16:35:52 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 16:35:52 [INFO] [AIAgent] Self-learned: "Technology Stack..." -> "..."
+2026-02-24 16:35:52 [INFO] [SelfLearn] Cycle complete: 0/2 auto-answered
+2026-02-24 16:37:08 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 16:37:08 [INFO] Fallback keyword score {"decision":"APPLY","score":76,"reason":"keyword match: qa, automation, selenium, testing"}
+2026-02-24 16:37:08 [INFO] AI: APPLY (76) – keyword match: qa, automation, selenium, testing
+2026-02-24 16:37:10 [INFO] Applying: "QA Engineer" @ TalentWell Solutions
+2026-02-24 16:37:10 [INFO] [Worker] Clicked APPLY: "button:has-text("Apply")" - Clicking...
+2026-02-24 16:37:13 [INFO] External tab opened: https://talentwell.in/careers/ – attempting to apply
+2026-02-24 16:37:16 [INFO] [ExtApply] Site Type: generic
+2026-02-24 16:37:16 [INFO] [ExtApply] External site: generic | https://talentwell.in/careers/
+2026-02-24 16:37:18 [INFO] [ExtApply] Generic site handler started
+2026-02-24 16:37:18 [INFO] [ExtApply] Initial Apply match: "a:has-text("Apply Now")" - Clicking...
+2026-02-24 16:37:22 [INFO] [ExtApply] Form step 1 – URL: https://talentwell.in/apply-now/
+2026-02-24 16:37:22 [INFO] [FormFiller] Starting AI-augmented fill: Hybrid AI
+2026-02-24 16:37:22 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:38:27 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:39:41 [INFO] [SelfLearn] Starting cycle: 2 unanswered questions
+2026-02-24 16:39:42 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:40:27 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 16:40:27 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 16:40:27 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 16:40:28 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:40:47 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:41:33 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:42:47 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 16:42:47 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 16:42:47 [INFO] [AIAgent] Self-learned: "Enter your Current CTC..." -> "..."
+2026-02-24 16:42:47 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:43:33 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 16:43:33 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 16:43:33 [INFO] [AI] Field "Candidate Name: *" → ""
+2026-02-24 16:43:33 [INFO] [DB] Recording NEW unknown question: "Candidate Name: *..."
+2026-02-24 16:43:34 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:43:52 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:44:39 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:45:52 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 16:45:52 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 16:45:52 [INFO] [AIAgent] Self-learned: "Technology Stack..." -> "..."
+2026-02-24 16:45:52 [INFO] [SelfLearn] Cycle complete: 0/2 auto-answered
+2026-02-24 16:46:39 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 16:46:39 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 16:46:39 [INFO] [AIAgent] Self-learned: "Candidate Name: *..." -> "..."
+2026-02-24 16:46:39 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:47:44 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:49:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 16:49:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 16:49:44 [ERROR] [AIProvider] Ollama fallback failed: timeout of 120000ms exceeded
+2026-02-24 16:49:44 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 16:49:44 [INFO] [AI] Field "WhatsApp Number: *" → ""
+2026-02-24 16:49:44 [INFO] [DB] Recording NEW unknown question: "WhatsApp Number: *..."
+2026-02-24 16:49:44 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 16:50:50 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 16:50:58 [INFO] SIGINT – shutting down
+2026-02-24 16:54:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 16:54:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 16:57:06 [WARN] [Ollama] AI returned non-JSON – attempting heuristic parse {"raw":"I think we should SKIP this job. Score: 20. Reason: No experience."}
+2026-02-24 16:57:06 [INFO] [DB] Opened persistent connection: C:\AAATTTTUUUULLL\Project\autoapply\data\autoapply.db
+2026-02-24 16:57:06 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 16:59:37 [INFO] [Main] Configuration loaded successfully
+2026-02-24 16:59:37 [INFO] ====================================
+2026-02-24 16:59:37 [INFO]   AutoApply – Job Application Bot
+2026-02-24 16:59:37 [INFO] ====================================
+2026-02-24 16:59:37 [INFO] [Main] Starting Dashboard server on port 3000...
+2026-02-24 16:59:37 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-24 16:59:37 [INFO] [AIProvider] Fallback: Ollama (deepseek-r1:14b @ http://localhost:11434)
+2026-02-24 16:59:37 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-24 16:59:37 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-24 16:59:37 [ERROR] Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at createDashboardServer (C:\AAATTTTUUUULLL\Project\autoapply\src\dashboard\server.js:225:10)
+    at C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:38:3
+    at Object.<anonymous> (C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:76:3)
+    at Module._compile (node:internal/modules/cjs/loader:1688:14)
+    at Object..js (node:internal/modules/cjs/loader:1820:10)
+    at Module.load (node:internal/modules/cjs/loader:1423:32)
+    at Function._load (node:internal/modules/cjs/loader:1246:12)
+2026-02-24 16:59:38 [INFO] [Main] Relaying control to Worker...
+2026-02-24 16:59:38 [INFO] === AutoApply Worker Starting ===
+2026-02-24 16:59:38 [INFO] [DB] Opened persistent connection: C:\AAATTTTUUUULLL\Project\autoapply\data\autoapply.db
+2026-02-24 16:59:38 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 16:59:38 [INFO] [Browser] Launching chromium (headless=false, slowMo=20ms)
+2026-02-24 16:59:40 [INFO] [Browser] Loading persistent storage from auth.json
+2026-02-24 16:59:41 [INFO] [Browser] Launch successful
+2026-02-24 16:59:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 16:59:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 16:59:42 [INFO] 
+=== Searching for: "QA Engineer" in "Pune" ===
+2026-02-24 16:59:42 [INFO] 
+[Search] ── Searching: "QA Engineer" in "Pune" ──
+2026-02-24 16:59:45 [INFO] [Search] Naukri homepage loaded
+2026-02-24 16:59:46 [INFO] [Search] Expanded header search bar
+2026-02-24 16:59:47 [WARN] [Search] ⚠️  Keyword input not found – using URL fallback
+2026-02-24 16:59:47 [INFO] [Search] Fallback URL: https://www.naukri.com/qa-engineer-jobs-in-pune
+2026-02-24 16:59:47 [INFO] Scraping page 1 [QA Engineer]...
+2026-02-24 16:59:53 [INFO] Found 20 cards on page 1
+2026-02-24 16:59:53 [INFO] 
+[Worker] Processing Job 1/20 (Total Scanned: 1)
+2026-02-24 16:59:56 [INFO] [1] "QA Engineer Playwright" @ Logic Planet
+2026-02-24 16:59:59 [INFO] Sending job to Ollama (model: deepseek-r1:14b)
+2026-02-24 17:00:00 [WARN] Ollama request failed – falling back to keyword scorer Request failed with status code 404
+2026-02-24 17:00:00 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 17:00:00 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 17:00:00 [INFO] Skipped: "QA Engineer Playwright" (score: 5)
+2026-02-24 17:00:03 [INFO] 
+[Worker] Processing Job 2/20 (Total Scanned: 2)
+2026-02-24 17:00:06 [INFO] [2] "ORAN Functional QA Engineer" @ MNC - ORAN Functional QA Engineer - Pune
+2026-02-24 17:00:08 [INFO] Sending job to Ollama (model: deepseek-r1:14b)
+2026-02-24 17:00:08 [WARN] Ollama request failed – falling back to keyword scorer Request failed with status code 404
+2026-02-24 17:00:08 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 17:00:08 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 17:00:10 [INFO] Applying: "ORAN Functional QA Engineer" @ MNC - ORAN Functional QA Engineer - Pune
+2026-02-24 17:00:11 [INFO] [Worker] Clicked APPLY: "#apply-button" - Clicking...
+2026-02-24 17:00:13 [INFO] 
+[Worker] Job ORAN_Functional_QA_Engineer_MNC_-_ORAN_Functional_QA_Engineer_-_Pune_1771932606028: Processing Form Step 1...
+2026-02-24 17:00:13 [INFO] [FormFiller] Starting AI-augmented fill: Hybrid AI
+2026-02-24 17:00:13 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 17:01:18 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 17:01:18 [ERROR] [AIProvider] Ollama fallback failed: Request failed with status code 404
+2026-02-24 17:01:18 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 17:01:18 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 17:01:18 [INFO] [Learning] Using exact match for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 17:01:18 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 17:01:48 [INFO] [Learning] Using exact match for "Select experience" → "3 Years 9 months"
+2026-02-24 17:01:48 [INFO] [FormFiller] AI-field "Select experience" → "3 Years 9 months"
+2026-02-24 17:02:18 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 17:02:49 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-24 17:02:50 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 17:03:21 [WARN] No next/submit button on step 1 – breaking
+2026-02-24 17:03:22 [INFO] ✅ Applied [1]: ORAN Functional QA Engineer
+2026-02-24 17:03:24 [INFO] 
+[Worker] Processing Job 3/20 (Total Scanned: 3)
+2026-02-24 17:03:27 [INFO] [3] "QA Engineer Backend (Java Microservices)" @ Infracloud Technologies
+2026-02-24 17:03:30 [INFO] Sending job to Ollama (model: deepseek-r1:14b)
+2026-02-24 17:03:30 [WARN] Ollama request failed – falling back to keyword scorer Request failed with status code 404
+2026-02-24 17:03:30 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 17:03:30 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 17:03:30 [INFO] Skipped: "QA Engineer Backend (Java Microservices)" (score: 5)
+2026-02-24 17:03:32 [INFO] 
+[Worker] Processing Job 4/20 (Total Scanned: 4)
+2026-02-24 17:03:35 [INFO] [4] "QA Engineer Backend" @ Infracloud Technologies
+2026-02-24 17:03:38 [INFO] Sending job to Ollama (model: deepseek-r1:14b)
+2026-02-24 17:03:38 [WARN] Ollama request failed – falling back to keyword scorer Request failed with status code 404
+2026-02-24 17:03:38 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 17:03:38 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 17:03:38 [INFO] Skipped: "QA Engineer Backend" (score: 5)
+2026-02-24 17:03:40 [INFO] 
+[Worker] Processing Job 5/20 (Total Scanned: 5)
+2026-02-24 17:03:43 [INFO] [5] "Teradata QA Engineer" @ Apptad
+2026-02-24 17:03:46 [INFO] Sending job to Ollama (model: deepseek-r1:14b)
+2026-02-24 17:03:46 [WARN] Ollama request failed – falling back to keyword scorer Request failed with status code 404
+2026-02-24 17:03:46 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 17:03:46 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 17:03:46 [INFO] Skipped: "Teradata QA Engineer" (score: 5)
+2026-02-24 17:03:47 [INFO] 
+[Worker] Processing Job 6/20 (Total Scanned: 6)
+2026-02-24 17:03:50 [INFO] [6] "Qa Engineer" @ TSIT Digital
+2026-02-24 17:03:53 [INFO] Sending job to Ollama (model: deepseek-r1:14b)
+2026-02-24 17:03:53 [WARN] Ollama request failed – falling back to keyword scorer Request failed with status code 404
+2026-02-24 17:03:53 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 17:03:53 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 17:03:55 [INFO] Applying: "Qa Engineer" @ TSIT Digital
+2026-02-24 17:03:55 [INFO] [Worker] Clicked APPLY: "#apply-button" - Clicking...
+2026-02-24 17:03:57 [INFO] 
+[Worker] Job Qa_Engineer_TSIT_Digital_1771932830956: Processing Form Step 1...
+2026-02-24 17:03:57 [INFO] [FormFiller] Starting AI-augmented fill: Hybrid AI
+2026-02-24 17:03:57 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 17:04:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 17:04:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 17:05:03 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 17:05:03 [ERROR] [AIProvider] Ollama fallback failed: Request failed with status code 404
+2026-02-24 17:05:03 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 17:05:03 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 17:05:03 [INFO] [Learning] Using exact match for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 17:05:03 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 17:05:33 [INFO] [Learning] Using exact match for "Select experience" → "3 Years 9 months"
+2026-02-24 17:05:33 [INFO] [FormFiller] AI-field "Select experience" → "3 Years 9 months"
+2026-02-24 17:06:03 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 17:06:33 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-24 17:06:34 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 17:07:05 [WARN] No next/submit button on step 1 – breaking
+2026-02-24 17:07:05 [INFO] ✅ Applied [2]: Qa Engineer
+2026-02-24 17:07:08 [INFO] 
+[Worker] Processing Job 7/20 (Total Scanned: 7)
+2026-02-24 17:07:11 [INFO] [7] "QA Engineer" @ Enzigma Software
+2026-02-24 17:07:14 [INFO] Sending job to Ollama (model: deepseek-r1:14b)
+2026-02-24 17:07:14 [WARN] Ollama request failed – falling back to keyword scorer Request failed with status code 404
+2026-02-24 17:07:14 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 17:07:14 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 17:07:14 [INFO] Skipped: "QA Engineer" (score: 5)
+2026-02-24 17:07:17 [INFO] 
+[Worker] Processing Job 8/20 (Total Scanned: 8)
+2026-02-24 17:07:20 [INFO] [8] "Qa Engineer" @ TSIT Digital
+2026-02-24 17:07:22 [INFO] Sending job to Ollama (model: deepseek-r1:14b)
+2026-02-24 17:07:22 [WARN] Ollama request failed – falling back to keyword scorer Request failed with status code 404
+2026-02-24 17:07:22 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 17:07:22 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 17:07:22 [INFO] Skipped: "Qa Engineer" (score: 5)
+2026-02-24 17:07:25 [INFO] 
+[Worker] Processing Job 9/20 (Total Scanned: 9)
+2026-02-24 17:07:28 [INFO] [9] "Qa Engineer" @ Tata Consultancy Services
+2026-02-24 17:07:31 [INFO] Sending job to Ollama (model: deepseek-r1:14b)
+2026-02-24 17:07:31 [WARN] Ollama request failed – falling back to keyword scorer Request failed with status code 404
+2026-02-24 17:07:31 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 17:07:31 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 17:07:33 [INFO] Applying: "Qa Engineer" @ Tata Consultancy Services
+2026-02-24 17:07:33 [INFO] [Worker] Clicked APPLY: "#apply-button" - Clicking...
+2026-02-24 17:07:34 [INFO] 
+[Worker] Job Qa_Engineer_Tata_Consultancy_Services_1771933048065: Processing Form Step 1...
+2026-02-24 17:07:34 [INFO] [FormFiller] Starting AI-augmented fill: Hybrid AI
+2026-02-24 17:07:35 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 17:08:40 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 17:08:40 [ERROR] [AIProvider] Ollama fallback failed: Request failed with status code 404
+2026-02-24 17:08:40 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-24 17:08:40 [INFO] [FormFiller] AI pre-built 0 answers (cached)
+2026-02-24 17:08:40 [INFO] [Learning] Using exact match for "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 17:08:40 [INFO] [FormFiller] AI-field "Enter keyword / designation / companies" → "QA Engineer"
+2026-02-24 17:09:10 [INFO] [Learning] Using exact match for "Select experience" → "3 Years 9 months"
+2026-02-24 17:09:10 [INFO] [FormFiller] AI-field "Select experience" → "3 Years 9 months"
+2026-02-24 17:09:40 [INFO] [FormFiller] Keyword "Enter location" → location
+2026-02-24 17:09:41 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 17:09:41 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 17:10:10 [INFO] [FormFiller] Resume uploaded: Atul_Patil_Resume.pdf
+2026-02-24 17:10:12 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 17:10:43 [WARN] No next/submit button on step 1 – breaking
+2026-02-24 17:10:43 [INFO] ✅ Applied [3]: Qa Engineer
+2026-02-24 17:10:46 [INFO] 
+[Worker] Processing Job 10/20 (Total Scanned: 10)
+2026-02-24 17:10:49 [INFO] [10] "QA Engineer" @ Krazy Mantra It
+2026-02-24 17:10:52 [INFO] Sending job to Ollama (model: deepseek-r1:14b)
+2026-02-24 17:10:52 [WARN] Ollama request failed – falling back to keyword scorer Request failed with status code 404
+2026-02-24 17:10:52 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 17:10:52 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 17:10:52 [INFO] Skipped: "QA Engineer" (score: 5)
+2026-02-24 17:10:54 [INFO] 
+[Worker] Processing Job 11/20 (Total Scanned: 11)
+2026-02-24 17:10:57 [INFO] [11] "Qa Engineer" @ Worldline
+2026-02-24 17:10:59 [INFO] Sending job to Ollama (model: deepseek-r1:14b)
+2026-02-24 17:13:00 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 17:13:00 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 17:13:00 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 17:13:00 [INFO] Skipped: "Qa Engineer" (score: 5)
+2026-02-24 17:13:03 [INFO] 
+[Worker] Processing Job 12/20 (Total Scanned: 12)
+2026-02-24 17:13:06 [ERROR] GET /api/stats error {"err":"database disk image is malformed"}
+2026-02-24 17:13:06 [ERROR] GET /api/stats error {"err":"database disk image is malformed"}
+2026-02-24 17:13:06 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:13:06 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:13:06 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:13:06 [INFO] [12] "QA Engineer" @ Central Business Solutions Inc
+2026-02-24 17:13:11 [INFO] Sending job to Ollama (model: deepseek-r1:14b)
+2026-02-24 17:13:58 [ERROR] GET /api/stats error {"err":"database disk image is malformed"}
+2026-02-24 17:13:58 [ERROR] GET /api/stats error {"err":"database disk image is malformed"}
+2026-02-24 17:13:58 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:13:58 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:13:58 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:14:23 [ERROR] GET /api/stats error {"err":"database disk image is malformed"}
+2026-02-24 17:14:23 [ERROR] GET /api/stats error {"err":"database disk image is malformed"}
+2026-02-24 17:14:23 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:14:23 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:14:23 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:14:41 [WARN] [SelfLearn] Scheduled cycle error {"err":"database disk image is malformed"}
+2026-02-24 17:14:47 [WARN] Could not send init data {"err":"database disk image is malformed"}
+2026-02-24 17:14:47 [ERROR] GET /api/stats error {"err":"database disk image is malformed"}
+2026-02-24 17:14:47 [ERROR] GET /api/stats error {"err":"database disk image is malformed"}
+2026-02-24 17:14:47 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:14:47 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:14:47 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:15:01 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:15:04 [ERROR] GET /api/learning error {"err":"database disk image is malformed"}
+2026-02-24 17:15:11 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 17:15:11 [INFO] Fallback keyword score {"decision":"APPLY","score":61,"reason":"keyword match: qa, automation, testing, quality assurance"}
+2026-02-24 17:15:11 [INFO] AI: APPLY (61) – keyword match: qa, automation, testing, quality assurance
+2026-02-24 17:15:14 [INFO] Applying: "QA Engineer" @ Central Business Solutions Inc
+2026-02-24 17:15:14 [INFO] [Worker] Clicked APPLY: "button:has-text("Apply")" - Clicking...
+2026-02-24 17:15:18 [ERROR] GET /api/stats error {"err":"database disk image is malformed"}
+2026-02-24 17:15:18 [INFO] External tab opened: https://jobs.catsone.com/careers/4147-Central-Business-Solutions-Inc/jobs/16758102-QA-Engineer-with-DatabackupREcovery-experience-Pune-MH – attempting to apply
+2026-02-24 17:15:18 [ERROR] GET /api/stats error {"err":"database disk image is malformed"}
+2026-02-24 17:15:18 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:15:18 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:15:18 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:15:21 [INFO] [ExtApply] Site Type: generic
+2026-02-24 17:15:21 [INFO] [ExtApply] External site: generic | https://jobs.catsone.com/careers/4147-Central-Business-Solutions-Inc/jobs/16758102-QA-Engineer-with-DatabackupREcovery-experience-Pune-MH
+2026-02-24 17:15:22 [INFO] [ExtApply] Generic site handler started
+2026-02-24 17:15:22 [INFO] [ExtApply] Form step 1 – URL: https://jobs.catsone.com/careers/4147-Central-Business-Solutions-Inc/jobs/16758102-QA-Engineer-with-DatabackupREcovery-experience-Pune-MH
+2026-02-24 17:15:22 [INFO] [FormFiller] Starting AI-augmented fill: Hybrid AI
+2026-02-24 17:15:22 [WARN] [FormFiller] AI batch analysis failed, continuing with keyword match {"err":"database disk image is malformed"}
+2026-02-24 17:15:23 [INFO] [FormFiller] Done. Unmatched: 0
+2026-02-24 17:15:23 [INFO] [ExtApply] No basic buttons found, invoking AI Navigation fallback
+2026-02-24 17:15:24 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 17:32:45 [INFO] [Main] Configuration loaded successfully
+2026-02-24 17:32:45 [INFO] ====================================
+2026-02-24 17:32:45 [INFO]   AutoApply – Job Application Bot
+2026-02-24 17:32:45 [INFO] ====================================
+2026-02-24 17:32:45 [INFO] [Main] Starting Dashboard server on port 3000...
+2026-02-24 17:32:45 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-24 17:32:45 [INFO] [AIProvider] Fallback: Ollama (deepseek-r1:14b @ http://localhost:11434)
+2026-02-24 17:32:45 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-24 17:32:45 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-24 17:32:45 [INFO] Dashboard running at http://localhost:3000
+2026-02-24 17:32:45 [INFO] [DB] Opened persistent connection: C:\AAATTTTUUUULLL\Project\autoapply\data\autoapply.db
+2026-02-24 17:32:45 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 17:32:45 [WARN] [Seed] Could not seed learning list {"err":"database disk image is malformed"}
+2026-02-24 17:32:46 [INFO] [Main] Relaying control to Worker...
+2026-02-24 17:32:46 [INFO] === AutoApply Worker Starting ===
+2026-02-24 17:32:46 [INFO] [Browser] Launching chromium (headless=false, slowMo=20ms)
+2026-02-24 17:32:47 [INFO] [Browser] Loading persistent storage from auth.json
+2026-02-24 17:32:47 [INFO] [Browser] Launch successful
+2026-02-24 17:32:47 [INFO] 
+=== Searching for: "QA Engineer" in "Pune" ===
+2026-02-24 17:32:47 [INFO] 
+[Search] ── Searching: "QA Engineer" in "Pune" ──
+2026-02-24 17:32:51 [INFO] [Search] Naukri homepage loaded
+2026-02-24 17:32:52 [WARN] [Search] ⚠️  Keyword input not found – using URL fallback
+2026-02-24 17:32:52 [INFO] [Search] Fallback URL: https://www.naukri.com/qa-engineer-jobs-in-pune
+2026-02-24 17:32:52 [INFO] Scraping page 1 [QA Engineer]...
+2026-02-24 17:32:58 [INFO] Found 20 cards on page 1
+2026-02-24 17:32:58 [INFO] 
+[Worker] Processing Job 1/20 (Total Scanned: 1)
+2026-02-24 17:33:01 [INFO] [1] "QA Engineer Playwright" @ Logic Planet
+2026-02-24 17:33:01 [ERROR] SqliteError: database disk image is malformed
+    at Object.getJob (C:\AAATTTTUUUULLL\Project\autoapply\src\db\db.js:111:60)
+    at runWorker (C:\AAATTTTUUUULLL\Project\autoapply\src\worker\worker.js:621:31)
+    at async C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:69:5
+2026-02-24 17:33:02 [INFO] Browser closed
+2026-02-24 17:33:02 [INFO] === Session Summary ===
+2026-02-24 17:33:02 [INFO]   Total scanned : 1
+2026-02-24 17:33:02 [INFO]   Applied       : 0
+2026-02-24 17:33:02 [INFO]   Skipped (AI)  : 0
+2026-02-24 17:33:02 [INFO]   External sites: 0
+2026-02-24 17:33:02 [INFO]   Errors        : 0
+2026-02-24 17:33:02 [INFO] === AutoApply Session Complete ===
+2026-02-24 17:33:02 [INFO] [Main] Dashboard remains active at http://localhost:3000
+2026-02-24 17:33:15 [WARN] [SelfLearn] Scheduled cycle error {"err":"database disk image is malformed"}
+2026-02-24 17:33:18 [ERROR] GET /api/stats error {"err":"database disk image is malformed"}
+2026-02-24 17:33:18 [ERROR] GET /api/stats error {"err":"database disk image is malformed"}
+2026-02-24 17:33:18 [WARN] Could not send init data {"err":"database disk image is malformed"}
+2026-02-24 17:33:18 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:33:18 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:33:18 [ERROR] GET /api/jobs/all error {"err":"database disk image is malformed"}
+2026-02-24 17:39:23 [INFO] [Main] Configuration loaded successfully
+2026-02-24 17:39:23 [INFO] ====================================
+2026-02-24 17:39:23 [INFO]   AutoApply – Job Application Bot
+2026-02-24 17:39:23 [INFO] ====================================
+2026-02-24 17:39:23 [INFO] [Main] Starting Dashboard server on port 3000...
+2026-02-24 17:39:23 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-24 17:39:23 [INFO] [AIProvider] Fallback: Ollama (deepseek-r1:14b @ http://localhost:11434)
+2026-02-24 17:39:23 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-24 17:39:23 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-24 17:39:23 [INFO] Dashboard running at http://localhost:3000
+2026-02-24 17:39:23 [INFO] [DB] Opened persistent connection: C:\AAATTTTUUUULLL\Project\autoapply\data\autoapply.db
+2026-02-24 17:39:23 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 17:39:23 [INFO] [Seed] Learning list seeded: 14 Q&A pairs from config.json
+2026-02-24 17:39:24 [INFO] [Main] Relaying control to Worker...
+2026-02-24 17:39:24 [INFO] === AutoApply Worker Starting ===
+2026-02-24 17:39:24 [INFO] [Browser] Launching chromium (headless=false, slowMo=20ms)
+2026-02-24 17:39:24 [INFO] [Browser] Loading persistent storage from auth.json
+2026-02-24 17:39:25 [INFO] [Browser] Launch successful
+2026-02-24 17:39:25 [INFO] 
+=== Searching for: "QA Engineer" in "Pune" ===
+2026-02-24 17:39:25 [INFO] 
+[Search] ── Searching: "QA Engineer" in "Pune" ──
+2026-02-24 17:39:28 [INFO] [Search] Naukri homepage loaded
+2026-02-24 17:39:31 [INFO] [Search] Expanded header search bar
+2026-02-24 17:39:38 [WARN] [Search] ⚠️  Keyword input not found – using URL fallback
+2026-02-24 17:39:39 [INFO] [Search] Fallback URL: https://www.naukri.com/qa-engineer-jobs-in-pune
+2026-02-24 17:39:39 [INFO] Scraping page 1 [QA Engineer]...
+2026-02-24 17:39:48 [INFO] Found 20 cards on page 1
+2026-02-24 17:39:48 [INFO] 
+[Worker] Processing Job 1/20 (Total Scanned: 1)
+2026-02-24 17:39:51 [INFO] [1] "QA Engineer Playwright" @ Logic Planet
+2026-02-24 17:39:53 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 17:39:53 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 17:39:55 [INFO] Sending job to Ollama (model: deepseek-r1:14b)
+2026-02-24 17:41:55 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 17:41:55 [INFO] Fallback keyword score {"decision":"SKIP","score":5,"reason":"excluded keyword: \"10 years\""}
+2026-02-24 17:41:55 [INFO] AI: SKIP (5) – excluded keyword: "10 years"
+2026-02-24 17:41:55 [INFO] Skipped: "QA Engineer Playwright" (score: 5)
+2026-02-24 17:41:58 [INFO] 
+[Worker] Processing Job 2/20 (Total Scanned: 2)
+2026-02-24 17:42:01 [INFO] [2] "ORAN Functional QA Engineer" @ MNC - ORAN Functional QA Engineer - Pune
+2026-02-24 17:42:03 [INFO] Sending job to Ollama (model: deepseek-r1:14b)
+2026-02-24 17:44:03 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 17:44:03 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 17:44:03 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 17:44:06 [INFO] Applying: "ORAN Functional QA Engineer" @ MNC - ORAN Functional QA Engineer - Pune
+2026-02-24 17:44:06 [INFO] [Worker] Clicked APPLY: "#apply-button" - Clicking...
+2026-02-24 17:44:08 [INFO] 
+[Worker] Job ORAN_Functional_QA_Engineer_MNC_-_ORAN_Functional_QA_Engineer_-_Pune_1771935121192: Processing Form Step 1...
+2026-02-24 17:44:08 [INFO] [FormFiller] Starting AI-augmented fill: Hybrid AI
+2026-02-24 17:44:09 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 17:44:23 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 17:44:23 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 17:45:14 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 17:47:23 [INFO] [Main] Configuration loaded successfully
+2026-02-24 17:47:23 [INFO] ====================================
+2026-02-24 17:47:23 [INFO]   AutoApply – Job Application Bot
+2026-02-24 17:47:23 [INFO] ====================================
+2026-02-24 17:47:23 [INFO] [Main] Starting Dashboard server on port 3000...
+2026-02-24 17:47:23 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-24 17:47:23 [INFO] [AIProvider] Fallback: Ollama (qwen2.5:7b @ http://localhost:11434)
+2026-02-24 17:47:23 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-24 17:47:23 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-24 17:47:23 [INFO] Dashboard running at http://localhost:3000
+2026-02-24 17:47:23 [INFO] [DB] Opened persistent connection: C:\AAATTTTUUUULLL\Project\autoapply\data\autoapply.db
+2026-02-24 17:47:23 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 17:47:23 [INFO] [Seed] Learning list seeded: 14 Q&A pairs from config.json
+2026-02-24 17:47:24 [INFO] [Main] Relaying control to Worker...
+2026-02-24 17:47:24 [INFO] === AutoApply Worker Starting ===
+2026-02-24 17:47:24 [INFO] [Browser] Launching chromium (headless=false, slowMo=20ms)
+2026-02-24 17:47:25 [INFO] [Browser] Loading persistent storage from auth.json
+2026-02-24 17:47:25 [INFO] [Browser] Launch successful
+2026-02-24 17:47:25 [INFO] 
+=== Searching for: "QA Engineer" in "Pune" ===
+2026-02-24 17:47:25 [INFO] 
+[Search] ── Searching: "QA Engineer" in "Pune" ──
+2026-02-24 17:47:28 [INFO] [Search] Naukri homepage loaded
+2026-02-24 17:47:30 [INFO] [Search] Expanded header search bar
+2026-02-24 17:47:30 [WARN] [Search] ⚠️  Keyword input not found – using URL fallback
+2026-02-24 17:47:30 [INFO] [Search] Fallback URL: https://www.naukri.com/qa-engineer-jobs-in-pune
+2026-02-24 17:47:30 [INFO] Scraping page 1 [QA Engineer]...
+2026-02-24 17:47:36 [INFO] Found 20 cards on page 1
+2026-02-24 17:47:36 [INFO] 
+[Worker] Processing Job 1/20 (Total Scanned: 1)
+2026-02-24 17:47:39 [INFO] [1] "QA Engineer Playwright" @ Logic Planet
+2026-02-24 17:47:41 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 17:47:53 [INFO] [SelfLearn] Starting cycle: 76 unanswered questions
+2026-02-24 17:47:54 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 17:52:38 [INFO] [Main] Configuration loaded successfully
+2026-02-24 17:52:38 [INFO] ====================================
+2026-02-24 17:52:38 [INFO]   AutoApply – Job Application Bot
+2026-02-24 17:52:38 [INFO] ====================================
+2026-02-24 17:52:38 [INFO] [Main] Starting Dashboard server on port 3000...
+2026-02-24 17:52:38 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-24 17:52:38 [INFO] [AIProvider] Fallback: Ollama (qwen2.5:7b @ http://localhost:11434)
+2026-02-24 17:52:38 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-24 17:52:38 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-24 17:52:38 [INFO] Dashboard running at http://localhost:3000
+2026-02-24 17:52:38 [INFO] [DB] Opened persistent connection: C:\AAATTTTUUUULLL\Project\autoapply\data\autoapply.db
+2026-02-24 17:52:38 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 17:52:38 [INFO] [Seed] Learning list seeded: 14 Q&A pairs from config.json
+2026-02-24 17:52:39 [INFO] [Main] Relaying control to Worker...
+2026-02-24 17:52:39 [INFO] === AutoApply Worker Starting ===
+2026-02-24 17:52:39 [INFO] [Browser] Launching chromium (headless=false, slowMo=20ms)
+2026-02-24 17:52:39 [INFO] [Browser] Loading persistent storage from auth.json
+2026-02-24 17:52:39 [INFO] [Browser] Launch successful
+2026-02-24 17:52:40 [INFO] 
+=== Searching for: "QA Engineer" in "Pune" ===
+2026-02-24 17:52:40 [INFO] 
+[Search] ── Searching: "QA Engineer" in "Pune" ──
+2026-02-24 17:52:42 [INFO] [Search] Naukri homepage loaded
+2026-02-24 17:52:43 [INFO] [Search] Expanded header search bar
+2026-02-24 17:52:44 [WARN] [Search] ⚠️  Keyword input not found – using URL fallback
+2026-02-24 17:52:44 [INFO] [Search] Fallback URL: https://www.naukri.com/qa-engineer-jobs-in-pune
+2026-02-24 17:52:44 [INFO] Scraping page 1 [QA Engineer]...
+2026-02-24 17:52:51 [INFO] Found 20 cards on page 1
+2026-02-24 17:52:51 [INFO] 
+[Worker] Processing Job 1/20 (Total Scanned: 1)
+2026-02-24 17:52:54 [INFO] [1] "QA Engineer Playwright" @ Logic Planet
+2026-02-24 17:52:56 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 17:53:08 [INFO] [SelfLearn] Starting cycle: 76 unanswered questions
+2026-02-24 17:53:08 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 17:53:09 [INFO] AI decision {"decision":"APPLY","score":95,"reason":"matches keywords QA, automation, Playwright, Selenium, JavaScript, frontend testing"}
+2026-02-24 17:53:09 [INFO] AI: APPLY (95) – matches keywords QA, automation, Playwright, Selenium, JavaScript, frontend testing
+2026-02-24 17:53:11 [INFO] Applying: "QA Engineer Playwright" @ Logic Planet
+2026-02-24 17:53:11 [INFO] [Worker] Clicked APPLY: "button:has-text("Apply")" - Clicking...
+2026-02-24 17:53:14 [INFO] 
+[Worker] Job QA_Engineer_Playwright_Logic_Planet_1771935774084: Processing Form Step 1...
+2026-02-24 17:53:14 [INFO] [FormFiller] Starting AI-augmented fill: Hybrid AI
+2026-02-24 17:53:15 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 17:54:13 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 17:54:20 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 17:56:52 [INFO] [Main] Configuration loaded successfully
+2026-02-24 17:56:52 [INFO] ====================================
+2026-02-24 17:56:52 [INFO]   AutoApply – Job Application Bot
+2026-02-24 17:56:52 [INFO] ====================================
+2026-02-24 17:56:52 [INFO] [Main] Starting Dashboard server on port 3000...
+2026-02-24 17:56:52 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-24 17:56:52 [INFO] [AIProvider] Fallback: Ollama (qwen2.5:7b @ http://localhost:11434)
+2026-02-24 17:56:52 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-24 17:56:52 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-24 17:56:52 [INFO] Dashboard running at http://localhost:3000
+2026-02-24 17:56:53 [INFO] [DB] Opened persistent connection: C:\AAATTTTUUUULLL\Project\autoapply\data\autoapply.db
+2026-02-24 17:56:53 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 17:56:53 [INFO] [Seed] Learning list seeded: 14 Q&A pairs from config.json
+2026-02-24 17:56:53 [INFO] [Main] Relaying control to Worker...
+2026-02-24 17:56:53 [INFO] === AutoApply Worker Starting ===
+2026-02-24 17:56:53 [INFO] [Browser] Launching chromium (headless=false, slowMo=20ms)
+2026-02-24 17:56:55 [INFO] [Browser] Loading persistent storage from auth.json
+2026-02-24 17:56:56 [INFO] [Browser] Launch successful
+2026-02-24 17:56:56 [INFO] 
+=== Searching for: "QA Engineer" in "Pune" ===
+2026-02-24 17:56:56 [INFO] 
+[Search] ── Searching: "QA Engineer" in "Pune" ──
+2026-02-24 17:56:59 [INFO] [Search] Naukri homepage loaded
+2026-02-24 17:57:03 [INFO] [Search] Expanded header search bar
+2026-02-24 17:57:03 [WARN] [Search] ⚠️  Keyword input not found – using URL fallback
+2026-02-24 17:57:04 [INFO] [Search] Fallback URL: https://www.naukri.com/qa-engineer-jobs-in-pune
+2026-02-24 17:57:04 [INFO] Scraping page 1 [QA Engineer]...
+2026-02-24 17:57:10 [INFO] Found 20 cards on page 1
+2026-02-24 17:57:10 [INFO] 
+[Worker] Processing Job 1/20 (Total Scanned: 1)
+2026-02-24 17:57:13 [INFO] [1] "ORAN Functional QA Engineer" @ MNC - ORAN Functional QA Engineer - Pune
+2026-02-24 17:57:18 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 17:57:23 [INFO] [SelfLearn] Starting cycle: 76 unanswered questions
+2026-02-24 17:57:23 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 17:58:28 [WARN] [AIProvider] Gemini failed (rate limited (retry failed)) – falling back to local model
+2026-02-24 17:59:18 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 17:59:18 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 17:59:18 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 17:59:20 [INFO] Applying: "ORAN Functional QA Engineer" @ MNC - ORAN Functional QA Engineer - Pune
+2026-02-24 17:59:20 [INFO] [Worker] Clicked APPLY: "#apply-button" - Clicking...
+2026-02-24 17:59:21 [INFO] 
+[Worker] Job ORAN_Functional_QA_Engineer_MNC_-_ORAN_Functional_QA_Engineer_-_Pune_1771936033212: Processing Form Step 1...
+2026-02-24 17:59:21 [INFO] [FormFiller] Starting AI-augmented fill: Hybrid AI
+2026-02-24 17:59:22 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...
+2026-02-24 18:51:21 [INFO] [Main] Configuration loaded successfully
+2026-02-24 18:51:21 [INFO] ====================================
+2026-02-24 18:51:21 [INFO]   AutoApply – Job Application Bot
+2026-02-24 18:51:21 [INFO] ====================================
+2026-02-24 18:51:21 [INFO] [Main] Starting Dashboard server on port 3000...
+2026-02-24 18:51:21 [INFO] [AIProvider] Primary: Google Gemini (gemini-2.0-flash)
+2026-02-24 18:51:21 [INFO] [AIProvider] Fallback: Ollama (qwen2.5:7b @ http://localhost:11434)
+2026-02-24 18:51:21 [INFO] [AI] Provider: Gemini (gemini-2.0-flash) → Ollama fallback
+2026-02-24 18:51:21 [INFO] Gemini API key found – skipping Ollama warm-up
+2026-02-24 18:51:21 [INFO] Dashboard running at http://localhost:3000
+2026-02-24 18:51:21 [INFO] [DB] Opened persistent connection: C:\AAATTTTUUUULLL\Project\autoapply\data\autoapply.db
+2026-02-24 18:51:21 [INFO] Database initialized {"path":"C:\\AAATTTTUUUULLL\\Project\\autoapply\\data\\autoapply.db"}
+2026-02-24 18:51:21 [INFO] [Seed] Learning list seeded: 14 Q&A pairs from config.json
+2026-02-24 18:51:22 [INFO] [Main] Relaying control to Worker...
+2026-02-24 18:51:22 [INFO] === AutoApply Worker Starting ===
+2026-02-24 18:51:22 [INFO] [Browser] Launching chromium (headless=false, slowMo=20ms)
+2026-02-24 18:51:23 [INFO] [Browser] Loading persistent storage from auth.json
+2026-02-24 18:51:23 [INFO] [Browser] Launch successful
+2026-02-24 18:51:24 [INFO] 
+=== Searching for: "QA Engineer" in "Pune" ===
+2026-02-24 18:51:24 [INFO] 
+[Search] ── Searching: "QA Engineer" in "Pune" ──
+2026-02-24 18:51:26 [INFO] [Search] Naukri homepage loaded
+2026-02-24 18:51:27 [INFO] [Search] Expanded header search bar
+2026-02-24 18:51:28 [WARN] [Search] ⚠️  Keyword input not found – using URL fallback
+2026-02-24 18:51:28 [INFO] [Search] Fallback URL: https://www.naukri.com/qa-engineer-jobs-in-pune
+2026-02-24 18:51:28 [INFO] Scraping page 1 [QA Engineer]...
+2026-02-24 18:51:34 [INFO] Found 20 cards on page 1
+2026-02-24 18:51:34 [INFO] 
+[Worker] Processing Job 1/20 (Total Scanned: 1)
+2026-02-24 18:51:37 [INFO] [1] "ORAN Functional QA Engineer" @ MNC - ORAN Functional QA Engineer - Pune
+2026-02-24 18:51:39 [INFO] Sending job to Ollama (model: qwen2.5:7b)
+2026-02-24 18:51:51 [INFO] [SelfLearn] Starting cycle: 0 unanswered questions
+2026-02-24 18:51:51 [INFO] [SelfLearn] Cycle complete: 0/0 auto-answered
+2026-02-24 18:53:39 [WARN] Ollama request failed – falling back to keyword scorer timeout of 120000ms exceeded
+2026-02-24 18:53:39 [INFO] Fallback keyword score {"decision":"APPLY","score":100,"reason":"keyword match: qa, automation, playwright, selenium"}
+2026-02-24 18:53:39 [INFO] AI: APPLY (100) – keyword match: qa, automation, playwright, selenium
+2026-02-24 18:53:41 [INFO] Applying: "ORAN Functional QA Engineer" @ MNC - ORAN Functional QA Engineer - Pune
+2026-02-24 18:53:41 [INFO] [Worker] Clicked APPLY: "#apply-button" - Clicking...
+2026-02-24 18:53:43 [INFO] 
+[Worker] Job ORAN_Functional_QA_Engineer_MNC_-_ORAN_Functional_QA_Engineer_-_Pune_1771939297146: Processing Form Step 1...
+2026-02-24 18:53:43 [INFO] [FormFiller] Starting AI-augmented fill: Hybrid AI
+2026-02-24 18:53:46 [WARN] [AIProvider] Gemini rate limited (429) – waiting 65s then retrying...

@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "c:\\AAATTTTUUUULLL\\Project\\autoapply\\logs\\.5a6549ec2adca8c79f5711ad7399e8b882f9f774-audit.json",
+    "files": [
+        {
+            "date": 1772127472998,
+            "name": "c:\\AAATTTTUUUULLL\\Project\\autoapply\\logs\\error-2026-02-26.log",
+            "hash": "1f85eddd1d4c3b48c9d665fbe36ceab0e396e703a910c4d52bf1f33da805236a"
+        }
+    ],
+    "hashType": "sha256"
+}

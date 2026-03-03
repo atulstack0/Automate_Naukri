@@ -1,0 +1,359 @@
+2026-02-27 00:00:02 [ERROR] Error: Error occurred while removing C:\AAATTTTUUUULLL\Project\autoapply\logs\autoapply-2026-02-26.log: EBUSY: resource busy or locked, unlink 'C:\AAATTTTUUUULLL\Project\autoapply\logs\autoapply-2026-02-26.log'
+    at Object.unlinkSync (node:fs:1952:11)
+    at WriteStream.<anonymous> (C:\AAATTTTUUUULLL\Project\autoapply\node_modules\winston-daily-rotate-file\daily-rotate-file.js:165:32)
+    at WriteStream.emit (node:events:530:35)
+    at finish (node:internal/streams/writable:955:10)
+    at node:internal/streams/writable:936:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+2026-02-27 00:00:02 [ERROR] Error [ERR_STREAM_WRITE_AFTER_END]: write after end
+    at _write (node:internal/streams/writable:489:11)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at Object.<anonymous> (C:\AAATTTTUUUULLL\Project\autoapply\node_modules\file-stream-rotator\FileStreamRotator.js:630:26)
+    at DailyRotateFile.log (C:\AAATTTTUUUULLL\Project\autoapply\node_modules\winston-daily-rotate-file\daily-rotate-file.js:196:20)
+    at DailyRotateFile._write (C:\AAATTTTUUUULLL\Project\autoapply\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\AAATTTTUUUULLL\Project\autoapply\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\AAATTTTUUUULLL\Project\autoapply\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\AAATTTTUUUULLL\Project\autoapply\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\AAATTTTUUUULLL\Project\autoapply\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+    at DerivedLogger.emit (node:events:530:35)
+2026-02-27 00:08:59 [ERROR] Apply attempt 0 error {"jobId":"Quality_Assurance_Analyst_Quality_Assurance_Analyst_EAX_Media_1772131088654","err":"locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"Next\")').first()\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"ember275\" type=\"button\" aria-label=\"View next page\" class=\"artdeco-button artdeco-button--muted artdeco-button--icon-right artdeco-button--1 artdeco-button--tertiary ember-view jobs-search-pagination__button jobs-search-pagination__button--next\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div id=\"ember466\" aria-hidden=\"false\" data-test-modal-container=\"\" data-test-modal-id=\"easy-apply-modal\" class=\"artdeco-modal-overlay artdeco-modal-overlay--layer-default artdeco-modal-overlay--is-top-layer  ember-view\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div id=\"ember466\" aria-hidden=\"false\" data-test-modal-container=\"\" data-test-modal-id=\"easy-apply-modal\" class=\"artdeco-modal-overlay artdeco-modal-overlay--layer-default artdeco-modal-overlay--is-top-layer  ember-view\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    57 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div id=\"ember466\" aria-hidden=\"false\" data-test-modal-container=\"\" data-test-modal-id=\"easy-apply-modal\" class=\"artdeco-modal-overlay artdeco-modal-overlay--layer-default artdeco-modal-overlay--is-top-layer  ember-view\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"}
+2026-02-27 00:10:04 [ERROR] Apply attempt 1 error {"jobId":"Quality_Assurance_Analyst_Quality_Assurance_Analyst_EAX_Media_1772131088654","err":"locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"Next\")').first()\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"ember282\" type=\"button\" aria-label=\"View next page\" class=\"artdeco-button artdeco-button--muted artdeco-button--icon-right artdeco-button--1 artdeco-button--tertiary ember-view jobs-search-pagination__button jobs-search-pagination__button--next\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div id=\"ember324\" aria-hidden=\"false\" data-test-modal-container=\"\" data-test-modal-id=\"easy-apply-modal\" class=\"artdeco-modal-overlay artdeco-modal-overlay--layer-default artdeco-modal-overlay--is-top-layer  ember-view\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div id=\"ember324\" aria-hidden=\"false\" data-test-modal-container=\"\" data-test-modal-id=\"easy-apply-modal\" class=\"artdeco-modal-overlay artdeco-modal-overlay--layer-default artdeco-modal-overlay--is-top-layer  ember-view\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    56 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div id=\"ember324\" aria-hidden=\"false\" data-test-modal-container=\"\" data-test-modal-id=\"easy-apply-modal\" class=\"artdeco-modal-overlay artdeco-modal-overlay--layer-default artdeco-modal-overlay--is-top-layer  ember-view\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"}
+2026-02-27 00:12:05 [ERROR] Apply attempt 3 error {"jobId":"Quality_Assurance_Analyst_Quality_Assurance_Analyst_EAX_Media_1772131088654","err":"locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"Next\")').first()\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"ember300\" type=\"button\" aria-label=\"View next page\" class=\"artdeco-button artdeco-button--muted artdeco-button--icon-right artdeco-button--1 artdeco-button--tertiary ember-view jobs-search-pagination__button jobs-search-pagination__button--next\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div id=\"ember346\" aria-hidden=\"false\" data-test-modal-container=\"\" data-test-modal-id=\"easy-apply-modal\" class=\"artdeco-modal-overlay artdeco-modal-overlay--layer-default artdeco-modal-overlay--is-top-layer  ember-view\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div id=\"ember346\" aria-hidden=\"false\" data-test-modal-container=\"\" data-test-modal-id=\"easy-apply-modal\" class=\"artdeco-modal-overlay artdeco-modal-overlay--layer-default artdeco-modal-overlay--is-top-layer  ember-view\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    56 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div id=\"ember346\" aria-hidden=\"false\" data-test-modal-container=\"\" data-test-modal-id=\"easy-apply-modal\" class=\"artdeco-modal-overlay artdeco-modal-overlay--layer-default artdeco-modal-overlay--is-top-layer  ember-view\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"}
+2026-02-27 00:12:05 [ERROR] ❌ Failed: Quality Assurance Analyst
+Quality Assurance Analyst
+2026-02-27 00:13:20 [ERROR] Apply attempt 0 error {"jobId":"Manual_QA_Tester_Manual_QA_Tester_with_verification_KPG99_INC_1772131388687","err":"locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.jobs-apply-button--top-card button.jobs-apply-button').first()\u001b[22m\n\u001b[2m    - locator resolved to <button data-job-id=\"4375552815\" id=\"jobs-apply-button-id\" data-live-test-job-apply-button=\"\" aria-label=\"Easy Apply to Quality Assurance Analyst at EAX Media\" class=\"jobs-apply-button↵         artdeco-button artdeco-button--3 artdeco-button--primary ember-view\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div data-test-text-entity-list-form-component=\"\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div data-test-text-entity-list-form-component=\"\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <div data-test-text-entity-list-form-component=\"\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n"}
+2026-02-27 00:14:27 [ERROR] Apply attempt 1 error {"jobId":"Manual_QA_Tester_Manual_QA_Tester_with_verification_KPG99_INC_1772131388687","err":"locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"Next\")').first()\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"ember232\" type=\"button\" aria-label=\"View next page\" class=\"artdeco-button artdeco-button--muted artdeco-button--icon-right artdeco-button--1 artdeco-button--tertiary ember-view jobs-search-pagination__button jobs-search-pagination__button--next\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div id=\"ember313\" aria-hidden=\"false\" data-test-modal-container=\"\" data-test-modal-id=\"easy-apply-modal\" class=\"artdeco-modal-overlay artdeco-modal-overlay--layer-default artdeco-modal-overlay--is-top-layer  ember-view\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div id=\"ember313\" aria-hidden=\"false\" data-test-modal-container=\"\" data-test-modal-id=\"easy-apply-modal\" class=\"artdeco-modal-overlay artdeco-modal-overlay--layer-default artdeco-modal-overlay--is-top-layer  ember-view\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    12 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div id=\"ember313\" aria-hidden=\"false\" data-test-modal-container=\"\" data-test-modal-id=\"easy-apply-modal\" class=\"artdeco-modal-overlay artdeco-modal-overlay--layer-default artdeco-modal-overlay--is-top-layer  ember-view\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n"}
+2026-02-27 00:16:02 [ERROR] Apply attempt 3 error {"jobId":"Manual_QA_Tester_Manual_QA_Tester_with_verification_KPG99_INC_1772131388687","err":"locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"Next\")').first()\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"ember232\" type=\"button\" aria-label=\"View next page\" class=\"artdeco-button artdeco-button--muted artdeco-button--icon-right artdeco-button--1 artdeco-button--tertiary ember-view jobs-search-pagination__button jobs-search-pagination__button--next\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <div id=\"ember313\" aria-hidden=\"false\" data-test-modal-container=\"\" data-test-modal-id=\"easy-apply-modal\" class=\"artdeco-modal-overlay artdeco-modal-overlay--layer-default artdeco-modal-overlay--is-top-layer  ember-view\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is not stable\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div id=\"ember313\" aria-hidden=\"false\" data-test-modal-container=\"\" data-test-modal-id=\"easy-apply-modal\" class=\"artdeco-modal-overlay artdeco-modal-overlay--layer-default artdeco-modal-overlay--is-top-layer  ember-view\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div id=\"ember313\" aria-hidden=\"false\" data-test-modal-container=\"\" data-test-modal-id=\"easy-apply-modal\" class=\"artdeco-modal-overlay artdeco-modal-overlay--layer-default artdeco-modal-overlay--is-top-layer  ember-view\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is not stable\u001b[22m\n\u001b[2m  9 × retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n\u001b[2m      - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div id=\"ember313\" aria-hidden=\"false\" data-test-modal-container=\"\" data-test-modal-id=\"easy-apply-modal\" class=\"artdeco-modal-overlay artdeco-modal-overlay--layer-default artdeco-modal-overlay--is-top-layer  ember-view\">…</div> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n"}
+2026-02-27 00:16:04 [ERROR] ❌ Failed: Manual QA Tester
+Manual QA Tester with verification
+2026-02-27 00:26:54 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:26:54 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:27:30 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:27:30 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:28:06 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:28:06 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:28:39 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:28:39 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:35:01 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:35:01 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:35:38 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:35:38 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:36:12 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:36:12 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:37:00 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:37:00 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:37:30 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:37:30 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:38:00 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:38:00 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:38:30 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:38:30 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:39:00 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:39:00 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:50:15 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:50:15 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:50:51 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:50:51 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:51:27 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:51:27 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:52:01 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:52:01 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:52:57 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:52:57 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:53:27 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:53:27 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:54:11 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:54:11 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:54:41 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:54:41 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:55:28 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:55:28 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:55:58 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:55:58 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:56:44 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:56:44 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 00:57:14 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 00:57:14 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:04:57 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 01:04:57 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:05:33 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 01:05:33 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:06:09 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 01:06:09 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:06:21 [ERROR] ❌ Failed: Manual QA Tester
+Manual QA Tester with verification
+2026-02-27 01:06:43 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 01:06:43 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:07:56 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 01:07:56 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:08:07 [ERROR] Apply attempt 0 error {"jobId":"software_quality_assurance_engineer_tp","err":"locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.jobs-apply-button--top-card button.jobs-apply-button').first()\u001b[22m\n\u001b[2m    - locator resolved to <button data-job-id=\"4378035546\" id=\"jobs-apply-button-id\" data-live-test-job-apply-button=\"\" aria-label=\"Easy Apply to Manual QA Tester  at KPG99 INC\" class=\"jobs-apply-button↵         artdeco-button artdeco-button--3 artdeco-button--primary ember-view\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <input dir=\"auto\" required=\"\" type=\"text\" inputmode=\"text\" class=\"fb-dash-form-element__error-field artdeco-text-input--input\" id=\"single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4378035546-29171241266-numeric\" aria-describedby=\"single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4378035546-29171241266-numeric-error\"/> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <input dir=\"auto\" required=\"\" type=\"text\" inputmode=\"text\" class=\"fb-dash-form-element__error-field artdeco-text-input--input\" id=\"single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4378035546-29171241266-numeric\" aria-describedby=\"single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4378035546-29171241266-numeric-error\"/> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is not stable\u001b[22m\n\u001b[2m  4 × retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n\u001b[2m      - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <h3 class=\"t-16 t-bold\">↵          Additional Questions↵        </h3> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n\u001b[2m      - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <input dir=\"auto\" required=\"\" type=\"text\" inputmode=\"text\" class=\"fb-dash-form-element__error-field artdeco-text-input--input\" id=\"single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4378035546-29171241266-numeric\" aria-describedby=\"single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4378035546-29171241266-numeric-error\"/> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n\u001b[2m      - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <input dir=\"auto\" required=\"\" type=\"text\" inputmode=\"text\" class=\"fb-dash-form-element__error-field artdeco-text-input--input\" id=\"single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4378035546-29171241266-numeric\" aria-describedby=\"single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4378035546-29171241266-numeric-error\"/> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n\u001b[2m      - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <h3 class=\"t-16 t-bold\">↵          Additional Questions↵        </h3> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <h3 class=\"t-16 t-bold\">↵          Additional Questions↵        </h3> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <input dir=\"auto\" required=\"\" type=\"text\" inputmode=\"text\" class=\"fb-dash-form-element__error-field artdeco-text-input--input\" id=\"single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4378035546-29171241266-numeric\" aria-describedby=\"single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4378035546-29171241266-numeric-error\"/> from <div id=\"artdeco-modal-outlet\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n"}
+2026-02-27 01:13:04 [ERROR] Apply attempt 2 error {"jobId":"manual_qa_tester_manual_qa_tester_with_verification_kpg99_inc","err":"locator.all: Target page, context or browser has been closed"}
+2026-02-27 01:13:21 [ERROR] Apply attempt 3 error {"jobId":"manual_qa_tester_manual_qa_tester_with_verification_kpg99_inc","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-27 01:13:21 [ERROR] ❌ Failed: Manual QA Tester
+Manual QA Tester with verification
+2026-02-27 01:19:17 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 01:19:17 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:19:53 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 01:19:53 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:20:28 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 01:20:28 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:21:01 [ERROR] [AIProvider] Ollama TIMEOUT after 30000ms
+2026-02-27 01:21:01 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:29:04 [ERROR] Apply attempt 3 error {"jobId":"manual_qa_tester_manual_qa_tester_with_verification_kpg99_inc","err":"locator.all: Target page, context or browser has been closed"}
+2026-02-27 01:29:04 [ERROR] ❌ Failed: Manual QA Tester
+Manual QA Tester with verification
+2026-02-27 01:29:07 [ERROR] locator.count: Target page, context or browser has been closed
+    at runLinkedinWorker (C:\AAATTTTUUUULLL\Project\autoapply\src\worker\linkedinWorker.js:410:36)
+    at async C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:85:7
+2026-02-27 01:32:39 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 01:32:39 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:33:44 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 01:33:44 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:34:51 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 01:34:51 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:35:55 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 01:35:55 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:41:24 [ERROR] Apply attempt 2 error {"jobId":"manual_qa_tester_manual_qa_tester_with_verification_kpg99_inc","err":"locator.all: Target page, context or browser has been closed"}
+2026-02-27 01:41:43 [ERROR] Apply attempt 3 error {"jobId":"manual_qa_tester_manual_qa_tester_with_verification_kpg99_inc","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-27 01:41:43 [ERROR] ❌ Failed: Manual QA Tester
+Manual QA Tester with verification
+2026-02-27 01:41:46 [ERROR] locator.count: Target page, context or browser has been closed
+    at runLinkedinWorker (C:\AAATTTTUUUULLL\Project\autoapply\src\worker\linkedinWorker.js:410:36)
+    at async C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:85:7
+2026-02-27 01:45:35 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 01:45:35 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:46:41 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 01:46:41 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:47:44 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 01:47:44 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:52:36 [ERROR] Apply attempt 2 error {"jobId":"manual_qa_tester_manual_qa_tester_with_verification_kpg99_inc","err":"locator.all: Target page, context or browser has been closed"}
+2026-02-27 01:55:37 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 01:55:37 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:56:43 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 01:56:43 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:57:49 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 01:57:49 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:58:53 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 01:58:53 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 01:59:02 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 01:59:02 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 02:00:07 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 02:00:07 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 02:01:13 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 02:01:13 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 02:02:18 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 02:02:18 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 02:03:34 [ERROR] Apply attempt 0 error {"jobId":"manual_qa_tester_manual_qa_tester_with_verification_kpg99_inc","err":"locator.all: Target page, context or browser has been closed"}
+2026-02-27 02:03:38 [ERROR] Apply attempt 1 error {"jobId":"manual_qa_tester_manual_qa_tester_with_verification_kpg99_inc","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-27 09:57:07 [ERROR] Apply attempt 2 error {"jobId":"manual_qa_tester_manual_qa_tester_with_verification_kpg99_inc","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-27 09:57:26 [ERROR] Apply attempt 3 error {"jobId":"manual_qa_tester_manual_qa_tester_with_verification_kpg99_inc","err":"page.reload: Target page, context or browser has been closed"}
+2026-02-27 09:57:26 [ERROR] ❌ Failed: Manual QA Tester
+Manual QA Tester with verification
+2026-02-27 09:57:28 [ERROR] locator.count: Target page, context or browser has been closed
+    at runLinkedinWorker (C:\AAATTTTUUUULLL\Project\autoapply\src\worker\linkedinWorker.js:410:36)
+    at async C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:85:7
+2026-02-27 10:46:33 [ERROR] [AIProvider] Ollama failed: Request failed with status code 500
+2026-02-27 10:46:33 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 10:46:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 500
+2026-02-27 10:46:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 10:46:35 [ERROR] [AIProvider] Ollama failed: Request failed with status code 500
+2026-02-27 10:46:35 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 10:49:01 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 10:49:01 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 10:49:50 [ERROR] ❌ Failed: QA Engineer
+2026-02-27 10:53:19 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 10:53:19 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 10:54:04 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 10:54:04 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 10:54:04 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 10:54:04 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 10:54:04 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 10:54:04 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 10:58:28 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 10:58:28 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 10:59:37 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 10:59:37 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:00:51 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:00:51 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:15:26 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:15:26 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:16:11 [ERROR] ❌ Failed: Senior Qa Engineer
+2026-02-27 11:17:17 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:17:17 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:18:28 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:18:28 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:25:58 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:25:58 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:27:08 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:27:08 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:31:01 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:31:01 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:33:50 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:33:50 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:34:57 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:34:57 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:36:07 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:36:07 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:38:47 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:38:47 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:39:56 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:39:56 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:44:10 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:44:10 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:45:20 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:45:20 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:48:14 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:48:14 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:49:29 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:49:29 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:50:33 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:50:33 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:50:34 [ERROR] ❌ Failed: Software QA Engineer
+2026-02-27 11:51:40 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:51:40 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:52:52 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:52:52 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:53:53 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:53:53 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:53:53 [ERROR] ❌ Failed: Sr. Manual QA Engineer
+2026-02-27 11:55:01 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:55:01 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:56:14 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:56:14 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:57:15 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:57:15 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:57:16 [ERROR] ❌ Failed: Mid Manual QA Engineer
+2026-02-27 11:58:24 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:58:24 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 11:59:35 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 11:59:35 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:00:36 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:00:36 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:00:37 [ERROR] ❌ Failed: Jr. Manual QA Engineer
+2026-02-27 12:01:44 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:01:44 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:02:54 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:02:54 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:07:10 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:07:10 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:08:20 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:08:20 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:15:46 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:15:46 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:16:58 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:16:58 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:17:59 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:17:59 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:18:00 [ERROR] ❌ Failed: Junior SDET QA engineer
+2026-02-27 12:19:07 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:19:07 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:20:18 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:20:18 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:23:01 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:23:01 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:24:16 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:24:16 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:25:16 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:25:16 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:26:16 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:26:16 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:27:23 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:27:23 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:28:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:28:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:29:17 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:29:17 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:30:17 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:30:17 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:33:15 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:33:15 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:34:15 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:34:15 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:35:15 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:35:15 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:36:24 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:36:24 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:37:24 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:37:24 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:38:25 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:38:25 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:38:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:38:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:38:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:38:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:38:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:38:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:39:25 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:39:25 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:40:28 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:40:28 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:41:28 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:41:28 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:42:28 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:42:28 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:43:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:43:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:43:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:43:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:43:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:43:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:43:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:43:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:44:23 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:44:23 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:45:23 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 12:45:23 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:46:47 [ERROR] ❌ Failed: QA Engineer - Load Testing - India
+2026-02-27 12:46:49 [ERROR] locator.count: Target page, context or browser has been closed
+    at runWorker (C:\AAATTTTUUUULLL\Project\autoapply\src\worker\worker.js:753:56)
+    at async C:\AAATTTTUUUULLL\Project\autoapply\src\index.js:87:7
+2026-02-27 12:48:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:48:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:48:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:48:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:48:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:48:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:48:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:48:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:53:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:53:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:53:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:53:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:53:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:53:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:53:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:53:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:58:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:58:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:58:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:58:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:58:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:58:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 12:58:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 12:58:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 13:03:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 13:03:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 13:03:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 13:03:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 13:03:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 13:03:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 13:03:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 13:03:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 13:08:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 13:08:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 13:08:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 13:08:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 13:08:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 13:08:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 13:08:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 13:08:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 13:13:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 13:13:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 13:13:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 13:13:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 13:13:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 13:13:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 13:13:34 [ERROR] [AIProvider] Ollama failed: Request failed with status code 404
+2026-02-27 13:13:34 [ERROR] [AIProvider] CRITICAL: All AI providers failed
+2026-02-27 13:19:07 [ERROR] [AIProvider] Ollama TIMEOUT after 60000ms
+2026-02-27 13:19:07 [ERROR] [AIProvider] CRITICAL: All AI providers failed
