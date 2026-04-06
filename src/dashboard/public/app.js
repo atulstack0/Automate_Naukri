@@ -458,33 +458,43 @@ document.getElementById('btnLoadLogs').addEventListener('click', async () => {
 });
 
 /* ═══════════════ LIVE BROWSER VIEW ==════════════════════════ */
-let screenshotTimer = null;
 async function refreshScreenshot() {
   try {
     const d = await fetch('/api/screenshot/latest-path').then(r=>r.json());
-    const img    = document.getElementById('lvImg');
-    const holder = document.getElementById('lvPlaceholder');
-    const meta   = document.getElementById('lvMeta');
-    if (d.path) {
-      img.src = d.path + '?t=' + Date.now();
-      img.style.display = 'block';
-      holder.style.display = 'none';
-      meta.textContent = 'Last refresh: ' + new Date().toLocaleTimeString();
-    } else {
-      img.style.display='none'; holder.style.display='block';
-    }
+    if (d.path) updateLiveScreenshot(d.path);
   } catch(_) {}
 }
 
+function updateLiveScreenshot(pathStr) {
+  const img    = document.getElementById('lvImg');
+  const holder = document.getElementById('lvPlaceholder');
+  const meta   = document.getElementById('lvMeta');
+  if (pathStr) {
+    img.src = pathStr + '?t=' + Date.now();
+    img.style.display = 'block';
+    holder.style.display = 'none';
+    meta.textContent = 'Live • ' + new Date().toLocaleTimeString();
+  } else {
+    img.style.display = 'none'; 
+    holder.style.display = 'block';
+  }
+}
+
+socket.on('screenshot:new', (data) => {
+  if (data && data.path) updateLiveScreenshot(data.path);
+});
+
 function startScreenshotRefresh() {
-  if (screenshotTimer) clearInterval(screenshotTimer);
-  const ms = parseInt(document.getElementById('screenshotInterval').value);
   refreshScreenshot();
-  if (ms > 0) screenshotTimer = setInterval(refreshScreenshot, ms);
 }
 
 document.getElementById('btnRefreshScreenshot').addEventListener('click', refreshScreenshot);
-document.getElementById('screenshotInterval').addEventListener('change', startScreenshotRefresh);
+const intEl = document.getElementById('screenshotInterval');
+if (intEl) {
+  intEl.addEventListener('change', startScreenshotRefresh);
+  // Auto-hide the interval selector as it is now strictly real-time via WebSockets
+  intEl.style.display = 'none';
+}
 
 /* ═══════════════ SETTINGS TAB ══════════════════════════════ */
 async function loadConfig() {
@@ -749,30 +759,112 @@ btnStart.addEventListener('click',   () => { botAction('start');   toast('Starti
 btnStop.addEventListener('click',    () => { botAction('stop');    toast('Stopping bot…','info'); });
 btnRestart.addEventListener('click', () => { botAction('restart'); toast('Restarting…','info'); });
 
-// Apply Section Buttons
-const btnApplyNaukri = document.getElementById('btnApplyNaukri');
-if (btnApplyNaukri) {
-  btnApplyNaukri.addEventListener('click', () => {
-    botAction('start');
-    toast('Starting Naukri Automation…', 'info');
+// ─── Quick Action Buttons ──────────────────────────────────────────────────
+
+const portalBtns = [
+  document.getElementById('btnApplyNaukri'),
+  document.getElementById('btnApplyLinkedIn'),
+  document.getElementById('btnApplyIndeed'),
+];
+const btnApplyCompany = document.getElementById('btnApplyCompany');
+const companyUrlInput = document.getElementById('companyUrlInput');
+const btnCompanyUrlClear = document.getElementById('btnCompanyUrlClear');
+const companyBtnSub   = document.getElementById('companyBtnSub');
+const btnRunAll   = document.getElementById('btnRunAll');
+const btnSaveAuth = document.getElementById('btnSaveAuth');
+const btnStopBot  = document.getElementById('btnStopBot');
+
+/** Wire per-portal buttons (Naukri / LinkedIn / Indeed) */
+portalBtns.forEach(btn => {
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const platform = btn.dataset.platform;
+    botAction('start', { platform });
+    toast(`Starting ${platform.charAt(0).toUpperCase() + platform.slice(1)}…`, 'info');
+  });
+});
+
+/** Company Sites — reads URL input and passes it */
+if (btnApplyCompany) {
+  btnApplyCompany.addEventListener('click', () => {
+    const url = companyUrlInput ? companyUrlInput.value.trim() : '';
+    const payload = { platform: 'company' };
+    if (url) payload.url = url;
+    botAction('start', payload);
+    toast(url ? `Starting Company apply on ${url}…` : 'Starting Company Sites worker…', 'info');
   });
 }
 
-const btnApplyLinkedIn = document.getElementById('btnApplyLinkedIn');
-if (btnApplyLinkedIn) {
-  btnApplyLinkedIn.addEventListener('click', () => {
-    botAction('start', { platform: 'linkedin' });
-    toast('Starting LinkedIn Automation…', 'info');
+/** Live URL preview in Company button subtitle */
+if (companyUrlInput && companyBtnSub) {
+  companyUrlInput.addEventListener('input', () => {
+    const v = companyUrlInput.value.trim();
+    try {
+      const host = v ? new URL(v).hostname.replace(/^www\./, '') : '';
+      companyBtnSub.textContent = host ? `→ ${host}` : 'Direct apply';
+    } catch (_) {
+      companyBtnSub.textContent = v ? v.substring(0, 24) + '…' : 'Direct apply';
+    }
+  });
+}
+if (btnCompanyUrlClear) {
+  btnCompanyUrlClear.addEventListener('click', () => {
+    if (companyUrlInput) companyUrlInput.value = '';
+    if (companyBtnSub)   companyBtnSub.textContent = 'Direct apply';
   });
 }
 
-// Disable/Enable Apply buttons based on bot status
-const originalSetBotUI = setBotUI;
+/** Run all portals */
+if (btnRunAll) {
+  btnRunAll.addEventListener('click', () => {
+    botAction('start', {});
+    toast('Running all portals sequentially…', 'info');
+  });
+}
+
+/** Save Auth — spawns saveAuth.js */
+if (btnSaveAuth) {
+  btnSaveAuth.addEventListener('click', async () => {
+    btnSaveAuth.disabled = true;
+    const origLabel = btnSaveAuth.querySelector('.qa-label');
+    if (origLabel) origLabel.textContent = '⏳ Launching…';
+    toast('Launching save-auth browser — complete login in the opened window', 'info');
+    try {
+      const r = await fetch('/api/bot/save-auth', { method: 'POST' });
+      const d = await r.json();
+      if (d.success || d.status === 'launched') {
+        toast('🔑 Auth browser opened — log in, then close it', 'ok');
+        appendLog('info', '🔑 save-auth launched — complete login in the opened browser');
+      } else {
+        toast('save-auth: ' + (d.error || 'unknown error'), 'err');
+      }
+    } catch (e) {
+      toast('Save Auth failed: ' + e.message, 'err');
+    }
+    if (origLabel) origLabel.textContent = 'Save Auth';
+    btnSaveAuth.disabled = false;
+  });
+}
+
+/** Stop from Quick Actions card */
+if (btnStopBot) {
+  btnStopBot.addEventListener('click', () => {
+    botAction('stop');
+    toast('Stopping bot…', 'info');
+  });
+}
+
+/** Keep quick-action buttons in sync with bot state */
+const _origSetBotUI = setBotUI;
 setBotUI = function(state) {
-  originalSetBotUI(state);
+  _origSetBotUI(state);
   const running = state.status === 'running' || state.status === 'stopping';
-  if (btnApplyNaukri) btnApplyNaukri.disabled = running;
-  if (btnApplyLinkedIn) btnApplyLinkedIn.disabled = running;
+  portalBtns.forEach(b => { if (b) b.disabled = running; });
+  if (btnApplyCompany) btnApplyCompany.disabled = running;
+  if (btnRunAll)       btnRunAll.disabled        = running;
+  if (btnStopBot)      btnStopBot.disabled       = !running;
+  if (companyUrlInput) companyUrlInput.disabled  = running;
+  // Save Auth is always enabled
 };
 
 /* ══════ UTILS ═════════════════════════════════════════════ */

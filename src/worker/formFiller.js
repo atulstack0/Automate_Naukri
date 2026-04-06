@@ -306,9 +306,38 @@ async function fillFormSmart(page, config) {
   function lookupAiMap(label) {
     const key = label.toLowerCase().trim();
     if (aiAnswerMap[key]) return aiAnswerMap[key];
-    // Partial match
     for (const [mapKey, val] of Object.entries(aiAnswerMap)) {
       if (key.includes(mapKey) || mapKey.includes(key)) return val;
+    }
+    return null;
+  }
+
+  // Helper: fuzzy match label text against learning_questions table (Pass 2.5)
+  // Works even when skipAI=true — uses the user's saved Q&A answers.
+  let _learningCache = null;
+  function lookupLearning(labelText) {
+    try {
+      if (!_learningCache) {
+        // Load all answered questions once per fillFormSmart call
+        _learningCache = db.getLearningQuestions(500).filter(r => r.answered && r.answer && r.question);
+      }
+      const fieldWords = (labelText || '').toLowerCase().split(/\W+/).filter(w => w.length > 2);
+      if (!fieldWords.length) return null;
+
+      let bestAnswer = null, bestScore = 0;
+      for (const row of _learningCache) {
+        const qWords = row.question.toLowerCase().split(/\W+/).filter(w => w.length > 2);
+        if (!qWords.length) continue;
+        const matched = fieldWords.filter(w => qWords.includes(w)).length;
+        const score   = matched / Math.max(fieldWords.length, qWords.length);
+        if (score > bestScore) { bestScore = score; bestAnswer = row.answer; }
+      }
+      if (bestScore >= 0.35 && bestAnswer) {
+        logger.debug(`[FormFiller] Learning list match (${Math.round(bestScore*100)}%) "${labelText?.substring(0,40)}" → "${bestAnswer?.substring(0,40)}"`);
+        return bestAnswer;
+      }
+    } catch (e) {
+      logger.debug('[FormFiller] lookupLearning error: ' + e.message);
     }
     return null;
   }
@@ -375,6 +404,12 @@ async function fillFormSmart(page, config) {
         if (!answer && !errorText) {
           answer = lookupAiMap(label) || '';
           if (answer) logger.info(`[FormFiller] AI-map "${label.trim().substring(0, 50)}" → "${answer.substring(0, 60)}"`);
+        }
+
+        // Pass 2.5: Learning list label-text fuzzy match (works even when skipAI=true)
+        if (!answer && !errorText && label) {
+          answer = lookupLearning(label) || '';
+          if (answer) logger.info(`[FormFiller] Learning-list "${label.trim().substring(0, 50)}" → "${answer.substring(0, 60)}"`);
         }
 
         // Pass 3: per-field AI call (always do if error or unknown)
@@ -479,6 +514,10 @@ async function fillFormSmart(page, config) {
 
       // Pass 2: AI batch map (skip if error)
       if (!answer && !errorText) answer = lookupAiMap(label) || '';
+
+      // Pass 2.5: Learning list fuzzy match
+      if (!answer && !errorText && label) answer = lookupLearning(label) || '';
+      if (answer && !errorText) logger.info(`[FormFiller] Learning-list select "${label?.trim().substring(0,40)}" → "${answer}"`);
 
       // Pass 3: per-field AI call with options
       if (!answer && !skipAI && optTexts.length) {

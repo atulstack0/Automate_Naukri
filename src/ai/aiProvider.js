@@ -18,35 +18,70 @@ const axios = require('axios');
 const logger = require('../utils/logger');
 
 // Runtime state
+let _openAiApiKeys = [];
+let _currentOpenAiKeyIndex = 0;
+let _openAiModel   = 'gpt-4o-mini';
 let _geminiApiKey  = '';
 let _ollamaBaseUrl = 'http://localhost:11434';
 let _ollamaModel   = 'qwen2.5:7b';
 let _geminiModel   = 'gemini-2.0-flash';
 let _ollamaTimeout = 300000; // Increased to 5 mins default
+let _useOpenAi     = true;
 let _useGemini     = true;
 let _useOllama     = true;
+let _openAiClient  = null;   // lazy-loaded
 let _geminiClient  = null;   // lazy-loaded
 
 /**
  * Call once at startup to configure the provider from config.json / env.
  */
 function initAIProvider(config = {}) {
+  const key1 = process.env.OPENAI_API_KEY || config.openAiApiKey || '';
+  const key2 = config.openAiApiKey2 || '';
+  _openAiApiKeys = [key1, key2].filter(k => !!k);
+  _currentOpenAiKeyIndex = 0;
+  _openAiModel   = config.openAiModel     || 'gpt-4o-mini';
   _geminiApiKey  = process.env.GEMINI_API_KEY || config.geminiApiKey || '';
   _ollamaBaseUrl = config.ollamaBaseUrl || 'http://localhost:11434';
   _ollamaModel   = config.aiModel       || 'qwen2.5:7b';
   _geminiModel   = config.geminiModel   || 'gemini-2.0-flash';
   _ollamaTimeout = config.ollamaTimeout || 300000;
+  _useOpenAi     = _openAiApiKeys.length > 0;
   _useGemini     = !!_geminiApiKey;
   _useOllama     = !config.skipAI;
 
+  if (_useOpenAi) {
+    logger.info(`[AIProvider] Primary: OpenAI (${_openAiModel})`);
+  }
   if (_useGemini) {
-    logger.info(`[AIProvider] Primary: Google Gemini (${_geminiModel})`);
-  } else {
-    logger.info('[AIProvider] Gemini disabled (no GEMINI_API_KEY). Using Ollama only.');
+    logger.info(`[AIProvider] ${_useOpenAi ? 'Secondary' : 'Primary'}: Google Gemini (${_geminiModel})`);
+  } else if (!_useOpenAi) {
+    logger.info('[AIProvider] OpenAI and Gemini disabled. Using Ollama only.');
   }
   if (_useOllama) {
     logger.info(`[AIProvider] Fallback: Ollama (${_ollamaModel} @ ${_ollamaBaseUrl}, timeout:${_ollamaTimeout}ms)`);
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// OpenAI caller
+// ─────────────────────────────────────────────────────────────────────────────
+async function _askOpenAI(prompt, opts = {}) {
+  const currentKey = _openAiApiKeys[_currentOpenAiKeyIndex];
+  if (!_openAiClient || _openAiClient.apiKey !== currentKey) {
+    const { OpenAI } = require('openai');
+    _openAiClient = new OpenAI({ apiKey: currentKey });
+  }
+
+  const response = await _openAiClient.chat.completions.create({
+    model: _openAiModel,
+    messages: [{ role: 'user', content: prompt }],
+    temperature: opts.temperature ?? 0.2,
+    max_tokens: opts.maxTokens ?? opts.num_predict ?? 500,
+    top_p: opts.top_p ?? 0.95,
+  });
+
+  return response.choices[0]?.message?.content || '';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -114,6 +149,47 @@ async function _askOllama(prompt, opts = {}) {
  * @returns {Promise<string>} raw response text
  */
 async function askAI(prompt, opts = {}) {
+  // ── 0. Try OpenAI ──────────────────────────────────────────────────────
+  if (_useOpenAi && _openAiApiKeys.length > 0) {
+    let attempts = 0;
+    while (attempts < 2 && _useOpenAi) {
+      try {
+        logger.debug(`[AIProvider] Attempt ${attempts + 1}: OpenAI (${_openAiModel}) [Key ${_currentOpenAiKeyIndex + 1}/${_openAiApiKeys.length}]`);
+        const start = Date.now();
+        const response = await _askOpenAI(prompt, opts);
+        logger.info(`[AIProvider] OpenAI response received in ${Date.now() - start}ms`);
+        return response;
+      } catch (err) {
+        const status = err?.status;
+        const msg = err?.message || '';
+        const isQuotaError = status === 429 && (msg.toLowerCase().includes('quota') || msg.toLowerCase().includes('exceeded'));
+        
+        if (isQuotaError || status === 401 || status === 403) {
+          logger.warn(`[AIProvider] OpenAI Key ${_currentOpenAiKeyIndex + 1} failed (${msg}).`);
+          if (_currentOpenAiKeyIndex + 1 < _openAiApiKeys.length) {
+            logger.warn(`[AIProvider] Switching to next OpenAI key in config...`);
+            _currentOpenAiKeyIndex++;
+            continue; // Try next key immediately (does not increment attempts counter)
+          } else {
+            logger.warn(`[AIProvider] All OpenAI keys exhausted. Disabling OpenAI fallback.`);
+            _useOpenAi = false;
+            break;
+          }
+        }
+        
+        if (status === 429 && attempts === 0) {
+          logger.warn('[AIProvider] OpenAI rate limited (429) – waiting 5s then retrying...');
+          await new Promise(r => setTimeout(r, 5000));
+          attempts++;
+          continue;
+        }
+
+        logger.warn(`[AIProvider] OpenAI failed (${msg}) – falling back to next provider`);
+        break; // fall through to Gemini
+      }
+    }
+  }
+
   // ── 1. Try Gemini ─────────────────────────────────────────────────────
   if (_useGemini && _geminiApiKey) {
     // Try up to 2 times: on rate limit wait 65s then retry once
@@ -172,8 +248,12 @@ async function askAI(prompt, opts = {}) {
  * Get active provider name (for logging/dashboard).
  */
 function getProviderInfo() {
-  if (_useGemini && _geminiApiKey) return `Gemini (${_geminiModel}) → Ollama fallback`;
-  if (_useOllama)                  return `Ollama (${_ollamaModel})`;
+  const active = [];
+  if (_useOpenAi && _openAiApiKeys.length > 0) active.push(`OpenAI (${_openAiModel})`);
+  if (_useGemini && _geminiApiKey) active.push(`Gemini (${_geminiModel})`);
+  if (_useOllama)                  active.push(`Ollama (${_ollamaModel})`);
+  
+  if (active.length > 0) return active.join(' → ');
   return 'keyword-only (no AI)';
 }
 

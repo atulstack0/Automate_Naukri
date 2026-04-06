@@ -22,6 +22,14 @@ const {
   highlightAndClick,
 } = require('../utils/antiDetection');
 
+// ── Apply Engine (comprehensive edge-case handler) ─────────────────────────
+const {
+  applyToJob:    engineApply,
+  detectAnomalies,
+  handleAnomaly,
+  screenshot:    engineScreenshot,
+} = require('./applyEngine');
+
 
 let emitEvent = () => {};
 function setEmitter(fn) { emitEvent = fn; }
@@ -259,264 +267,30 @@ async function performNaukriSearch(page, keyword, location = '') {
 
 
 /**
- * Naukri-aware multi-step apply flow.
- * Handles: Apply button variants, chatbot modals, multi-step forms,
- * "Next" / "Continue" pagination inside apply drawer, external redirects.
- * Returns: { status: 'success'|'failed'|'already_applied'|'external', unmatched[] }
+ * applyToJob — delegates to the comprehensive applyEngine.
+ * All edge-case handling (CAPTCHA, OTP, external tab, multi-step modals,
+ * validation errors, learning list, etc.) lives in applyEngine.js.
+ *
+ * @param {import('playwright').Page} page
+ * @param {string} jobId
+ * @param {object} config
+ * @returns {Promise<{ status: string, unmatched: Array }>}
  */
 async function applyToJob(page, jobId, config) {
-  const { selector = {}, maxRetries = 3 } = config;
-  let unmatched = [];
+  const job = { jobId, title: config._jobTitle || 'Job', company: config._jobCompany || 'Company' };
 
-  // Naukri-specific selectors (tried in order)
-  const APPLY_BTN_SELECTORS = [
-    selector.applyButton,
-    '#apply-button',
-    'button#apply-button',
-    'a#apply-button',
-    '[data-ga-track*="apply" i]',
-    'button:has-text("Apply")',
-    'button:has-text("Apply on company site")',
-    'button:has-text("Apply Now")',
-    'a:has-text("Apply Now")',
-    '.apply-button',
-  ].filter(Boolean);
+  const result = await engineApply(page, job, config, {
+    maxRetries: config.maxRetries || 2,
+    portal:     'naukri',
+    db:         config.db || null,
+    io:         config.io || null,
+  });
 
-  const NEXT_BTN_SELECTORS = [
-    'button:has-text("Next")',
-    'button:has-text("Continue")',
-    'button:has-text("Save & Next")',
-    'button:has-text("Save and Next")',
-    'button:has-text("Save")',
-    'button:has-text("Save & Continue")',
-    '[class*="next-btn"]:not([disabled])',
-    '[class*="nextbtn"]:not([disabled])',
-  ];
-
-  const SUBMIT_SELECTORS = [
-    selector.submitButton,
-    'button:has-text("Submit")',
-    'button:has-text("Apply")',
-    'button:has-text("Save")',
-    'button[type="submit"]',
-    '[class*="submit-btn"]',
-  ].filter(Boolean);
-
-  const SUCCESS_SELECTORS = [
-    selector.successIndicator,
-    '.success-msg',
-    '.applied-text',
-    '[class*="applied"]',
-    '[class*="success"]',
-    '[class*="thank"]',
-    'text=Application submitted',
-    'text=Applied successfully',
-    'text=already applied',
-  ].filter(Boolean);
-
-  const ALREADY_APPLIED_SELECTORS = [
-    '.already-applied',
-    '#already-applied',
-    '[class*="alreadyApplied"]',
-    'button:has-text("Applied")',
-    'text=Already Applied',
-  ];
-
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      if (attempt > 0) {
-        logger.info(`Retry ${attempt}/${maxRetries} for ${jobId}`);
-        await backoff(attempt);
-        // Re-navigate to job page on retry
-        await page.reload({ waitUntil: 'domcontentloaded', timeout: 20000 });
-        await randomDelay(2000, 3000);
-      }
-
-      // ── 1. Already applied? ────────────────────────────────────────────
-      for (const sel of ALREADY_APPLIED_SELECTORS) {
-        if (await page.locator(sel).count() > 0) {
-          logger.info(`Already applied: ${jobId}`);
-          return { status: 'already_applied', unmatched };
-        }
-      }
-
-      let applyClicked = false;
-      for (const sel of APPLY_BTN_SELECTORS) {
-        try {
-          const btn = page.locator(sel).first();
-          if (await btn.count() > 0 && await btn.isVisible()) {
-            await btn.scrollIntoViewIfNeeded().catch(() => {});
-            logger.info(`[Worker] Clicking APPLY button: "${sel}"`);
-            await btn.click({ timeout: 10000 });
-            applyClicked = true;
-            await randomDelay(2000, 3000);
-            break;
-          }
-        } catch (err) {
-          logger.debug(`[Worker] Apply selector "${sel}" failed: ${err.message}`);
-        }
-      }
-
-      if (!applyClicked) {
-        logger.warn(`No apply button found for ${jobId}`);
-        if (attempt >= maxRetries) return { status: 'failed', unmatched };
-        continue;
-      }
-
-      await randomDelay(350, 500);  // brief DOM settle after click
-
-      // ── 3. Check for new tab (external) ───────────────────────────────
-      const pages = page.context().pages();
-      if (pages.length > 1) {
-        const newTab = pages[pages.length - 1];
-        const extUrl = newTab.url();
-        if (!extUrl.includes('naukri.com') && extUrl !== 'about:blank') {
-          logger.info(`External tab opened: ${extUrl} – attempting to apply`);
-          await captureScreenshot(newTab, jobId, 'external_opened');
-          await randomDelay(1500, 2500); // let page fully load
-
-          const extResult = await applyExternal(newTab, config);
-          await captureScreenshot(newTab, jobId, extResult.status === 'success' ? 'submitted' : 'error');
-          await newTab.close().catch(() => {});
-          return { status: extResult.status, unmatched };
-        }
-      }
-
-      // ── 4. Already applied check (post-click) ─────────────────────────
-      for (const sel of ALREADY_APPLIED_SELECTORS) {
-        if (await page.locator(sel).count() > 0) {
-          logger.info(`Already applied (post-click): ${jobId}`);
-          return { status: 'already_applied', unmatched };
-        }
-      }
-
-      // ── 5. CAPTCHA / OTP pause ────────────────────────────────────────
-      const captcha = await page.locator('[id*="captcha"], [class*="captcha"], [id*="otp"]').count();
-      if (captcha > 0) {
-        logger.warn('CAPTCHA/OTP detected – waiting 30s for manual input…');
-        await page.waitForTimeout(30000);
-      }
-
-      // ── 6. Multi-step form handling (up to 8 steps) ───────────────────
-      await captureScreenshot(page, jobId, 'opened');
-
-      let blockResumeUpload = false;
-
-      for (let step = 0; step < 8; step++) {
-        logger.info(`\n[Worker] Job ${jobId}: Processing Form Step ${step + 1}...`);
-
-        // Fill all visible fields on this step - scoped to apply drawer/modal
-        const scope = selector.applyModal || '.apply-modal, .apply-drawer, .naukri-drawer, .df__drawer';
-        
-        // Wait briefly for the scope container to exist so we don't accidentally match earlier fragments like the Apply Button
-        await page.waitForSelector(scope, { state: 'attached', timeout: 5000 }).catch(() => {});
-        
-        const stepUnmatched = await fillFormSmart(page, { ...config, scopeSelector: scope, blockResumeUpload });
-        if (stepUnmatched.chatbotInteracted) {
-          blockResumeUpload = true;
-        }
-        
-        if (stepUnmatched.length) unmatched.push(...stepUnmatched);
-
-        await randomDelay(600, 1200);
-        await captureScreenshot(page, jobId, `form_step_${step + 1}`);
-
-        // Check if a success state appeared mid-step
-        let successFound = false;
-        for (const sel of SUCCESS_SELECTORS) {
-          try {
-            if (await page.locator(sel).count() > 0) {
-              successFound = true; break;
-            }
-          } catch (_) {}
-        }
-        if (successFound) {
-          logger.info(`Success detected at step ${step + 1}`);
-          await captureScreenshot(page, jobId, 'submitted');
-          return { status: 'success', unmatched };
-        }
-
-        // Try Submit first
-        let submittedOrAdvanced = false;
-        for (const sel of SUBMIT_SELECTORS) {
-          try {
-            const btn = page.locator(sel).first();
-            if (await btn.count() > 0 && await btn.isVisible() && await btn.isEnabled()) {
-              await btn.click();
-              await randomDelay(1000, 2000);
-              submittedOrAdvanced = true;
-              logger.info(`[Worker] Clicked SUBMIT: "${sel}"`);
-
-              // Re-check success after submit
-              for (const sSel of SUCCESS_SELECTORS) {
-                try {
-                  if (await page.locator(sSel).count() > 0) {
-                    await captureScreenshot(page, jobId, 'submitted');
-                    return { status: 'success', unmatched };
-                  }
-                } catch (_) {}
-              }
-              break;
-            }
-          } catch (_) {}
-        }
-
-        // If no submit found, try Next/Continue
-        if (!submittedOrAdvanced) {
-          let nextClicked = false;
-          for (const sel of NEXT_BTN_SELECTORS) {
-            try {
-              const btn = page.locator(sel).first();
-              if (await btn.count() > 0 && await btn.isVisible() && await btn.isEnabled()) {
-                await btn.click();
-                await randomDelay(800, 1500);
-                nextClicked = true;
-                logger.info(`[Worker] Clicked NEXT/CONTINUE: "${sel}"`);
-                break;
-              }
-            } catch (_) {}
-          }
-
-          if (!nextClicked) {
-            if (stepUnmatched.chatbotInteracted) {
-              logger.info(`[Worker] Chatbot interaction detected. Continuing chat flow without Next/Submit button...`);
-              continue;
-            }
-            
-            // No next or submit — form may be done or stuck
-            logger.warn(`No next/submit button on step ${step + 1} – breaking`);
-            break;
-          }
-        }
-      }
-
-      // ── 7. Final success check ────────────────────────────────────────
-      await captureScreenshot(page, jobId, 'submitted');
-      for (const sel of SUCCESS_SELECTORS) {
-        try {
-          if (await page.locator(sel).count() > 0) {
-            return { status: 'success', unmatched };
-          }
-        } catch (_) {}
-      }
-
-      // If URL changed away from apply page, treat as success
-      if (!page.url().includes('/apply') && !page.url().includes('applyjo')) {
-        return { status: 'success', unmatched };
-      }
-
-      logger.warn(`No success indicator after all steps (attempt ${attempt})`);
-
-    } catch (err) {
-      logger.error(`Apply attempt ${attempt} error`, { jobId, err: err.message });
-      await captureScreenshot(page, jobId, 'error').catch(() => {});
-      if (attempt >= maxRetries) {
-        return { status: 'failed', unmatched };
-      }
-    }
-  }
-
-  return { status: 'failed', unmatched };
+  // normalise legacy shape
+  return {
+    status:    result.status,
+    unmatched: result.unmatched || [],
+  };
 }
 
 // ── Main Worker ────────────────────────────────────────────────────────────
@@ -846,3 +620,321 @@ async function runWorker(config) {
 }
 
 module.exports = { runWorker, setEmitter };
+
+// ═══════════════════════════════════════════════════════════════════════════
+// runNaukri — Spec API adapter
+// Implements the requested signature: runNaukri({ browser, config, db, io, ai })
+//
+// Bridges the new clean API into the existing battle-tested runWorker logic
+// without duplicating code. Falls back to internal singletons when optional
+// args are not provided (backward compat with index.js calls).
+// ═══════════════════════════════════════════════════════════════════════════
+
+const CoverLetterGenerator = require('../ai/coverLetter');
+const { safeClick, safeType, humanDelay } = require('../utils/antiDetection');
+
+/**
+ * Run the Naukri portal: scrape → AI score → apply.
+ *
+ * @param {{ browser: BrowserManager, config: object, db: Database, io: SocketIO, ai: OllamaClient }} opts
+ */
+async function runNaukri({ browser, config, db: dbArg, io, ai } = {}) {
+  // ── STEP 1: INIT ─────────────────────────────────────────────────────────
+  logger.info('[Naukri] Starting');
+  if (io) io.emit('portal', { portal: 'Naukri', status: 'started' });
+
+  // Resolve db — use passed db or fall back to singleton
+  const dbInstance = dbArg || db;
+
+  // Wire socket.io emitter into existing emitEvent system
+  if (io) setEmitter((event, data) => io.emit(event, data));
+
+  const coverGen = new CoverLetterGenerator(config);
+  let appliedCount = 0;
+
+  // Open page — support both BrowserManager class and legacy context object
+  let page;
+  try {
+    if (browser && typeof browser.newPage === 'function') {
+      page = await browser.newPage();
+    } else if (browser && browser.context && typeof browser.context.newPage === 'function') {
+      page = await browser.context.newPage();
+    } else {
+      // No browser provided — launch internally (legacy mode)
+      const { context } = await launchBrowser({ headless: config.headless, slowMo: config.slowMo });
+      page = await context.newPage();
+    }
+  } catch (err) {
+    logger.error('[Naukri] Failed to open page', { err: err.message });
+    if (io) io.emit('portal', { portal: 'Naukri', status: 'error', error: err.message });
+    return;
+  }
+
+  try {
+    const searchEntries = config.searchKeywords?.length
+      ? config.searchKeywords.map(kw => ({ keyword: kw, url: null }))
+      : [{ keyword: null, url: config.jobsUrl || 'https://www.naukri.com/' }];
+
+    for (const entry of searchEntries) {
+      if (appliedCount >= (config.maxAppsPerRun || 15)) {
+        logger.info(`[Naukri] Reached max apps per run limit.`);
+        break;
+      }
+
+      // ── STEP 2: NAVIGATE & SEARCH ─────────────────────────────────────────
+      let currentJobsUrl = entry.url;
+      if (entry.keyword) {
+        logger.info(`\n=== [Naukri] Searching for: "${entry.keyword}" in "${config.searchLocation || 'All India'}" ===`);
+        try {
+          currentJobsUrl = await performNaukriSearch(page, entry.keyword, config.searchLocation);
+        } catch (err) {
+          logger.warn(`[Naukri] Search flow failed for "${entry.keyword}": ${err.message}`);
+          const slug = entry.keyword.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+          const locSlug = config.searchLocation ? '-in-' + config.searchLocation.toLowerCase().replace(/\s+/g, '-') : '';
+          currentJobsUrl = `https://www.naukri.com/${slug}-jobs${locSlug}`;
+          await page.goto(currentJobsUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+        }
+      } else {
+        await page.goto(currentJobsUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+        await randomDelay(2000, 4000);
+      }
+
+      await page.waitForSelector('.jobTuple, .srp-jobtuple-wrapper', { timeout: 15000 }).catch(() => {});
+      await randomScroll(page);
+
+      // ── STEP 3: SCRAPE CARDS ───────────────────────────────────────────────
+      const jobs = await page.evaluate(() => {
+        const cards = Array.from(document.querySelectorAll(
+          '.srp-jobtuple-wrapper, .jobTuple, [data-job-id]'
+        )).slice(0, 30);
+
+        return cards.map(card => {
+          const href = card.querySelector('a.title, a[title], .title a, a')?.href || '';
+          // Naukri URLs end with a 12-digit numeric job ID, e.g. "-300126502321"
+          const urlId = (href.match(/-(\d{10,})[^\d]?$/) || [])[1] || '';
+          return {
+            jobId:    card.getAttribute('data-job-id')
+                      || card.querySelector('[data-job-id]')?.getAttribute('data-job-id')
+                      || urlId
+                      || '',
+            title:    card.querySelector('.title, [class*="title"]')?.textContent?.trim()   || 'Unknown',
+            company:  card.querySelector('.comp-name, [class*="comp-name"]')?.textContent?.trim() || 'Unknown',
+            location: card.querySelector('.location, [class*="location"]')?.textContent?.trim()   || '',
+            salary:   card.querySelector('.salary, [class*="salary"]')?.textContent?.trim()       || '',
+            applyUrl: href || '',
+          };
+        });
+      });
+
+      logger.info(`[Naukri] Scraped ${jobs.length} cards for keyword "${entry.keyword}"`);
+      if (io) io.emit('scraped', { portal: 'Naukri', count: jobs.length });
+
+      // ── STEP 4 + 5: PROCESS EACH JOB ──────────────────────────────────────
+      for (const job of jobs) {
+      if (appliedCount >= (config.maxAppsPerRun || 15)) break;
+
+      // ── Dedup: extract a stable unique key from URL if card has no data-job-id ──
+      // Naukri URLs end with a long numeric ID, e.g. "-300126502321"
+      // Fall back to title+company hash ONLY when no ID can be extracted from URL.
+      const urlJobId = job.applyUrl
+        ? (job.applyUrl.match(/-(\d{8,})[^\d]*$/) || [])[1] || ''
+        : '';
+      const stableId = job.jobId || urlJobId || makeJobId(job.title, job.company);
+      job.jobId = stableId; // enrich for downstream use
+
+      // Only skip if previously APPLIED (not just scored/skipped)
+      let alreadyApplied = false;
+      if (typeof dbInstance.isAlreadyApplied === 'function') {
+        // Check both applications table (status='applied') and legacy jobs table
+        const appRow = dbInstance._db
+          .prepare('SELECT status FROM applications WHERE job_id = ? AND portal = ?')
+          .get(stableId, 'Naukri');
+        alreadyApplied = !!appRow && (appRow.status === 'applied' || appRow.status === 'success');
+      } else if (typeof dbInstance.getJob === 'function') {
+        const existing = dbInstance.getJob(stableId);
+        alreadyApplied = existing?.apply_status === 'success';
+      }
+
+      if (alreadyApplied) {
+        logger.info(`[Naukri] Already applied — skipping: ${job.title}`);
+        continue;
+      }
+
+      // Navigate to job detail to get description
+      let description = '';
+      if (job.applyUrl) {
+        try {
+          const jobPage = await page.context().newPage();
+          await jobPage.goto(job.applyUrl, { waitUntil: 'domcontentloaded', timeout: 20000 });
+          await randomDelay(800, 1500);
+          description = await jobPage.evaluate(() => {
+            return document.querySelector('.job-desc, .jd-desc, [class*="job-desc"]')?.innerText
+              || document.body.innerText.slice(0, 3000);
+          }).catch(() => '');
+          await jobPage.close().catch(() => {});
+        } catch (err) {
+          logger.debug(`[Naukri] Could not load job detail for ${job.title}: ${err.message}`);
+        }
+      }
+
+      // AI scoring — use passed ai client or internal analyzeJob
+      let score = 0, decision = 'SKIP', reason = 'no AI';
+      try {
+        const keywords = [
+          ...(config.keywords?.required  || []),
+          ...(config.keywords?.preferred || []),
+        ];
+
+        if (ai && typeof ai.scoreJob === 'function') {
+          // New OllamaClient class
+          ({ score, decision, reason } = await ai.scoreJob({
+            title: job.title, company: job.company, location: job.location,
+            description, keywords, profile: config.profile || {},
+          }));
+        } else {
+          // Legacy analyzeJob fallback
+          const result = await analyzeJob(description || `${job.title} ${job.company}`, config);
+          score    = result.score;
+          decision = result.decision;
+          reason   = result.reason;
+        }
+      } catch (err) {
+        logger.warn(`[Naukri] AI scoring failed for ${job.title}: ${err.message}`);
+      }
+
+      logger.info(`[Naukri] Scored "${job.title}": ${decision} (${score}) — ${reason}`);
+      if (io) io.emit('job_scored', { portal: 'Naukri', job, score, decision });
+
+      // ── SKIP gate ──────────────────────────────────────────────────────────
+      // Trust the scorer's decision. Only use scoreThreshold as a secondary
+      // guard when AI is ON (Ollama) — never let threshold override APPLY in
+      // keyword-only mode because keyword scores are inherently low (8–15pt/hit).
+      const aiIsOff = !(config.aiEnabled !== false) || config.skipAI;
+      const skipThreshold = aiIsOff ? 0 : (config.scoreThreshold || 60);
+
+      if (decision === 'SKIP' || score < skipThreshold) {
+        logger.info(`[Naukri] Skipping "${job.title}" — ${reason} (score ${score}, threshold ${skipThreshold})`);
+        // Save as skipped
+        try {
+          if (typeof dbInstance.saveApplication === 'function') {
+            dbInstance.saveApplication({
+              jobId: job.jobId || makeJobId(job.title, job.company),
+              portal: 'Naukri', title: job.title, company: job.company,
+              location: job.location, salary: job.salary,
+              score, status: 'skipped', aiReason: reason,
+              applyUrl: job.applyUrl,
+            });
+          } else {
+            dbInstance.upsertJob({
+              job_id: makeJobId(job.title, job.company), title: job.title,
+              company: job.company, location: job.location, url: job.applyUrl,
+              description: '', decision: 'SKIP', score, reason, apply_status: 'skipped',
+            });
+          }
+        } catch (e) { logger.debug(`[Naukri] DB save-skipped error: ${e.message}`); }
+        continue;
+      }
+
+
+      // ── STEP 5: APPLY ──────────────────────────────────────────────────
+      try {
+        const coverLetter = await coverGen.generate({ job, profile: config.profile }).catch(() => '');
+
+        // Navigate to job detail page first
+        await page.goto(job.applyUrl, { waitUntil: 'domcontentloaded', timeout: 20000 });
+        await randomDelay(1000, 2000);
+
+        // Delegate to comprehensive apply engine
+        // Pass job metadata & cover letter so engine can log and fill correctly
+        const applyResult = await engineApply(page, {
+          jobId:   job.jobId || makeJobId(job.title, job.company),
+          title:   job.title,
+          company: job.company,
+          url:     job.applyUrl,
+          portal:  'naukri',
+        }, {
+          ...config,
+          coverLetter,
+          db:    dbInstance,
+          io,
+        }, {
+          maxRetries: 2,
+          portal:     'naukri',
+          db:         dbInstance,
+          io,
+        });
+
+        const applyStatus = applyResult.status; // 'success'|'failed'|'already_applied'|'external'
+
+        const screenshotFile = screenshotPath(job.jobId || job.title, applyStatus);
+
+        // Save to DB
+        const statusForDb = applyStatus === 'success' ? 'applied'
+                          : applyStatus === 'already_applied' ? 'already_applied'
+                          : 'failed';
+
+        if (typeof dbInstance.saveApplication === 'function') {
+          dbInstance.saveApplication({
+            jobId:    job.jobId || makeJobId(job.title, job.company),
+            portal:   'Naukri', title: job.title, company: job.company,
+            location: job.location, salary: job.salary, score,
+            status:   statusForDb, aiReason: reason, coverLetter,
+            screenshot: screenshotFile, applyUrl: job.applyUrl,
+          });
+        }
+
+        // Update legacy jobs table
+        try {
+          dbInstance.upsertJob?.({
+            job_id: makeJobId(job.title, job.company), title: job.title,
+            company: job.company, location: job.location, url: job.applyUrl,
+            description: '', decision: 'APPLY', score, reason,
+            apply_status: statusForDb === 'applied' ? 'success' : statusForDb,
+          });
+        } catch (_) {}
+
+        if (applyStatus === 'success') {
+          logger.info(`[Naukri] ✅ Applied [${appliedCount + 1}]: ${job.title} @ ${job.company} (${applyResult.steps} steps)`);
+          if (io) io.emit('applied', { portal: 'Naukri', job, score, status: 'applied' });
+          appliedCount++;
+        } else if (applyStatus === 'already_applied') {
+          logger.info(`[Naukri] ⏭ Already applied: ${job.title} @ ${job.company}`);
+        } else {
+          logger.warn(`[Naukri] ❌ Apply ${applyStatus}: ${job.title} — ${applyResult.reason}`);
+          if (io) io.emit('error', { portal: 'Naukri', job, error: applyResult.reason });
+        }
+
+      } catch (applyErr) {
+        logger.error(`[Naukri] Apply threw: ${applyErr.message}`, { stack: applyErr.stack?.split('\n')[1] });
+
+        try {
+          if (typeof dbInstance.saveApplication === 'function') {
+            dbInstance.saveApplication({
+              jobId:    job.jobId || makeJobId(job.title, job.company),
+              portal:   'Naukri', title: job.title, company: job.company,
+              location: job.location, salary: job.salary, score,
+              status: 'failed', aiReason: applyErr.message, applyUrl: job.applyUrl,
+            });
+          }
+        } catch (e) { logger.debug(`[Naukri] DB save-failed error: ${e.message}`); }
+
+        if (io) io.emit('error', { portal: 'Naukri', job, error: applyErr.message });
+      }
+
+
+      // Human-like delay between jobs
+      await humanDelay(config.delayMin || 2000, config.delayMax || 5000);
+      } // end inner for
+    } // end outer for
+
+  } finally {
+    // ── STEP 6: DONE ──────────────────────────────────────────────────────
+    if (io) io.emit('portal', { portal: 'Naukri', status: 'done', applied: appliedCount });
+    logger.info(`[Naukri] Done — applied to ${appliedCount} job(s)`);
+    await page.close().catch(() => {});
+  }
+}
+
+// Re-export with runNaukri added
+module.exports = { runWorker, setEmitter, runNaukri };
+

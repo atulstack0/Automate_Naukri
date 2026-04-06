@@ -109,7 +109,11 @@ Answer:`;
 
   try {
     const raw    = await askAI(prompt, { temperature: 0.1, num_predict: 80 });
-    let answer = (raw || '').trim().replace(/^["'\s]+|["'\s]+$/g, '');
+    let answer = (raw || '').trim();
+    
+    // Strip conversational filler often produced by Llama 3 models
+    answer = answer.replace(/^(here is the answer|the answer is|my answer is|based on the resume,?)[:\-\s]*/i, '');
+    answer = answer.replace(/^["'\s]+|["'\s]+$/g, '');
     
     // ── Post-Processing: Strict Numeric Cleaning ─────────────────────────────
     if (fieldType === 'number' || /number|numeric|whole number/i.test(hint || question)) {
@@ -236,9 +240,9 @@ async function selfLearnAnswer(question, fieldType = 'text', options = []) {
 
   const prompt = `You are helping a job applicant answer a form question. Answer correctly and concisely.
 
-Applicant: ${ll.name || 'Atul Patil'} | ${ll.currentRole || 'QA Lead'} at ${ll.currentCompany || 'Chat360'} | ${ll.yearsExperience || '3'} yrs | ${ll.city || ll.currentLocation || 'Pune, India'}
-Skills: ${ll.tools || 'Selenium, Playwright, TestNG, Jenkins, Java, Python'}
-Salary: ${ll.salary || ll.expectedCTC || '10 LPA'} | Notice: ${ll.noticePeriod || '30 days'} | Relocate: ${ll.relocation || 'Yes'}
+Applicant: ${ll.name || 'Candidate'} | ${ll.currentRole || 'Professional'} at ${ll.currentCompany || 'Current Company'} | ${ll.yearsExperience || '0'} yrs | ${ll.city || ll.currentLocation || 'Location'}
+Skills: ${ll.tools || 'See profile'}
+Salary: ${ll.salary || ll.expectedCTC || 'Negotiable'} | Notice: ${ll.noticePeriod || '30 days'} | Relocate: ${ll.relocation || 'Yes'}
 
 Question: "${question}"
 Type: ${fieldType}

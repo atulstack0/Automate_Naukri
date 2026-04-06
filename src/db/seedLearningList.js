@@ -103,7 +103,8 @@ function seedLearningList(db, config) {
   });
 
   txn();
-  logger.info(`[Seed] Learning list seeded: ${seeded} Q&A pairs from config.json`);
+  const totalCount = db.prepare('SELECT COUNT(*) as count FROM learning_questions').get().count;
+  logger.info(`[Seed] Learning list loaded: ${totalCount} Q&A pairs (Seeded ${seeded} from config)`);
   return seeded;
 }
 

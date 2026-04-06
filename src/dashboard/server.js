@@ -40,11 +40,11 @@ function getBotState() {
 
 function normaliseStats(raw) {
   if (!raw) return { total: 0, applied: 0, skipped: 0, failed: 0, pending: 0, successRate: 0 };
-  const total   = raw.total_scanned || 0;
-  const applied = raw.success_count || 0;
-  const skipped = raw.total_skipped || 0;
-  const failed  = raw.fail_count    || 0;
-  const pending = Math.max(0, (raw.total_applied || 0) - applied - failed);
+  const total   = raw.total || raw.total_scanned || 0;
+  const applied = raw.applied || raw.success_count || 0;
+  const skipped = raw.skipped || raw.total_skipped || 0;
+  const failed  = raw.failed || raw.fail_count || 0;
+  const pending = raw.pending !== undefined ? raw.pending : Math.max(0, total - applied - skipped - failed);
   const rate    = total > 0 ? Math.round((applied / total) * 100) : 0;
   return { total, applied, skipped, failed, pending, successRate: rate, raw };
 }
@@ -232,44 +232,82 @@ function createDashboardServer(port = 3000) {
   // ── Config read/write ─────────────────────────────────────────────────
   app.get('/api/config', (req, res) => {
     try {
-      const cfg = { ...readConfig() }; delete cfg.geminiApiKey;
+      const cfg = { ...readConfig() }; delete cfg.geminiApiKey; delete cfg.openAiApiKey; delete cfg.openAiApiKey2;
       res.json(cfg);
     } catch (err) { res.status(500).json({ error: err.message }); }
   });
-  app.patch('/api/config', (req, res) => {
+  // Both PATCH (proper REST) and POST (legacy frontend calls) accepted
+  const _handleConfigUpdate = (req, res) => {
     try {
       const allowed = ['jobTitle','searchLocation','maxJobs','maxAppsPerRun','scoreThreshold','aiModel',
-                       'ollamaBaseUrl','ollamaTimeout','skipAI','maxPagesPerSearch','delayBetweenJobs',
-                       'headless','delayMin','delayMax','safetyMode','slowMo','resumePath'];
+                       'ollamaBaseUrl','ollamaTimeout','skipAI','aiEnabled','maxPagesPerSearch',
+                       'delayBetweenJobs','headless','delayMin','delayMax','safetyMode','slowMo','resumePath'];
       const cfg = readConfig();
       for (const k of allowed) { if (req.body[k] !== undefined) cfg[k] = req.body[k]; }
       writeConfig(cfg);
       res.json({ success: true });
     } catch (err) { res.status(500).json({ error: err.message }); }
+  };
+  app.patch('/api/config', _handleConfigUpdate);
+  app.post('/api/config',  _handleConfigUpdate);
+
+  // ── AI Mode toggle ────────────────────────────────────────────────────
+  app.get('/api/ai-mode', (req, res) => {
+    try {
+      const cfg = readConfig();
+      const enabled = cfg.aiEnabled !== false; // default true
+      res.json({ aiEnabled: enabled, mode: enabled ? 'ollama' : 'keyword' });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+  app.post('/api/ai-mode', (req, res) => {
+    try {
+      const { aiEnabled } = req.body;
+      const cfg = readConfig();
+      cfg.aiEnabled = aiEnabled !== false;
+      writeConfig(cfg);
+      const mode = cfg.aiEnabled ? 'ollama' : 'keyword';
+      res.json({ success: true, aiEnabled: cfg.aiEnabled, mode });
+      io.emit('bot:log', { level:'info', msg:`AI Engine set to: ${mode}`, ts: new Date().toISOString() });
+    } catch (err) { res.status(500).json({ error: err.message }); }
   });
 
-  // ── Bot Control ───────────────────────────────────────────────────────
   app.get('/api/bot/status', (req, res) => res.json(getBotState()));
 
   app.post('/api/bot/start', (req, res) => {
     if (botProcess && botStatus === 'running') {
       return res.json({ status: 'already_running', message: 'Bot is already running' });
     }
-    const targetPlatform = req.body.platform || 'naukri';
+    const targetPlatform = req.body.platform || 'all';
+    const targetUrl      = req.body.url || null;
     try {
-      botProcess   = spawn(process.execPath, ['src/index.js', '--worker-only', `--platform=${targetPlatform}`], { cwd: process.cwd(), env: { ...process.env } });
+      const args = ['src/index.js', '--worker-only', `--platform=${targetPlatform}`];
+      if (targetUrl) args.push(`--url=${targetUrl}`);
+
+      botProcess   = spawn(process.execPath, args, {
+        cwd:  process.cwd(),
+        env:  { ...process.env },
+        stdio: ['ignore', 'pipe', 'pipe'], // explicit pipes so stdout/stderr stream
+      });
       botStatus    = 'running';
       botStartedAt = new Date().toISOString();
+
       botProcess.stdout.on('data', d => {
         const msg = d.toString().trim();
         if (msg) {
           io.emit('bot:log', { level: detectLevel(msg), msg, ts: new Date().toISOString() });
           if (/applied|success/i.test(msg)) io.emit('stats:update', normaliseStats(db.getStats()));
+          
+          const match = msg.match(/\[Screenshot\] (.*)/i);
+          if (match) {
+             const filePath = match[1].trim();
+             const relative = `/screenshots/${path.relative(SCREENSHOTS_DIR, filePath).replace(/\\/g, '/')}`;
+             io.emit('screenshot:new', { path: relative });
+          }
         }
       });
       botProcess.stderr.on('data', d => {
         const msg = d.toString().trim();
-        if (msg) io.emit('bot:log', { level: 'error', msg, ts: new Date().toISOString() });
+        if (msg) io.emit('bot:log', { level: 'warn', msg, ts: new Date().toISOString() });
       });
       botProcess.on('exit', code => {
         botStatus = 'idle'; botProcess = null; botStartedAt = null;
@@ -278,7 +316,7 @@ function createDashboardServer(port = 3000) {
         io.emit('stats:update', normaliseStats(db.getStats()));
       });
       io.emit('bot:status', getBotState());
-      logger.info(`[BotCtrl] Started (pid=${botProcess.pid})`);
+      logger.info(`[BotCtrl] Started pid=${botProcess.pid} platform=${targetPlatform}${targetUrl ? ' url=' + targetUrl : ''}`);
       res.json({ success: true, ...getBotState() });
     } catch (err) { botStatus = 'idle'; res.status(500).json({ error: err.message }); }
   });
@@ -293,6 +331,29 @@ function createDashboardServer(port = 3000) {
       }, 5000);
       res.json({ success: true, ...getBotState() });
     } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // POST /api/bot/save-auth — launch saveAuth.js so user can log in manually
+  app.post('/api/bot/save-auth', (req, res) => {
+    try {
+      const saveAuthPath = path.join(process.cwd(), 'src', 'saveAuth.js');
+      const child = spawn(process.execPath, [saveAuthPath], {
+        cwd:   process.cwd(),
+        env:   { ...process.env },
+        stdio: 'inherit',   // show browser window attached to terminal
+        detached: false,
+      });
+      child.on('exit', code => {
+        logger.info(`[SaveAuth] Process exited (code ${code})`);
+        io.emit('bot:log', { level: 'info', msg: `save-auth completed (code ${code})`, ts: new Date().toISOString() });
+      });
+      logger.info(`[SaveAuth] Launched (pid=${child.pid})`);
+      io.emit('bot:log', { level: 'info', msg: '🔑 save-auth launched — log in, then close the browser', ts: new Date().toISOString() });
+      res.json({ success: true, status: 'launched', pid: child.pid });
+    } catch (err) {
+      logger.error('[SaveAuth] Error', { err: err.message });
+      res.status(500).json({ error: err.message });
+    }
   });
 
   app.post('/api/bot/restart', async (req, res) => {
@@ -505,6 +566,62 @@ IMPORTANT: Return ONLY the JSON array, nothing else.`;
   // SPA fallback
   app.get('*', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));
 
+  // ── AI mode toggle ──────────────────────────────────────────────────────
+  app.get('/api/ai-mode', (req, res) => {
+    try { const c = readConfig(); res.json({ aiEnabled: c.aiEnabled !== false }); }
+    catch (err) { res.status(500).json({ error: err.message }); }
+  });
+  app.post('/api/ai-mode', (req, res) => {
+    try {
+      const enabled = req.body.aiEnabled !== false;
+      const c = readConfig();
+      c.aiEnabled = enabled;
+      writeConfig(c);
+      io.emit('ai_mode', { aiEnabled: enabled });
+      logger.info(`[AIMode] → ${enabled ? 'Ollama (enabled)' : 'keyword-only (disabled)'}`);
+      res.json({ ok: true, aiEnabled: enabled });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // ── Spec routes (added alongside existing) ────────────────────────────
+
+  // GET /api/history — alias to getAll (applications table preferred, falls back to jobs)
+  app.get('/api/history', (req, res) => {
+    try {
+      const limit = Number(req.query.limit) || 200;
+      const data  = typeof db.getAll === 'function'
+        ? db.getAll({ limit })
+        : db.getAllJobs(limit);
+      res.json(data);
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // POST /api/config — full config write (spec requirement)
+  app.post('/api/config', (req, res) => {
+    try {
+      const current = readConfig();
+      const merged  = { ...current, ...req.body };
+      writeConfig(merged);
+      res.json({ ok: true });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // POST /api/cover-letter — generate cover letter via Ollama
+  app.post('/api/cover-letter', async (req, res) => {
+    try {
+      const { job } = req.body || {};
+      if (!job) return res.status(400).json({ error: 'job is required' });
+      const cfg = readConfig();
+      const CoverLetterGenerator = require('../ai/coverLetter');
+      const gen = new CoverLetterGenerator(cfg);
+      const letter = await gen.generate({ job, profile: cfg.profile || {} });
+      res.json({ letter });
+    } catch (err) {
+      logger.error('[CoverLetterAPI] Error', { err: err.message });
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   // ── Socket.io ─────────────────────────────────────────────────────────
   io.on('connection', socket => {
     logger.debug(`[WS] ${socket.id} connected`);
@@ -513,6 +630,28 @@ IMPORTANT: Return ONLY the JSON array, nothing else.`;
       socket.emit('init:jobs',  db.getAppliedJobs(50));
       socket.emit('bot:status', getBotState());
     } catch (err) { logger.warn('[WS] Init error', { err: err.message }); }
+
+    // ── Spec socket events ──────────────────────────────────────────────
+    socket.on('start_bot', () => {
+      logger.info('[WS] start_bot received');
+      io.emit('start_bot_trigger');
+    });
+    socket.on('stop_bot', () => {
+      logger.info('[WS] stop_bot received');
+      io.emit('stop_bot_trigger');
+    });
+    socket.on('get_stats', () => {
+      try { socket.emit('stats', db.getStats()); } catch (_) {}
+    });
+    socket.on('get_history', () => {
+      try {
+        const data = typeof db.getAll === 'function'
+          ? db.getAll({ limit: 200 })
+          : db.getAllJobs(200);
+        socket.emit('history', data);
+      } catch (_) {}
+    });
+
     socket.on('disconnect', () => logger.debug(`[WS] ${socket.id} disconnected`));
   });
 
@@ -569,4 +708,38 @@ function getLatestScreenshot() {
   } catch { return null; }
 }
 
-module.exports = { createDashboardServer, emitToClients };
+// ═══════════════════════════════════════════════════════════════════════════
+// DashboardServer class — spec API wrapper around createDashboardServer
+// ═══════════════════════════════════════════════════════════════════════════
+
+class DashboardServer {
+  /**
+   * @param {{ port?: number, db: object, config: object }} opts
+   */
+  constructor({ port = 3000, db: dbInstance, config } = {}) {
+    this.port   = port;
+    this._db    = dbInstance;
+    this._config = config;
+    this._io    = null;
+    this._server = null;
+  }
+
+  /**
+   * Start the dashboard. Returns the socket.io instance.
+   * @returns {import('socket.io').Server}
+   */
+  start() {
+    const result = createDashboardServer(this.port);
+    this._io     = result.io;
+    this._server = result.server;
+    return result.io;
+  }
+
+  /** Emit an event to all connected clients. */
+  emit(event, data) {
+    if (this._io) this._io.emit(event, data);
+  }
+}
+
+module.exports = { createDashboardServer, emitToClients, DashboardServer };
+
