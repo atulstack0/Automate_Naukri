@@ -72,13 +72,38 @@ function toCsv(rows, cols) {
   return [cols.join(','), ...rows.map(r => cols.map(c => esc(r[c])).join(','))].join('\n');
 }
 function fromCsv(text) {
-  const lines = text.trim().split('\n');
+  const lines = text.trim().replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
   if (lines.length < 2) return [];
-  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
-  return lines.slice(1).map(line => {
-    const vals = line.match(/("(?:[^"]|"")*"|[^,]*)/g) || [];
+  const parseLine = (line) => {
+    const fields = [];
+    let i = 0;
+    while (i <= line.length) {
+      if (i === line.length) { fields.push(''); break; }
+      if (line[i] === '"') {
+        let val = '';
+        i++;
+        while (i < line.length) {
+          if (line[i] === '"') {
+            if (line[i + 1] === '"') { val += '"'; i += 2; }
+            else { i++; break; }
+          } else { val += line[i]; i++; }
+        }
+        fields.push(val);
+        if (line[i] === ',') i++;
+      } else {
+        const next = line.indexOf(',', i);
+        if (next === -1) { fields.push(line.substring(i).trim()); break; }
+        fields.push(line.substring(i, next).trim());
+        i = next + 1;
+      }
+    }
+    return fields;
+  };
+  const headers = parseLine(lines[0]);
+  return lines.slice(1).filter(l => l.trim()).map(line => {
+    const vals = parseLine(line);
     const obj = {};
-    headers.forEach((h, i) => { obj[h] = (vals[i] || '').replace(/^"|"$/g, '').replace(/""/g, '"').trim(); });
+    headers.forEach((h, i) => { obj[h] = (vals[i] || '').trim(); });
     return obj;
   });
 }
@@ -100,7 +125,28 @@ function createDashboardServer(port = 3000) {
 
   // ── Jobs ──────────────────────────────────────────────────────────────
   app.get('/api/jobs/all', (req, res) => {
-    try { res.json(db.getAllJobs(500)); } catch (err) { res.status(500).json({ error: err.message }); }
+    try {
+      // Merge legacy jobs table + new applications table
+      const legacyJobs = db.getAllJobs(500).map(j => ({
+        job_id: j.job_id, title: j.title, company: j.company, location: j.location,
+        score: j.score, apply_status: j.apply_status || 'pending',
+        reason: j.reason, created_at: j.created_at, url: j.url,
+        source: 'legacy'
+      }));
+      const apps = db.getAll({ limit: 500 }).map(a => ({
+        job_id: a.job_id, title: a.title, company: a.company, location: a.location,
+        score: a.score, apply_status: a.status || 'pending',
+        reason: a.ai_reason, created_at: a.created_at, url: a.apply_url,
+        source: a.portal || 'unknown'
+      }));
+      // Deduplicate by job_id (prefer applications over legacy)
+      const seen = new Set();
+      const merged = [];
+      for (const a of apps) { seen.add(a.job_id); merged.push(a); }
+      for (const j of legacyJobs) { if (!seen.has(j.job_id)) merged.push(j); }
+      merged.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+      res.json(merged);
+    } catch (err) { res.status(500).json({ error: err.message }); }
   });
   app.get('/api/jobs', (req, res) => {
     try { res.json(db.getAppliedJobs(200)); } catch (err) { res.status(500).json({ error: err.message }); }
@@ -164,20 +210,28 @@ function createDashboardServer(port = 3000) {
   app.post('/api/jobs/import/csv', express.text({ type: 'text/csv', limit: '10mb' }), (req, res) => {
     try {
       const rows = fromCsv(req.body);
-      let inserted = 0;
+      const validDecisions = ['APPLY', 'SKIP', 'ERROR', 'PENDING'];
+      const validStatuses  = ['success', 'failed', 'skipped', 'pending', 'retrying'];
+      let inserted = 0, skipped = 0;
       for (const r of rows) {
-        if (!r.title || !r.company) continue;
-        db.upsertJob({
-          job_id:       r.job_id || `${r.title}_${r.company}_${Date.now()}`.replace(/[^a-zA-Z0-9_-]/g,'_').substring(0,80),
-          title:        r.title, company: r.company, location: r.location || '',
-          url:          r.url || '', description: r.description || '',
-          decision:     r.decision || 'PENDING', score: Number(r.score) || 0,
-          reason:       r.reason || '', apply_status: r.apply_status || 'pending',
-        });
-        inserted++;
+        if (!r.title || !r.company) { skipped++; continue; }
+        try {
+          const decision = validDecisions.includes((r.decision || '').toUpperCase())
+            ? r.decision.toUpperCase() : 'PENDING';
+          const applyStatus = validStatuses.includes((r.apply_status || '').toLowerCase())
+            ? r.apply_status.toLowerCase() : 'pending';
+          db.upsertJob({
+            job_id:       r.job_id || `${r.title}_${r.company}_${Date.now()}`.replace(/[^a-zA-Z0-9_-]/g,'_').substring(0,80),
+            title:        r.title, company: r.company, location: r.location || '',
+            url:          r.url || '', description: r.description || '',
+            decision:     decision, score: Number(r.score) || 0,
+            reason:       r.reason || '', apply_status: applyStatus,
+          });
+          inserted++;
+        } catch (_) { skipped++; }
       }
       io.emit('stats:update', normaliseStats(db.getStats()));
-      res.json({ success: true, inserted });
+      res.json({ success: true, inserted, skipped });
     } catch (err) { res.status(500).json({ error: err.message }); }
   });
 

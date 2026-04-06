@@ -483,13 +483,8 @@
             <button class="btn-outline sm" id="btnJobExport">
               ⬇ Export CSV
             </button>
-            <label class="btn-outline sm" style="cursor: pointer"
-              >⬆ Import CSV<input
-                type="file"
-                id="jobImportFile"
-                accept=".csv"
-                style="display: none"
-            /></label>
+            <button class="btn-outline sm" onclick="document.getElementById('jobImportFile').click()">⬆ Import CSV</button>
+            <input type="file" id="jobImportFile" accept=".csv" style="display:none" />
           </div>
         </div>
         <div class="card p0">
@@ -528,13 +523,8 @@
             </button>
             <button class="btn-outline sm" id="btnRefreshL">↻</button>
             <button class="btn-outline sm" id="btnLearningExport">⬇ CSV</button>
-            <label class="btn-outline sm" style="cursor: pointer"
-              >⬆ Import<input
-                type="file"
-                id="lImportFile"
-                accept=".csv"
-                style="display: none"
-            /></label>
+            <button class="btn-outline sm" onclick="document.getElementById('lImportFile').click()">⬆ Import</button>
+            <input type="file" id="lImportFile" accept=".csv" style="display:none" />
           </div>
         </div>
 
@@ -549,13 +539,8 @@
               </p>
             </div>
             <div class="resume-actions">
-              <label class="btn-primary sm" style="cursor: pointer"
-                >📎 Upload Resume<input
-                  type="file"
-                  id="resumeUpload"
-                  accept=".pdf,.txt,.doc"
-                  style="display: none"
-              /></label>
+              <button class="btn-primary sm" onclick="document.getElementById('resumeUpload').click()">📎 Upload Resume</button>
+              <input type="file" id="resumeUpload" accept=".pdf,.txt,.doc" style="display:none" />
               <button class="btn-primary sm" id="btnAutoLearnResume" disabled>
                 🤖 AI Auto-Generate Q&amp;A
               </button>
