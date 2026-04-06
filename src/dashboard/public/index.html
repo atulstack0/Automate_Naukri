@@ -139,6 +139,12 @@
         <button class="topbar-btn start" id="topBtnStart">▶ Start</button>
         <button class="topbar-btn stop" id="topBtnStop" disabled>■ Stop</button>
       </div>
+      <div class="topbar-sep"></div>
+      <div class="status-pill" id="topProfilePill" style="cursor:pointer;" title="Active Profile">
+        <span>👤</span>
+        <span id="topProfileName">default</span>
+        <span style="font-size:9px;opacity:.7;" id="topProfileRole">admin</span>
+      </div>
     </div>
     <!-- ══════ SIDEBAR ══════════════════════════════════════════ -->
     <aside class="sidebar" id="sidebar">
@@ -214,6 +220,9 @@
         >
         <a class="nav-item" data-tab="coverletters"
           ><span class="nav-icon">✉️</span><span>Cover Letters</span></a
+        >
+        <a class="nav-item" data-tab="profiles"
+          ><span class="nav-icon">👥</span><span>Profiles</span></a
         >
       </nav>
 
@@ -1008,6 +1017,108 @@
           </div>
         </div>
       </section>
+
+      <!-- ─── PROFILES ────────────────────────── -->
+      <section class="page" id="page-profiles">
+        <div class="page-hdr">
+          <h1 class="page-title">👥 User Profiles</h1>
+          <div class="hdr-actions">
+            <button class="btn-primary sm" id="btnCreateProfile">➕ New Profile</button>
+            <button class="btn-outline sm" id="btnRefreshProfiles">↻</button>
+          </div>
+        </div>
+
+        <!-- Create Profile Form -->
+        <div class="card" id="createProfileCard" style="display:none;margin-bottom:20px;">
+          <h3 class="settings-section">Create New Profile</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;">
+            <div>
+              <label class="field-label">Profile Name</label>
+              <input class="input" id="newProfileName" placeholder="e.g., john_doe" />
+            </div>
+            <div>
+              <label class="field-label">Display Name</label>
+              <input class="input" id="newProfileDisplay" placeholder="e.g., John Doe" />
+            </div>
+            <div>
+              <label class="field-label">Role</label>
+              <select class="select" id="newProfileRole">
+                <option value="admin">Admin — Full access</option>
+                <option value="user" selected>User — Own profile</option>
+                <option value="viewer">Viewer — Read-only</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn-primary" id="btnSaveNewProfile">Create</button>
+              <button class="btn-outline" id="btnCancelNewProfile">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Profile Badge -->
+        <div class="card" style="margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+          <div style="font-size:40px;">👤</div>
+          <div style="flex:1;">
+            <div style="font-family:var(--font-head);font-size:18px;font-weight:700;text-transform:uppercase;" id="activeProfileTitle">default</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:4px;">
+              Role: <span id="activeProfileRoleBadge" style="color:var(--accent);font-weight:600;text-transform:uppercase;">admin</span>
+              &nbsp;•&nbsp; Active Profile
+            </div>
+          </div>
+        </div>
+
+        <!-- Profiles Grid -->
+        <div class="card" style="padding:0;">
+          <table class="tbl" id="tblProfiles">
+            <thead>
+              <tr>
+                <th>Profile</th>
+                <th>Display Name</th>
+                <th>Role</th>
+                <th>Created</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tblProfilesBody"></tbody>
+          </table>
+          <div class="empty-state" id="profilesEmpty" style="display:none;">No profiles found.</div>
+        </div>
+
+        <!-- Role Legend -->
+        <div class="card" style="margin-top:20px;">
+          <h3 class="settings-section">🔑 Role Permissions</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:12px;">
+            <div style="padding:12px;border:1px solid var(--border);background:rgba(0,240,255,0.03);">
+              <div style="font-weight:700;color:var(--accent);margin-bottom:6px;">🛡️ Admin</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.6;">
+                • Full access to all features<br>
+                • Manage all profiles & roles<br>
+                • Import/export data<br>
+                • Edit selectors & advanced settings
+              </div>
+            </div>
+            <div style="padding:12px;border:1px solid var(--border);background:rgba(0,240,255,0.03);">
+              <div style="font-weight:700;color:var(--warn);margin-bottom:6px;">👤 User</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.6;">
+                • Edit own profile & config<br>
+                • Start/stop bot<br>
+                • View own job history<br>
+                • Export data
+              </div>
+            </div>
+            <div style="padding:12px;border:1px solid var(--border);background:rgba(0,240,255,0.03);">
+              <div style="font-weight:700;color:var(--muted);margin-bottom:6px;">👁️ Viewer</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.6;">
+                • View dashboard & stats<br>
+                • Read-only access<br>
+                • Cannot start bot<br>
+                • Cannot modify settings
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -1254,6 +1365,166 @@
       // Server-side push (e.g., index.js changed mode)
       socket.on('ai_mode', d => setAiToggleUI(d.aiEnabled !== false));
 
+    })();
+
+    // ── Profile Management ────────────────────────────────────────────────
+    (function() {
+      const socket = window._socket || (window._socket = io());
+
+      // Elements
+      const tblBody        = document.getElementById('tblProfilesBody');
+      const emptyState     = document.getElementById('profilesEmpty');
+      const createCard     = document.getElementById('createProfileCard');
+      const btnCreate      = document.getElementById('btnCreateProfile');
+      const btnCancel      = document.getElementById('btnCancelNewProfile');
+      const btnSave        = document.getElementById('btnSaveNewProfile');
+      const btnRefresh     = document.getElementById('btnRefreshProfiles');
+      const topName        = document.getElementById('topProfileName');
+      const topRole        = document.getElementById('topProfileRole');
+      const activeTitle    = document.getElementById('activeProfileTitle');
+      const activeRoleBadge= document.getElementById('activeProfileRoleBadge');
+      const topPill        = document.getElementById('topProfilePill');
+
+      // Toggle create form
+      if (btnCreate) btnCreate.addEventListener('click', () => { createCard.style.display = createCard.style.display === 'none' ? 'block' : 'none'; });
+      if (btnCancel) btnCancel.addEventListener('click', () => { createCard.style.display = 'none'; });
+
+      // Navigate to profiles tab when topbar pill clicked
+      if (topPill) topPill.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const navItem = document.querySelector('[data-tab="profiles"]');
+        if (navItem) navItem.classList.add('active');
+        const page = document.getElementById('page-profiles');
+        if (page) page.classList.add('active');
+        loadProfiles();
+      });
+
+      // Load profiles
+      async function loadProfiles() {
+        try {
+          const res  = await fetch('/api/profiles');
+          const data = await res.json();
+          renderProfiles(data.profiles || [], data.activeProfile || 'default');
+        } catch (err) { console.error('Failed to load profiles:', err); }
+      }
+
+      function renderProfiles(profiles, activeProfile) {
+        if (!tblBody) return;
+        tblBody.innerHTML = '';
+        if (!profiles.length) { if (emptyState) emptyState.style.display = 'block'; return; }
+        if (emptyState) emptyState.style.display = 'none';
+
+        // Update topbar & active badge
+        const active = profiles.find(p => p.isActive) || profiles[0];
+        if (topName) topName.textContent = active.displayName || active.name;
+        if (topRole) topRole.textContent = active.role || 'user';
+        if (activeTitle) activeTitle.textContent = active.displayName || active.name;
+        if (activeRoleBadge) {
+          activeRoleBadge.textContent = active.role || 'user';
+          activeRoleBadge.style.color = active.role === 'admin' ? 'var(--accent)' : active.role === 'viewer' ? 'var(--muted)' : 'var(--warn)';
+        }
+
+        for (const p of profiles) {
+          const tr = document.createElement('tr');
+          const roleColor = p.role === 'admin' ? 'var(--accent)' : p.role === 'viewer' ? 'var(--muted)' : 'var(--warn)';
+          const statusBadge = p.isActive
+            ? '<span style="color:var(--accent);font-weight:700;">● ACTIVE</span>'
+            : '<span style="color:var(--muted);">○ idle</span>';
+
+          tr.innerHTML = `
+            <td style="font-weight:600;">${p.name}</td>
+            <td>${p.displayName || p.name}</td>
+            <td>
+              <select class="select" style="width:auto;min-width:100px;font-size:11px;" data-profile="${p.name}" onchange="window._changeRole(this)">
+                <option value="admin" ${p.role==='admin'?'selected':''}>🛡️ Admin</option>
+                <option value="user" ${p.role==='user'?'selected':''}>👤 User</option>
+                <option value="viewer" ${p.role==='viewer'?'selected':''}>👁️ Viewer</option>
+              </select>
+            </td>
+            <td style="font-size:11px;color:var(--muted);">${p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '—'}</td>
+            <td>${statusBadge}</td>
+            <td>
+              ${!p.isActive ? `<button class="btn-outline sm" onclick="window._switchProfile('${p.name}')">▶ Activate</button>` : ''}
+              ${p.name !== 'default' ? `<button class="btn-outline sm" style="color:var(--danger);border-color:var(--danger);" onclick="window._deleteProfile('${p.name}')">🗑</button>` : ''}
+            </td>
+          `;
+          tblBody.appendChild(tr);
+        }
+      }
+
+      // Create profile
+      if (btnSave) btnSave.addEventListener('click', async () => {
+        const name = document.getElementById('newProfileName')?.value?.trim();
+        const displayName = document.getElementById('newProfileDisplay')?.value?.trim();
+        const role = document.getElementById('newProfileRole')?.value || 'user';
+        if (!name) { alert('Profile name is required'); return; }
+
+        try {
+          const res = await fetch('/api/profiles', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, role, displayName }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            createCard.style.display = 'none';
+            document.getElementById('newProfileName').value = '';
+            document.getElementById('newProfileDisplay').value = '';
+            loadProfiles();
+          } else {
+            alert(data.error || 'Failed to create profile');
+          }
+        } catch (err) { alert('Error: ' + err.message); }
+      });
+
+      // Switch profile
+      window._switchProfile = async function(name) {
+        try {
+          const res = await fetch(`/api/profiles/${name}/activate`, { method: 'POST' });
+          const data = await res.json();
+          if (data.success) loadProfiles();
+          else alert(data.error || 'Failed to switch profile');
+        } catch (err) { alert('Error: ' + err.message); }
+      };
+
+      // Delete profile
+      window._deleteProfile = async function(name) {
+        if (!confirm(`Delete profile "${name}"? This removes all its data.`)) return;
+        try {
+          const res = await fetch(`/api/profiles/${name}`, { method: 'DELETE' });
+          const data = await res.json();
+          if (data.success) loadProfiles();
+          else alert(data.error || 'Failed to delete profile');
+        } catch (err) { alert('Error: ' + err.message); }
+      };
+
+      // Change role
+      window._changeRole = async function(selectEl) {
+        const name = selectEl.dataset.profile;
+        const role = selectEl.value;
+        try {
+          await fetch(`/api/profiles/${name}/role`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ role }),
+          });
+          loadProfiles();
+        } catch (err) { alert('Error: ' + err.message); }
+      };
+
+      // Refresh
+      if (btnRefresh) btnRefresh.addEventListener('click', loadProfiles);
+
+      // Socket events
+      socket.on('profiles:update', (profiles) => {
+        const active = profiles.find(p => p.isActive);
+        renderProfiles(profiles, active ? active.name : 'default');
+      });
+      socket.on('profile:switched', () => loadProfiles());
+
+      // Initial load
+      loadProfiles();
     })();
     </script>
   </body>

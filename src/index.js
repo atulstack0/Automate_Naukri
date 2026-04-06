@@ -34,7 +34,15 @@ const targetUrl     = urlArg ? urlArg.slice(6) : null;
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 const CONFIG_PATH = path.join(process.cwd(), 'config', 'config.json');
+const EXAMPLE_CONFIG_PATH = path.join(process.cwd(), 'config', 'config.example.json');
+
 function loadConfig() {
+  // Auto-create config.json from example if it doesn't exist
+  if (!fs.existsSync(CONFIG_PATH) && fs.existsSync(EXAMPLE_CONFIG_PATH)) {
+    logger.info('[Main] config.json not found — creating from config.example.json');
+    fs.copyFileSync(EXAMPLE_CONFIG_PATH, CONFIG_PATH);
+    logger.info('[Main] ✅ config.json created. Please edit it with your details, then restart.');
+  }
   return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
 }
 let config;
@@ -43,6 +51,7 @@ try {
   logger.info(`[Main] config.json loaded (mode: ${isWorkerOnly ? 'worker-only' : 'dashboard'})`);
 } catch (err) {
   logger.error('[Main] Cannot load config/config.json: ' + err.message);
+  logger.error('[Main] Tip: Copy config/config.example.json to config/config.json and fill in your details.');
   process.exit(1);
 }
 
