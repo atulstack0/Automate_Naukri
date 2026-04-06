@@ -51,8 +51,20 @@ function normaliseStats(raw) {
   return { total, applied, skipped, failed, pending, successRate: rate, raw };
 }
 
-function readConfig() { return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8')); }
+const EXAMPLE_CONFIG_PATH = path.join(process.cwd(), 'config', 'config.example.json');
+
+function readConfig() {
+  if (!fs.existsSync(CONFIG_PATH) && fs.existsSync(EXAMPLE_CONFIG_PATH)) {
+    fs.copyFileSync(EXAMPLE_CONFIG_PATH, CONFIG_PATH);
+  }
+  return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+}
 function writeConfig(cfg) { fs.writeFileSync(CONFIG_PATH, JSON.stringify(cfg, null, 2)); }
+
+// Ensure essential data directories exist
+[SCREENSHOTS_DIR, path.join(process.cwd(), 'data', 'uploads'), path.join(process.cwd(), 'logs')].forEach(d => {
+  if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true });
+});
 
 // ── CSV helpers ────────────────────────────────────────────────────────────
 function toCsv(rows, cols) {

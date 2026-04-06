@@ -1,0 +1,91 @@
+{
+  "jobsUrl": "https://www.naukri.com/qa-engineer-jobs",
+  "linkedinUrl": "https://www.linkedin.com/jobs/search/?keywords=QA+Engineer&location=Pune",
+  "indeedUrl": "https://in.indeed.com/jobs?q=QA+Engineer&l=Pune",
+  "companyUrls": [],
+  "searchKeywords": [
+    "QA",
+    "Automation QA",
+    "Selenium",
+    "Playwright",
+    "Tester"
+  ],
+  "searchLocation": "Pune",
+  "headless": false,
+  "safetyMode": false,
+  "parallelTabs": 1,
+  "maxAppsPerRun": 20,
+  "maxRetries": 3,
+  "delayMin": 1500,
+  "delayMax": 3000,
+  "slowMo": 80,
+  "aiModel": "llama3.2:3b",
+  "coverModel": "llama3.2:3b",
+  "formModel": "llama3.2:3b",
+  "ollamaBaseUrl": "http://localhost:11434",
+  "ollamaTimeout": 120000,
+  "openAiApiKey": "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",
+  "openAiApiKey2": "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",
+  "openAiModel": "gpt-3.5-turbo",
+  "geminiApiKey": "AIzaSyBwC_IjWmWW1mDI7nmUk8cPcybnjNgQjNg",
+  "geminiModel": "gemini-2.0-flash",
+  "skipAI": false,
+  "resumePath": "C:\\AAATTTTUUUULLL\\Doc\\Resume\\Atul_Patil_Resume.pdf",
+  "dashboardPort": 3000,
+  "profile": {
+    "name": "Atul Patil",
+    "email": "atulp4til87@gmail.com",
+    "phone": "+918552078787",
+    "currentLocation": "Pune, India",
+    "noticePeriod": "30 days",
+    "currentCompany": "Chat360",
+    "currentRole": "QA Lead",
+    "yearsExperience": "4",
+    "salary": "10",
+    "portfolio": "https://atulpatil87.netlify.app/",
+    "github": "https://github.com/atulpatil87",
+    "coverLetter": "QA Lead with 4 years of experience in automation (Java, Selenium, TestNG, Maven), API testing (Postman, Rest Assured), and CI/CD (Jenkins). Experienced in validating GenAI features and leading cross-functional QA initiatives. I look forward to contributing to your team's testing maturity and release quality.",
+    "summary": "Leading QA at Chat360; designed automation frameworks (Java+Selenium+TestNG), ran API testing (Postman/Rest Assured), integrated tests in Jenkins CI/CD; improved efficiency and reduced regression cycles.",
+    "linkedIn": "https://www.linkedin.com/in/atulpatil87/"
+  },
+  "selector": {
+    "jobCard": ".srp-jobtuple-wrapper",
+    "jobTitle": ".title",
+    "companyName": ".comp-name",
+    "applyButton": "#apply-button",
+    "nextPage": "a.fright.fs14.btn-secondary.next-btn, a[class*='next-btn'], button[class*='next-btn'], a.next-btn, [aria-label*='next' i], [title*='next page' i]",
+    "nameField": "input[placeholder*='name' i]",
+    "emailField": "input[type='email']",
+    "phoneField": "input[type='tel']",
+    "coverLetterField": "textarea",
+    "resumeUpload": "input[type='file']",
+    "submitButton": "button[type='submit']",
+    "successIndicator": ".success-msg, .applied-text, [class*='success']",
+    "applyModal": ".apply-modal, .apply-drawer, .naukri-drawer, .df__drawer, .drawer-wrapper"
+  },
+  "keywords": {
+    "required": [
+      "QA",
+      "automation",
+      "Playwright",
+      "Selenium",
+      "testing"
+    ],
+    "preferred": [
+      "SDET",
+      "quality assurance",
+      "test framework",
+      "CI/CD",
+      "TestNG",
+      "Postman",
+      "REST"
+    ],
+    "excluded": [
+      "TOSCA"
+    ]
+  },
+  "blacklist": [],
+  "scoreThreshold": 40,
+  "maxPagesPerSearch": 5,
+  "aiEnabled": true
+}
