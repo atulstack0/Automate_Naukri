@@ -107,6 +107,50 @@ function findBestMatch(labelText, threshold = 20) {
 }
 
 /**
+ * Build a qaAnswers map from the profile object so FIELD_MAP keys match profile fields.
+ * Bridges the gap between profile key names (e.g. currentLocation) and answerKey names (e.g. location).
+ */
+function buildQaAnswers(profile) {
+  if (!profile || typeof profile !== 'object') return {};
+  return {
+    name:           profile.name            || '',
+    email:          profile.email           || '',
+    phone:          profile.phone           || '',
+    linkedIn:       profile.linkedIn        || profile.linkedin        || '',
+    portfolio:      profile.portfolio       || '',
+    github:         profile.github          || '',
+    location:       profile.currentLocation || profile.location        || '',
+    notice:         profile.noticePeriod    || profile.notice          || '',
+    relocation:     profile.relocation      || 'Yes',
+    experience:     profile.yearsExperience || profile.experience      || '',
+    currentRole:    profile.currentRole     || '',
+    currentCompany: profile.currentCompany  || '',
+    previousRoles:  profile.previousRoles   || '',
+    responsibilities: profile.responsibilities || profile.summary || '',
+    languages:      profile.languages       || '',
+    tools:          profile.tools           || profile.skills          || '',
+    selenium:       profile.selenium        || profile.tools           || '',
+    testng:         profile.testng          || '',
+    restAssured:    profile.restAssured     || '',
+    apiTesting:     profile.apiTesting      || profile.tools           || '',
+    cicd:           profile.cicd            || '',
+    frameworks:     profile.frameworks      || profile.tools           || '',
+    sql:            profile.sql             || '',
+    genai:          profile.genai           || '',
+    improvements:   profile.improvements   || '',
+    education:      profile.education       || '',
+    undergraduate:  profile.undergraduate   || profile.education       || '',
+    whyRole:        profile.qaWhyThisRole   || profile.whyRole         || '',
+    strengths:      profile.qaStrengths     || profile.strengths       || '',
+    weaknesses:     profile.qaWeaknesses    || profile.weaknesses      || '',
+    awards:         profile.awards          || '',
+    salary:         profile.salary          || '',
+    coverLetter:    profile.coverLetter     || '',
+    shortSummary:   profile.summary         || '',
+  };
+}
+
+/**
  * Get the answer value — Learning List DB is the primary source.
  * Falls back to qaAnswers / profile only if DB has no answer.
  */
@@ -253,7 +297,13 @@ async function getElementValue(page, elementHandle) {
  * Returns a list of truly unmatched questions (AI also couldn't answer).
  */
 async function fillFormSmart(page, config) {
-  const { qaAnswers = {}, profile = {}, resumePath, skipAI = false, scopeSelector = '' } = config;
+  const { profile = {}, resumePath, skipAI = false, scopeSelector = '' } = config;
+  // Auto-build qaAnswers from profile if caller didn't provide it.
+  // This maps profile field names (currentLocation, noticePeriod, etc.) to
+  // the answerKey names used in FIELD_MAP (location, notice, etc.).
+  const qaAnswers = Object.keys(config.qaAnswers || {}).length
+    ? config.qaAnswers
+    : buildQaAnswers(profile);
   const unmatched = [];
 
   logger.info(`[FormFiller] Starting AI-augmented fill: ${skipAI ? 'Keyword only' : 'Hybrid AI'} (Scope: ${scopeSelector || 'None'})`);
@@ -687,5 +737,5 @@ async function fillFormSmart(page, config) {
   return unmatched;
 }
 
-module.exports = { fillFormSmart };
+module.exports = { fillFormSmart, buildQaAnswers };
 
