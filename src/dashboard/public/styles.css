@@ -243,9 +243,8 @@ body { display: flex; flex-direction: column; }
 }
 
 /* Shift layout under topbar */
-.sidebar, .main { margin-top: var(--topbar-h); }
-.sidebar { height: calc(100vh - var(--topbar-h)) !important; top: var(--topbar-h) !important; }
-.main    { height: calc(100vh - var(--topbar-h)); }
+.sidebar { top: var(--topbar-h); height: calc(100vh - var(--topbar-h)); }
+.main    { margin-top: var(--topbar-h); height: calc(100vh - var(--topbar-h)); }
 
 /* ══════ SIDEBAR ════════════════════════════════════════ */
 .sidebar {
@@ -409,13 +408,12 @@ body { display: flex; flex-direction: column; }
   position: relative;
 }
 
-/* Connection badge */
+/* Connection badge — lives inside topbar */
 .conn-badge {
-  position: fixed; top: 14px; right: 16px;
   display: flex; align-items: center; gap: 6px;
-  padding: 4px 11px;
-  background: var(--surface2); border: 1px solid var(--border2);
-  border-radius: 20px; font-size: 11.5px; color: var(--tx2); z-index: 300;
+  padding: 4px 10px;
+  background: var(--surface3); border: 1px solid var(--border2);
+  border-radius: 20px; font-size: 11px; color: var(--tx2);
 }
 .conn-dot {
   width: 6px; height: 6px; border-radius: 50%; background: var(--tx3); flex-shrink: 0;

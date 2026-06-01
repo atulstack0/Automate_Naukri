@@ -48,6 +48,9 @@
         <button class="topbar-btn stop" id="topBtnStop" disabled>■ Stop</button>
       </div>
       <div class="topbar-divider"></div>
+      <div class="conn-badge" id="connBadge">
+        <span class="conn-dot" id="connDot"></span><span id="connLabel">Connecting…</span>
+      </div>
       <div class="topbar-profile-pill" id="topProfilePill" title="Active Profile">
         <div class="topbar-profile-avatar" id="topProfileAvatar">U</div>
         <span id="topProfileName">default</span>
@@ -162,10 +165,6 @@
 
     <!-- ══════ MAIN ══════════════════════════════════════════════ -->
     <main class="main" id="main">
-      <div class="conn-badge" id="connBadge">
-        <span class="conn-dot" id="connDot"></span
-        ><span id="connLabel">Connecting…</span>
-      </div>
       <div id="toasts" class="toasts"></div>
 
       <!-- ─── DASHBOARD ─────────────────────────── -->
@@ -1072,11 +1071,17 @@
       setInterval(checkOllama, 10000);
 
       // ── Portal live-dot updates ──────────────────────────────────────
-      const portalDotMap = { Naukri:'pd-naukri', LinkedIn:'pd-linkedin', Indeed:'pd-indeed', Company:'pd-company' };
-      const portalStats  = { Naukri:{applied:0,skipped:0,failed:0}, LinkedIn:{applied:0,skipped:0,failed:0}, Indeed:{applied:0,skipped:0,failed:0}, Company:{applied:0,skipped:0,failed:0} };
+      // Normalize portal name: 'linkedin' | 'LinkedIn' → canonical key
+      function canonicalPortal(raw) {
+        const lower = (raw || '').toLowerCase();
+        return { naukri:'Naukri', linkedin:'Linkedin', indeed:'Indeed', company:'Company' }[lower] || raw;
+      }
+      const portalDotMap = { Naukri:'pd-naukri', Linkedin:'pd-linkedin', Indeed:'pd-indeed', Company:'pd-company' };
+      const portalStats  = { Naukri:{applied:0,skipped:0,failed:0}, Linkedin:{applied:0,skipped:0,failed:0}, Indeed:{applied:0,skipped:0,failed:0}, Company:{applied:0,skipped:0,failed:0} };
 
       function updatePortalDot(portal, status) {
-        const dotId = portalDotMap[portal];
+        const key = canonicalPortal(portal);
+        const dotId = portalDotMap[key];
         if (!dotId) return;
         const dot = document.getElementById(dotId);
         if (!dot) return;
@@ -1084,7 +1089,7 @@
       }
 
       function updatePortalStat(portal, key, delta) {
-        const p = portal.charAt(0).toUpperCase() + portal.slice(1).toLowerCase();
+        const p = canonicalPortal(portal);
         if (!portalStats[p]) return;
         portalStats[p][key] = (portalStats[p][key] || 0) + delta;
         const el = document.getElementById('ps-' + p.toLowerCase() + '-' + key);
@@ -1107,9 +1112,9 @@
         const skipped  = labels.map(l => portalStats[l]?.skipped  || 0);
         const failed   = labels.map(l => portalStats[l]?.failed   || 0);
         const data = { labels, datasets: [
-          { label:'Applied',  data:applied,  backgroundColor:'#00E5A0' },
-          { label:'Skipped',  data:skipped,  backgroundColor:'#FFB830' },
-          { label:'Failed',   data:failed,   backgroundColor:'#FF4C6A' },
+          { label:'Applied',  data:applied,  backgroundColor:'#34d399', borderRadius:4 },
+          { label:'Skipped',  data:skipped,  backgroundColor:'#fbbf24', borderRadius:4 },
+          { label:'Failed',   data:failed,   backgroundColor:'#f87171', borderRadius:4 },
         ]};
         if (portalChart) { portalChart.data = data; portalChart.update(); return; }
         portalChart = new Chart(canvas, {
@@ -1117,10 +1122,10 @@
           data,
           options: {
             responsive:true, maintainAspectRatio:false,
-            plugins:{ legend:{ labels:{ color:'#E8EAF2', font:{ family:'Inter', size:11 } } } },
+            plugins:{ legend:{ labels:{ color:'#94a3b8', font:{ family:'Inter', size:11 } } } },
             scales:{
-              x:{ stacked:false, ticks:{ color:'#636B8A' }, grid:{ color:'#22283A' } },
-              y:{ stacked:false, ticks:{ color:'#636B8A' }, grid:{ color:'#22283A' } },
+              x:{ stacked:false, ticks:{ color:'#475569' }, grid:{ color:'rgba(148,163,184,.08)' } },
+              y:{ stacked:false, ticks:{ color:'#475569' }, grid:{ color:'rgba(148,163,184,.08)' } },
             }
           }
         });
@@ -1132,13 +1137,12 @@
         fetch('/api/stats/portals')
           .then(r => r.json())
           .then(data => {
-            // data: { linkedin: {applied,skipped,failed}, naukri: {...}, ... }
             Object.entries(data).forEach(([rawPortal, stats]) => {
-              const p = rawPortal.charAt(0).toUpperCase() + rawPortal.slice(1).toLowerCase();
+              const p = canonicalPortal(rawPortal);
               if (!portalStats[p]) return;
               ['applied','skipped','failed'].forEach(k => {
                 portalStats[p][k] = stats[k] || 0;
-                const el = document.getElementById('ps-' + rawPortal.toLowerCase() + '-' + k);
+                const el = document.getElementById('ps-' + p.toLowerCase() + '-' + k);
                 if (el) el.textContent = portalStats[p][k];
               });
             });
