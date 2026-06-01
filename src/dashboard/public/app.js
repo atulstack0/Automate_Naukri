@@ -105,7 +105,7 @@ socket.on('init:stats',   updateKPI);
 socket.on('stats:update', updateKPI);
 socket.on('job:applied',  () => { loadDashboard(); updateLearningCount(); });
 socket.on('job:analyzed', d => appendLog('info', `🔍 Analyzed: ${d.title} @ ${d.company} → ${d.decision} (${d.score})`));
-socket.on('selflearn:done', r => { toast(`✨ Auto-learned ${r.answered} answers`, 'ok'); updateLearningCount(); });
+socket.on('selflearn:done', r => { if (!r) return; toast(`✨ Auto-learned ${r.answered ?? 0} answers`, 'ok'); updateLearningCount(); });
 
 async function updateLearningCount() {
   try { const s = await fetch('/api/db/summary').then(r=>r.json()); document.getElementById('nc-learning').textContent = s.learning||0; document.getElementById('kLearning').textContent = s.learning||0; } catch(_) {}
@@ -323,8 +323,17 @@ window.saveEditInline = async function(id) {
   try {
     const r = await fetch(`/api/learning/${id}`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({answer}) });
     const d = await r.json();
-    if (d.success) { toast('Saved!','ok'); const entry = allLearning.find(x=>x.id===id); if(entry) { entry.answer=answer; entry.answered=1; } }
-    else toast('Save failed: '+d.error,'err');
+    if (d.success) {
+      toast('Saved!','ok');
+      const entry = allLearning.find(x=>x.id===id);
+      if (entry) { entry.answer=answer; entry.answered=1; }
+      // Update status badge in-place without full re-render
+      const row = document.getElementById(`lr-${id}`);
+      if (row) {
+        const statusTd = row.cells[4];
+        if (statusTd) statusTd.innerHTML = '<span class="badge b-green">✓ Answered</span>';
+      }
+    } else toast('Save failed: '+d.error,'err');
   } catch(e) { toast('Error: '+e.message,'err'); }
 };
 
@@ -364,7 +373,7 @@ document.getElementById('btnSelfLearn').addEventListener('click', async () => {
   try {
     const r = await fetch('/api/learning/self-learn',{method:'POST'});
     const d = await r.json();
-    if (d.success) { toast(`✨ Auto-learned ${d.answered} answers`,'ok'); loadLearning(); }
+    if (d.success) { toast(`✨ Auto-learned ${d.answered ?? 0} answers`,'ok'); loadLearning(); }
     else toast(d.status||'Finished','info');
   } catch(e) { toast('Error','err'); }
   btn.disabled=false; btn.textContent='✨ Auto-Learn';

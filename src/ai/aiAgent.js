@@ -283,7 +283,7 @@ async function runSelfLearnCycle() {
   const config = require('../../config/config.json');
   if (config.skipAI) {
     logger.info(`[SelfLearn] Skipping self-learn cycle: skipAI is true`);
-    return;
+    return { processed: 0, answered: 0 };
   }
 
   const pending = db.getLearningQuestions(500).filter(r => !r.answered);

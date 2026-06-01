@@ -732,7 +732,8 @@ details.add-qa > summary { cursor: pointer; font-size: 14px; font-weight: 600; c
 details.add-qa[open] > summary { color: var(--acc); }
 .add-qa h3 { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: var(--tx); }
 .add-qa-grid { display: grid; grid-template-columns: 1fr 200px; gap: 8px; align-items: end; }
-.add-qa-grid textarea { grid-column: 1/-1; }
+.add-qa-grid textarea,
+.add-qa-grid > .btn-primary { grid-column: 1/-1; }
 
 /* ── Blocklist ─────────────────────────────────────────────── */
 .block-add-row { display: flex; gap: 10px; }

@@ -1107,11 +1107,12 @@
       function updatePortalChart() {
         const canvas = document.getElementById('cPortals');
         if (!canvas) return;
-        const labels = ['Naukri','LinkedIn','Indeed','Company'];
-        const applied  = labels.map(l => portalStats[l]?.applied  || 0);
-        const skipped  = labels.map(l => portalStats[l]?.skipped  || 0);
-        const failed   = labels.map(l => portalStats[l]?.failed   || 0);
-        const data = { labels, datasets: [
+        const displayLabels = ['Naukri','LinkedIn','Indeed','Company'];
+        const dataKeys      = displayLabels.map(canonicalPortal); // ['Naukri','Linkedin','Indeed','Company']
+        const applied  = dataKeys.map(k => portalStats[k]?.applied  || 0);
+        const skipped  = dataKeys.map(k => portalStats[k]?.skipped  || 0);
+        const failed   = dataKeys.map(k => portalStats[k]?.failed   || 0);
+        const data = { labels: displayLabels, datasets: [
           { label:'Applied',  data:applied,  backgroundColor:'#34d399', borderRadius:4 },
           { label:'Skipped',  data:skipped,  backgroundColor:'#fbbf24', borderRadius:4 },
           { label:'Failed',   data:failed,   backgroundColor:'#f87171', borderRadius:4 },
