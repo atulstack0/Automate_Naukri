@@ -339,18 +339,19 @@ async function runNaukri({ browser, config, db: dbArg, io, ai } = {}) {
 
         // Fetch description
         let description = '';
+        let jobPage = null;
         if (job.applyUrl) {
           try {
-            const jobPage = await page.context().newPage();
+            jobPage = await page.context().newPage();
             await jobPage.goto(job.applyUrl, { waitUntil: 'domcontentloaded', timeout: 20000 });
             await randomDelay(800, 1500);
             description = await jobPage.evaluate(() =>
               document.querySelector('.job-desc, .jd-desc, [class*="job-desc"]')?.innerText
               || document.body.innerText.slice(0, 3000)
             ).catch(() => '');
-            await jobPage.close().catch(() => {});
           } catch (err) {
             logger.debug(`[Naukri] Could not load job detail for ${job.title}: ${err.message}`);
+            if (jobPage) { await jobPage.close().catch(() => {}); jobPage = null; }
           }
         }
 
@@ -389,15 +390,24 @@ async function runNaukri({ browser, config, db: dbArg, io, ai } = {}) {
               score, status: 'skipped', aiReason: reason, applyUrl: job.applyUrl,
             });
           } catch (_) {}
+          if (jobPage) { await jobPage.close().catch(() => {}); jobPage = null; }
           continue;
         }
 
         // Apply
-        if (!job.applyUrl) continue;
-        const jobPage = await page.context().newPage();
+        if (!job.applyUrl) {
+          if (jobPage) { await jobPage.close().catch(() => {}); jobPage = null; }
+          continue;
+        }
+        
         try {
-          await jobPage.goto(job.applyUrl, { waitUntil: 'domcontentloaded', timeout: 25000 });
-          await randomDelay(1000, 1800);
+          if (!jobPage) {
+            jobPage = await page.context().newPage();
+            await jobPage.goto(job.applyUrl, { waitUntil: 'domcontentloaded', timeout: 25000 });
+            await randomDelay(1000, 1800);
+          } else {
+            await randomDelay(500, 1000);
+          }
 
           const applyJob = { jobId: stableId, title: job.title, company: job.company, url: job.applyUrl };
           const result   = await engineApply(jobPage, applyJob, config, {
@@ -433,7 +443,7 @@ async function runNaukri({ browser, config, db: dbArg, io, ai } = {}) {
           logger.error(`[Naukri] Apply error for "${job.title}": ${applyErr.message}`);
           if (io) io.emit('error', { portal: 'Naukri', job, error: applyErr.message });
         } finally {
-          await jobPage.close().catch(() => {});
+          if (jobPage) { await jobPage.close().catch(() => {}); jobPage = null; }
         }
 
         await humanDelay(config.delayMin || 2000, config.delayMax || 4000);

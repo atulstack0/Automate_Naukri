@@ -101,3 +101,18 @@ CREATE TABLE IF NOT EXISTS jobs_queue (
   added_at DATETIME DEFAULT (datetime('now'))
 );
 CREATE INDEX IF NOT EXISTS idx_queue_status ON jobs_queue(status);
+
+-- =========================================================
+-- VIEW: unified_jobs  (merges legacy jobs and applications)
+-- =========================================================
+CREATE VIEW IF NOT EXISTS unified_jobs AS 
+SELECT 
+  job_id, title, company, location, apply_url as url, score, ai_reason as reason, 
+  CASE WHEN status = 'applied' THEN 'success' ELSE status END as apply_status, 
+  created_at, portal as source 
+FROM applications
+UNION ALL
+SELECT 
+  job_id, title, company, location, url, score, reason, apply_status, created_at, 'legacy' as source 
+FROM jobs 
+WHERE job_id NOT IN (SELECT job_id FROM applications);

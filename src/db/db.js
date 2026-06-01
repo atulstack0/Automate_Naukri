@@ -106,6 +106,23 @@ class Database {
     } catch (err) {
       logger.warn('[DB] screenshots migration skipped', { err: err.message });
     }
+    // migration 3: create unified_jobs view
+    try {
+      this._db.exec(`
+        CREATE VIEW IF NOT EXISTS unified_jobs AS 
+        SELECT job_id, title, company, location, apply_url as url, score, ai_reason as reason, 
+               CASE WHEN status = 'applied' THEN 'success' ELSE status END as apply_status, 
+               created_at, portal as source 
+        FROM applications
+        UNION ALL
+        SELECT job_id, title, company, location, url, score, reason, apply_status, created_at, 'legacy' as source 
+        FROM jobs 
+        WHERE job_id NOT IN (SELECT job_id FROM applications)
+      `);
+      logger.info('[DB] unified_jobs view verified');
+    } catch (err) {
+      logger.warn('[DB] unified_jobs view creation failed', { err: err.message });
+    }
   }
 
   // ─── APPLICATIONS TABLE (multi-portal unified apply log) ────────────────────
@@ -180,15 +197,15 @@ class Database {
     const row = this._db.prepare(`
       SELECT
         COUNT(*) AS total,
-        SUM(CASE WHEN status = 'applied'  THEN 1 ELSE 0 END) AS applied,
-        SUM(CASE WHEN status = 'skipped'  THEN 1 ELSE 0 END) AS skipped,
-        SUM(CASE WHEN status = 'failed'   THEN 1 ELSE 0 END) AS failed,
-        SUM(CASE WHEN status = 'pending'  THEN 1 ELSE 0 END) AS pending
-      FROM applications
+        SUM(CASE WHEN apply_status = 'success' THEN 1 ELSE 0 END) AS applied,
+        SUM(CASE WHEN apply_status = 'skipped' THEN 1 ELSE 0 END) AS skipped,
+        SUM(CASE WHEN apply_status = 'failed'  THEN 1 ELSE 0 END) AS failed,
+        SUM(CASE WHEN apply_status = 'pending' THEN 1 ELSE 0 END) AS pending
+      FROM unified_jobs
     `).get();
 
     const byPortalRows = this._db.prepare(`
-      SELECT portal, COUNT(*) AS count FROM applications GROUP BY portal
+      SELECT source as portal, COUNT(*) AS count FROM unified_jobs GROUP BY source
     `).all();
 
     const byPortal = {};
@@ -271,10 +288,10 @@ class Database {
   getAppliedJobs(limit = 100) {
     return this._db.prepare(`
       SELECT j.*, GROUP_CONCAT(s.file_path) AS screenshot_paths
-      FROM jobs j
+      FROM unified_jobs j
       LEFT JOIN screenshots s ON j.job_id = s.job_id
-      WHERE j.decision = 'APPLY'
-      GROUP BY j.id
+      WHERE j.apply_status IN ('success', 'applied', 'pending')
+      GROUP BY j.job_id
       ORDER BY j.created_at DESC
       LIMIT ?
     `).all(limit);

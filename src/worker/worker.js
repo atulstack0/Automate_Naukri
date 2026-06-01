@@ -762,18 +762,19 @@ async function runNaukri({ browser, config, db: dbArg, io, ai } = {}) {
 
       // Navigate to job detail to get description
       let description = '';
+      let jobPage = null;
       if (job.applyUrl) {
         try {
-          const jobPage = await page.context().newPage();
+          jobPage = await page.context().newPage();
           await jobPage.goto(job.applyUrl, { waitUntil: 'domcontentloaded', timeout: 20000 });
           await randomDelay(800, 1500);
           description = await jobPage.evaluate(() => {
             return document.querySelector('.job-desc, .jd-desc, [class*="job-desc"]')?.innerText
               || document.body.innerText.slice(0, 3000);
           }).catch(() => '');
-          await jobPage.close().catch(() => {});
         } catch (err) {
           logger.debug(`[Naukri] Could not load job detail for ${job.title}: ${err.message}`);
+          if (jobPage) { await jobPage.close().catch(() => {}); jobPage = null; }
         }
       }
 
@@ -832,21 +833,31 @@ async function runNaukri({ browser, config, db: dbArg, io, ai } = {}) {
             });
           }
         } catch (e) { logger.debug(`[Naukri] DB save-skipped error: ${e.message}`); }
+        if (jobPage) { await jobPage.close().catch(() => {}); jobPage = null; }
         continue;
       }
 
 
       // ── STEP 5: APPLY ──────────────────────────────────────────────────
+      if (!job.applyUrl) {
+        if (jobPage) { await jobPage.close().catch(() => {}); jobPage = null; }
+        continue;
+      }
+        
       try {
         const coverLetter = await coverGen.generate({ job, profile: config.profile }).catch(() => '');
 
-        // Navigate to job detail page first
-        await page.goto(job.applyUrl, { waitUntil: 'domcontentloaded', timeout: 20000 });
-        await randomDelay(1000, 2000);
+        if (!jobPage) {
+          jobPage = await page.context().newPage();
+          await jobPage.goto(job.applyUrl, { waitUntil: 'domcontentloaded', timeout: 20000 });
+          await randomDelay(1000, 2000);
+        } else {
+          await randomDelay(500, 1000);
+        }
 
         // Delegate to comprehensive apply engine
         // Pass job metadata & cover letter so engine can log and fill correctly
-        const applyResult = await engineApply(page, {
+        const applyResult = await engineApply(jobPage, {
           jobId:   job.jobId || makeJobId(job.title, job.company),
           title:   job.title,
           company: job.company,
@@ -919,6 +930,8 @@ async function runNaukri({ browser, config, db: dbArg, io, ai } = {}) {
         } catch (e) { logger.debug(`[Naukri] DB save-failed error: ${e.message}`); }
 
         if (io) io.emit('error', { portal: 'Naukri', job, error: applyErr.message });
+      } finally {
+        if (jobPage) { await jobPage.close().catch(() => {}); jobPage = null; }
       }
 
 

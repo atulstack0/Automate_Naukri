@@ -377,6 +377,13 @@ async function fillFormSmart(page, config) {
 
         logger.debug(`[FormFiller] Processing field: "${(label||'bot input').trim().substring(0, 40)}" [${sel}]`);
 
+        // Skip Naukri header search bar fields that leak into the apply flow
+        const lowerLabel = (label || '').toLowerCase();
+        if (lowerLabel.includes('enter keyword / designation') || lowerLabel.includes('select experience') || lowerLabel === 'enter location') {
+          logger.info(`[FormFiller] Skipping global search bar field: "${label}"`);
+          continue;
+        }
+
         // Detect validation errors
         const errorText = await el.evaluate(input => {
           const parent = input.closest('.fb-form-element, .artdeco-text-input, .artdeco-dropdown, div');
@@ -570,26 +577,77 @@ async function fillFormSmart(page, config) {
   }
 
   // ── Radio buttons ─────────────────────────────────────────────────────
-  // Group radios by name, pick the right option via AI
+  // Group radios by name or parent, pick the right option via AI
   try {
     const radioGroups = await root.evaluate((rootEl) => {
+      function findQuestionContext(node) {
+        const fieldset = node.closest('fieldset');
+        if (fieldset) {
+           const legend = fieldset.querySelector('legend');
+           if (legend) return legend.textContent.trim();
+        }
+        const allElements = Array.from(document.querySelectorAll('*'));
+        const index = allElements.indexOf(node);
+        let searchLimit = Math.max(0, index - 100);
+        for (let i = index - 1; i >= searchLimit; i--) {
+          const prev = allElements[i];
+          if (['SCRIPT', 'STYLE', 'SVG', 'PATH', 'INPUT', 'BUTTON'].includes(prev.tagName)) continue;
+          let text = (prev.innerText || prev.textContent || '').trim();
+          if (text.length > 5 && (text.includes('?') || text.toLowerCase().includes('willing') || text.toLowerCase().includes('select') || text.toLowerCase().includes('choose') || text.toLowerCase().includes('relocate'))) {
+            if (prev.children.length === 0 || (prev.children.length === 1 && prev.children[0].tagName === 'SPAN')) {
+                return text;
+            }
+          }
+        }
+        return node.name || 'Unknown Group';
+      }
+
       const parent = rootEl === window ? document : rootEl;
       const radios = Array.from(parent.querySelectorAll('input[type="radio"]'));
       const groups = {};
+      let groupCounter = 0;
+
       for (const r of radios) {
-        if (!r.name) continue;
-        if (!groups[r.name]) groups[r.name] = [];
-        const lbl = document.querySelector(`label[for="${r.id}"]`);
-        groups[r.name].push({ id: r.id, value: r.value, label: lbl ? lbl.textContent.trim() : r.value });
+        let gParent = r.closest('ul, .radio-group, .radio-wrap, fieldset') || r.parentElement;
+        let gName = r.name;
+        if (!gName) {
+           if (!gParent.__bot_group_id) gParent.__bot_group_id = 'group_' + (++groupCounter);
+           gName = gParent.__bot_group_id;
+        }
+
+        if (!groups[gName]) {
+           groups[gName] = { question: findQuestionContext(gParent || r), options: [] };
+        }
+
+        let lblText = r.value;
+        if (r.id) {
+           const lbl = document.querySelector(`label[for="${r.id}"]`);
+           if (lbl) lblText = lbl.textContent.trim();
+        }
+        if (!lblText || lblText === 'on') {
+           const p = r.parentElement;
+           if (p && p.textContent) lblText = p.textContent.trim();
+        }
+        
+        if (!r.id) {
+            r.id = 'temp_radio_' + Math.random().toString(36).substr(2, 9);
+        }
+        
+        groups[gName].options.push({ id: r.id, value: r.value, label: lblText || 'Unknown' });
       }
-      return groups;
+      
+      return Object.entries(groups).map(([name, data]) => ({
+          name,
+          question: data.question,
+          options: data.options
+      }));
     });
 
-    for (const [groupName, radioOptions] of Object.entries(radioGroups)) {
-      const optLabels  = radioOptions.map(r => r.label);
-      const groupLabel = groupName.replace(/[_-]/g, ' ');
+    for (const group of radioGroups) {
+      const optLabels  = group.options.map(r => r.label);
+      const groupLabel = group.question;
 
-      logger.debug(`[FormFiller] Processing radio group: "${groupLabel}" (${optLabels.length} options)`);
+      logger.debug(`[FormFiller] Processing radio group: "${groupLabel.substring(0, 60)}" (${optLabels.length} options)`);
 
       // Pass 1: keyword match
       let chosen = '';
@@ -602,17 +660,18 @@ async function fillFormSmart(page, config) {
       }
 
       if (chosen) {
-        const best = radioOptions.find(r =>
+        const best = group.options.find(r =>
           r.label.toLowerCase() === chosen.toLowerCase() ||
           r.label.toLowerCase().includes(chosen.toLowerCase()) ||
           chosen.toLowerCase().includes(r.label.toLowerCase())
         );
         if (best) {
-          const targetRadio = page.locator(`input[type="radio"][id="${best.id}"], input[type="radio"][value="${best.value}"][name="${groupName}"]`).first();
+          const targetRadio = page.locator(`input[type="radio"][id="${best.id}"]`).first();
           if (await targetRadio.count() > 0 && await targetRadio.isVisible()) {
             logger.info(`[FormFiller] Radio [${groupLabel.substring(0, 20)}]: Clicking "${best.label}"`);
-            await targetRadio.click().catch(() => {});
-            logger.info(`[FormFiller] Radio "${groupLabel}" → "${best.label}"`);
+            await targetRadio.click({ force: true }).catch(() => {});
+            logger.info(`[FormFiller] Radio "${groupLabel.substring(0, 30)}" → "${best.label}"`);
+            unmatched.chatbotInteracted = true; // Mark as interacted so we don't upload resume randomly
             await randomDelay(100, 250);
           } else {
             logger.warn(`[FormFiller] Radio [${groupLabel.substring(0, 20)}]: Option "${best.label}" not found or not visible among [${optLabels.join(', ')}]`);

@@ -154,7 +154,7 @@ function createDashboardServer(port = 3000) {
   app.get('/api/jobs/recent', (req, res) => {
     try {
       const d = db.getDb();
-      const rows = d.prepare(`SELECT job_id,title,company,apply_status,score,created_at,location,url FROM jobs ORDER BY created_at DESC LIMIT 20`).all();
+      const rows = d.prepare(`SELECT job_id,title,company,apply_status,score,created_at,location,url FROM unified_jobs ORDER BY created_at DESC LIMIT 20`).all();
       res.json(rows);
     } catch (err) { res.status(500).json({ error: err.message }); }
   });
@@ -166,7 +166,7 @@ function createDashboardServer(port = 3000) {
           SUM(CASE WHEN apply_status='skipped' THEN 1 ELSE 0 END) as skipped,
           SUM(CASE WHEN apply_status='failed'  THEN 1 ELSE 0 END) as failed,
           COUNT(*) as total
-        FROM jobs WHERE created_at >= date('now','-14 days')
+        FROM unified_jobs WHERE created_at >= date('now','-14 days')
         GROUP BY day ORDER BY day ASC`).all();
       res.json(rows);
     } catch (err) { res.status(500).json({ error: err.message }); }
@@ -176,7 +176,7 @@ function createDashboardServer(port = 3000) {
       const rows = db.getDb().prepare(`
         SELECT company, COUNT(*) as total,
           SUM(CASE WHEN apply_status='success' THEN 1 ELSE 0 END) as applied
-        FROM jobs WHERE company IS NOT NULL AND company != ''
+        FROM unified_jobs WHERE company IS NOT NULL AND company != ''
         GROUP BY company ORDER BY total DESC LIMIT 8`).all();
       res.json(rows);
     } catch (err) { res.status(500).json({ error: err.message }); }
@@ -188,7 +188,7 @@ function createDashboardServer(port = 3000) {
             WHEN score >= 90 THEN '90-100' WHEN score >= 75 THEN '75-89'
             WHEN score >= 60 THEN '60-74'  WHEN score >= 40 THEN '40-59'
             ELSE 'Below 40' END as range, COUNT(*) as count
-        FROM jobs GROUP BY range ORDER BY range DESC`).all();
+        FROM unified_jobs GROUP BY range ORDER BY range DESC`).all();
       res.json(rows);
     } catch (err) { res.status(500).json({ error: err.message }); }
   });
@@ -196,8 +196,8 @@ function createDashboardServer(port = 3000) {
   // Jobs CSV export
   app.get('/api/jobs/export/csv', (req, res) => {
     try {
-      const jobs = db.getAllJobs(5000);
-      const csv  = toCsv(jobs, ['job_id','title','company','location','url','decision','score','reason','apply_status','created_at']);
+      const jobs = db.getDb().prepare('SELECT * FROM unified_jobs ORDER BY created_at DESC LIMIT 5000').all();
+      const csv  = toCsv(jobs, ['job_id','title','company','location','url','source','score','reason','apply_status','created_at']);
       res.setHeader('Content-Type', 'text/csv');
       res.setHeader('Content-Disposition', 'attachment; filename="jobs_export.csv"');
       res.send(csv);
@@ -623,7 +623,7 @@ IMPORTANT: Return ONLY the JSON array, nothing else.`;
   app.get('/api/db/summary', (req, res) => {
     try {
       const d = db.getDb();
-      const jobCount   = d.prepare('SELECT COUNT(*) as n FROM jobs').get().n;
+      const jobCount   = d.prepare('SELECT COUNT(*) as n FROM unified_jobs').get().n;
       const learnCount = d.prepare('SELECT COUNT(*) as n FROM learning_questions').get().n;
       const answCount  = d.prepare("SELECT COUNT(*) as n FROM learning_questions WHERE answered=1").get().n;
       const shotCount  = d.prepare('SELECT COUNT(*) as n FROM screenshots').get().n;
@@ -744,13 +744,11 @@ IMPORTANT: Return ONLY the JSON array, nothing else.`;
 
   // ── Spec routes (added alongside existing) ────────────────────────────
 
-  // GET /api/history — alias to getAll (applications table preferred, falls back to jobs)
+  // GET /api/history — alias to unified jobs history
   app.get('/api/history', (req, res) => {
     try {
       const limit = Number(req.query.limit) || 200;
-      const data  = typeof db.getAll === 'function'
-        ? db.getAll({ limit })
-        : db.getAllJobs(limit);
+      const data = db.getDb().prepare('SELECT * FROM unified_jobs ORDER BY created_at DESC LIMIT ?').all(limit);
       res.json(data);
     } catch (err) { res.status(500).json({ error: err.message }); }
   });
