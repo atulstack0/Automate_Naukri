@@ -221,6 +221,28 @@ class Database {
     };
   }
 
+  getStatsByPortal() {
+    const rows = this._db.prepare(`
+      SELECT portal,
+        SUM(CASE WHEN status = 'applied' THEN 1 ELSE 0 END) AS applied,
+        SUM(CASE WHEN status = 'skipped' THEN 1 ELSE 0 END) AS skipped,
+        SUM(CASE WHEN status = 'failed'  THEN 1 ELSE 0 END) AS failed,
+        COUNT(*) AS total
+      FROM applications
+      GROUP BY portal
+    `).all();
+    const result = {};
+    for (const r of rows) {
+      result[r.portal] = {
+        applied: r.applied || 0,
+        skipped: r.skipped || 0,
+        failed:  r.failed  || 0,
+        total:   r.total   || 0,
+      };
+    }
+    return result;
+  }
+
   // ─── JOBS QUEUE TABLE ────────────────────────────────────────────────────────
 
   /**

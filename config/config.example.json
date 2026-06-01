@@ -1,6 +1,12 @@
 {
   "jobsUrl": "https://www.naukri.com/qa-engineer-jobs",
   "linkedinUrl": "https://www.linkedin.com/jobs/search/?keywords=QA+Engineer&location=Pune",
+  "linkedinFilters": {
+    "experienceLevel": ["mid-senior", "entry"],
+    "jobType": ["full-time"],
+    "datePosted": "week",
+    "remote": ["remote", "hybrid"]
+  },
   "indeedUrl": "https://in.indeed.com/jobs?q=QA+Engineer&l=Pune",
   "companyUrls": [],
   "searchKeywords": [

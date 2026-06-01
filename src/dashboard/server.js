@@ -123,6 +123,10 @@ function createDashboardServer(port = 3000) {
     try { res.json(normaliseStats(db.getStats())); } catch (err) { res.status(500).json({ error: err.message }); }
   });
 
+  app.get('/api/stats/portals', (req, res) => {
+    try { res.json(db.getStatsByPortal()); } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
   // ── Jobs ──────────────────────────────────────────────────────────────
   app.get('/api/jobs/all', (req, res) => {
     try {
