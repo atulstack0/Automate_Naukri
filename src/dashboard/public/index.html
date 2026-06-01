@@ -10,126 +10,34 @@
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="cyberpunk.css" />
     <script src="/socket.io/socket.io.js"></script>
     <style>
       :root {
-        --bg: #050505; 
-        --surface: rgba(10, 15, 25, 0.85); 
-        --border: rgba(0, 240, 255, 0.3);
-        --text: #e0f7fa; 
-        --accent: #00f0ff; 
-        --primary: #ff003c;
-        --muted: #4b5377; 
-        --danger: #ff003c; 
-        --warn: #fcee0a;
-        --font-body: 'IBM Plex Mono', monospace;
-        --font-head: 'Syne', sans-serif;
+        /* Bridge legacy var names → new design tokens (used by inline HTML + JS) */
+        --text:      var(--tx);
+        --accent:    var(--acc);
+        --warn:      var(--am);
+        --danger:    var(--rd);
+        --muted:     var(--tx3);
+        --primary:   var(--acc2);
+        --font-body: "Inter", sans-serif;
+        --font-head: "Inter", sans-serif;
       }
-      body { 
-        font-family: var(--font-body) !important; 
-        background: var(--bg) !important; 
-        color: var(--text) !important; 
-        margin: 0; 
-        position: relative;
-        background-image: 
-          linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
-        background-size: 30px 30px;
-        background-attachment: fixed;
-      }
-      body::before {
-        content: ""; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-        background: radial-gradient(circle at center, transparent 0%, #050505 100%);
-        pointer-events: none; z-index: -1;
-      }
-      h1,h2,h3,h4,.brand-name,.page-title,.topbar-logo { 
-        font-family: var(--font-head) !important; 
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-shadow: 0 0 5px var(--accent);
-      }
-      /* ── Topbar ──────────────────────────────────────────────── */
-      .topbar {
-        position: fixed; top: 0; left: 0; right: 0; height: 56px;
-        background: rgba(5, 5, 5, 0.9); border-bottom: 2px solid var(--accent);
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
-        display: flex; align-items: center; gap: 16px;
-        padding: 0 24px; z-index: 200; backdrop-filter: blur(10px);
-      }
-      .topbar-logo { font-family: var(--font-head); font-size: 18px; font-weight: 800; color: var(--accent); letter-spacing: 2px; flex: 0 0 auto; text-shadow: 0 0 8px var(--accent); }
-      .topbar-sep { width: 2px; height: 28px; background: var(--accent); opacity: 0.5; }
-      .status-pill {
-        display: flex; align-items: center; gap: 7px;
-        background: rgba(0, 240, 255, 0.1); border: 1px solid var(--accent);
-        border-radius: 0; padding: 4px 12px; font-size: 12px; color: var(--accent);
-        box-shadow: 0 0 5px rgba(0,240,255,0.3) inset;
-        text-transform: uppercase; letter-spacing: 1px;
-      }
-      .status-dot {
-        width: 8px; height: 8px; border-radius: 0;
-        background: var(--muted);
-        transition: background .3s;
-      }
-      .status-dot.running { background: var(--accent); animation: pulse-dot 1.2s infinite; box-shadow: 0 0 8px var(--accent); }
-      .status-dot.idle    { background: var(--muted); }
-      .status-dot.error   { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
-      @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.4} }
-      .run-timer { font-size: 12px; color: var(--accent); letter-spacing: 2px; text-shadow: 0 0 4px var(--accent); }
-      .topbar-actions { margin-left: auto; display: flex; gap: 8px; }
-      .topbar-btn {
-        padding: 6px 16px; border-radius: 0; border: 1px solid transparent;
-        font-family: var(--font-body); font-size: 12px; font-weight: 600; text-transform: uppercase;
-        cursor: pointer; transition: all .2s; position: relative; overflow: hidden;
-      }
-      .topbar-btn.start { background: transparent; color: var(--accent); border-color: var(--accent); box-shadow: 0 0 5px var(--accent) inset; }
-      .topbar-btn.start:hover { background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent); }
-      .topbar-btn.stop  { background: transparent; color: var(--danger); border-color: var(--danger); box-shadow: 0 0 5px var(--danger) inset; }
-      .topbar-btn.stop:hover { background: var(--danger); color: #000; box-shadow: 0 0 15px var(--danger); }
-      .topbar-btn:disabled { opacity: .4; cursor: not-allowed; border-color: var(--muted); color: var(--muted); box-shadow: none; }
-      /* ── Shift layout down for topbar ─── */
-      .sidebar { top: 56px !important; height: calc(100vh - 56px) !important; }
-      .main    { padding-top: 72px !important; }
-      /* ── Ollama status dot in sidebar footer ─── */
-      .ollama-status { display:flex; align-items:center; gap:8px; font-size:11px; color:var(--text); margin-top:8px; text-transform: uppercase; }
-      .ollama-dot { width:8px; height:8px; border-radius:0; background:var(--muted); flex:0 0 auto; }
-      .ollama-dot.ok { background:var(--accent); box-shadow: 0 0 5px var(--accent); }
-      .ollama-dot.err { background:var(--danger); box-shadow: 0 0 5px var(--danger); }
-      /* ── Portal bar chart card ─── */
-      .portal-chart-card { margin-top:0; }
-      /* ── Cover Letters page ─── */
-      .cover-split { display:grid; grid-template-columns:260px 1fr; gap:16px; height:calc(100vh - 200px); }
-      .cover-list { overflow-y:auto; }
-      .cover-list-item { padding:10px 12px; border-radius:0; cursor:pointer; border:1px solid var(--border); margin-bottom:6px; transition:all .2s; background: rgba(0,240,255,0.02); }
-      .cover-list-item:hover,.cover-list-item.active { border-color:var(--accent); background:rgba(0,240,255,.1); box-shadow: 0 0 10px rgba(0,240,255,0.2) inset; }
-      .cover-list-item .cl-title { font-size:13px; font-weight:700; text-transform: uppercase; color: var(--text); }
-      .cover-list-item .cl-co { font-size:11px; color:var(--accent); text-shadow: 0 0 2px var(--accent); }
-      .cover-panel { display:flex; flex-direction:column; gap:12px; }
-      .cover-output { flex:1; background:rgba(5,5,5,0.8); border:1px solid var(--accent); border-radius:0; padding:16px; font-size:13px; line-height:1.7; white-space:pre-wrap; overflow-y:auto; color:var(--text); min-height:200px; box-shadow: 0 0 10px rgba(0,240,255,0.1) inset; }
-      .cover-actions { display:flex; gap:8px; flex-wrap:wrap; }
-      /* ── Portals page ─── */
-      .portal-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; margin-top:16px; }
-      .portal-card { background:rgba(10,15,25,0.8); border:1px solid var(--border); border-radius:0; padding:20px; display:flex; flex-direction:column; gap:10px; transition:all .2s; box-shadow: 0 0 5px rgba(0,240,255,0.05); }
-      .portal-card:hover { border-color:var(--accent); transform: translateY(-2px); box-shadow: 0 0 15px rgba(0,240,255,0.2), 0 0 10px rgba(0,240,255,0.2) inset; }
-      .portal-card-top { display:flex; align-items:center; gap:12px; }
-      .portal-icon { font-size:28px; filter: drop-shadow(0 0 5px var(--accent)); }
-      .portal-name { font-family:var(--font-head); font-size:16px; font-weight:700; text-transform: uppercase; color: var(--accent); }
-      .portal-live-dot { width:9px; height:9px; border-radius:0; background:var(--muted); margin-left:auto; }
-      .portal-live-dot.active { background:var(--accent); animation:pulse-dot 1.2s infinite; box-shadow: 0 0 8px var(--accent); }
-      .portal-stats { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
-      .portal-stat { text-align:center; background: rgba(0,240,255,0.05); padding: 5px; border: 1px solid var(--border); }
-      .portal-stat .ps-val { font-size:20px; font-weight:700; color: var(--text); text-shadow: 0 0 5px var(--accent); }
-      .portal-stat .ps-lbl { font-size:10px; color:var(--accent); margin-top:2px; text-transform: uppercase; }
-    </style>
+      /* ── Topbar separator (legacy alias) ── */
+      .topbar-sep { width: 1px; height: 22px; background: var(--border2); flex-shrink: 0; }
     </style>
   </head>
   <body>
     <!-- ══════ TOPBAR ══════════════════════════════════════════ -->
     <div class="topbar" id="topbar">
-      <span class="topbar-logo">⚡ AutoApply</span>
-      <div class="topbar-sep"></div>
+      <div class="topbar-logo">
+        <div class="topbar-logo-icon">⚡</div>
+        <span>AutoApply</span>
+      </div>
+      <div class="topbar-divider"></div>
       <div class="status-pill">
         <span class="status-dot" id="topStatusDot"></span>
         <span id="topStatusLabel">Idle</span>
@@ -139,11 +47,11 @@
         <button class="topbar-btn start" id="topBtnStart">▶ Start</button>
         <button class="topbar-btn stop" id="topBtnStop" disabled>■ Stop</button>
       </div>
-      <div class="topbar-sep"></div>
-      <div class="status-pill" id="topProfilePill" style="cursor:pointer;" title="Active Profile">
-        <span>👤</span>
+      <div class="topbar-divider"></div>
+      <div class="topbar-profile-pill" id="topProfilePill" title="Active Profile">
+        <div class="topbar-profile-avatar" id="topProfileAvatar">U</div>
         <span id="topProfileName">default</span>
-        <span style="font-size:9px;opacity:.7;" id="topProfileRole">admin</span>
+        <span style="font-size:10px;opacity:.6;" id="topProfileRole">admin</span>
       </div>
     </div>
     <!-- ══════ SIDEBAR ══════════════════════════════════════════ -->
@@ -308,15 +216,15 @@
               <div style="display:flex;gap:6px;align-items:center;">
                 <input id="companyUrlInput" type="url"
                   placeholder="https://company.com/careers (optional)"
-                  style="flex:1;padding:7px 10px;font-size:11px;font-family:var(--font-body);
-                         background:var(--bg);border:1px solid var(--border);border-radius:6px;
-                         color:var(--text);outline:none;transition:border-color .2s;"
-                  onfocus="this.style.borderColor='var(--accent)'"
-                  onblur="this.style.borderColor='var(--border)'"
+                  style="flex:1;padding:7px 10px;font-size:11px;font-family:inherit;
+                         background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);
+                         color:var(--tx);outline:none;transition:border-color .2s;"
+                  onfocus="this.style.borderColor='var(--acc)'"
+                  onblur="this.style.borderColor=''"
                 />
                 <button id="btnCompanyUrlClear" title="Clear URL"
-                  style="background:none;border:1px solid var(--border);border-radius:6px;
-                         padding:6px 8px;cursor:pointer;color:var(--muted);font-size:12px;">✕</button>
+                  style="background:none;border:1px solid var(--border2);border-radius:var(--r-sm);
+                         padding:6px 8px;cursor:pointer;color:var(--tx3);font-size:12px;">✕</button>
               </div>
             </div>
           </div>
@@ -345,41 +253,35 @@
         <style>
           .qa-btn {
             display:flex;flex-direction:column;align-items:flex-start;gap:2px;
-            background:var(--surface);border:1px solid var(--border);
-            border-radius:10px;padding:14px 16px;cursor:pointer;
-            transition:all .2s;text-align:left;font-family:var(--font-body);
-            position:relative;overflow:hidden;
+            background:var(--surface2);border:1px solid var(--border2);
+            border-radius:var(--r);padding:14px 16px;cursor:pointer;
+            transition:var(--t);text-align:left;font-family:inherit;
+            position:relative;overflow:hidden;color:var(--tx);
           }
           .qa-btn[data-platform]::before {
             content:'';position:absolute;inset:0;
-            background:var(--qa-color);opacity:0;
+            background:var(--qa-color,transparent);opacity:0;
             transition:opacity .2s;
           }
-          .qa-btn[data-platform]:hover::before { opacity:.07; }
+          .qa-btn[data-platform]:hover::before { opacity:.08; }
           .qa-btn[data-platform] {
-            border-color:color-mix(in srgb, var(--qa-color) 40%, var(--border));
+            border-color:color-mix(in srgb, var(--qa-color) 35%, var(--border2));
           }
           .qa-btn[data-platform]:hover {
             border-color:var(--qa-color);
-            box-shadow:0 0 16px var(--qa-glow);
-            transform:translateY(-1px);
+            box-shadow:0 4px 20px var(--qa-glow,rgba(0,0,0,.2));
+            transform:translateY(-2px);
           }
-          .qa-btn--accent {
-            background:rgba(0,229,160,.08);border:1px solid rgba(0,229,160,.3);color:var(--accent);
-          }
-          .qa-btn--accent:hover { background:rgba(0,229,160,.14);border-color:var(--accent);transform:translateY(-1px); }
-          .qa-btn--warn {
-            background:rgba(255,184,48,.07);border:1px solid rgba(255,184,48,.3);color:var(--warn);
-          }
-          .qa-btn--warn:hover { background:rgba(255,184,48,.12);border-color:var(--warn);transform:translateY(-1px); }
-          .qa-btn--danger {
-            background:rgba(255,76,106,.07);border:1px solid rgba(255,76,106,.2);color:var(--danger);
-          }
-          .qa-btn--danger:hover { background:rgba(255,76,106,.12);border-color:var(--danger);transform:translateY(-1px); }
-          .qa-btn:disabled       { opacity:.4;cursor:not-allowed;transform:none !important; }
+          .qa-btn--accent { background:var(--gn-bg);border:1px solid var(--gn-bd);color:var(--gn); }
+          .qa-btn--accent:hover { background:rgba(52,211,153,.15);border-color:var(--gn);transform:translateY(-1px); }
+          .qa-btn--warn   { background:var(--am-bg);border:1px solid var(--am-bd);color:var(--am); }
+          .qa-btn--warn:hover   { background:rgba(251,191,36,.15);border-color:var(--am);transform:translateY(-1px); }
+          .qa-btn--danger { background:var(--rd-bg);border:1px solid var(--rd-bd);color:var(--rd); }
+          .qa-btn--danger:hover { background:rgba(248,113,113,.15);border-color:var(--rd);transform:translateY(-1px); }
+          .qa-btn:disabled { opacity:.4;cursor:not-allowed;transform:none !important; }
           .qa-icon  { font-size:22px;line-height:1; }
-          .qa-label { font-size:13px;font-weight:600;color:var(--text);margin-top:2px; }
-          .qa-sub   { font-size:10px;color:var(--muted);margin-top:1px; }
+          .qa-label { font-size:13px;font-weight:600;margin-top:2px; }
+          .qa-sub   { font-size:10.5px;color:var(--tx3);margin-top:1px; }
         </style>
         <div class="kpi-row">
           <div class="kpi" data-color="blue">
@@ -666,21 +568,21 @@
         <div class="card" style="margin-bottom:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
           <div style="flex:1;min-width:180px;">
             <div style="font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:4px;">🤖 AI Engine</div>
-            <div style="font-size:11px;color:var(--muted);line-height:1.5;">
-              <b style="color:var(--accent);">ON</b> — Ollama scores jobs &amp; maps forms with AI<br>
-              <b style="color:var(--warn);">OFF</b> — Keyword-only scoring, rule-based form fill (faster, no GPU needed)
+            <div style="font-size:11px;color:var(--tx3);line-height:1.5;">
+              <b style="color:var(--acc);">ON</b> — AI scores jobs &amp; maps forms intelligently<br>
+              <b style="color:var(--am);">OFF</b> — Keyword-only scoring, rule-based form fill (faster, no GPU needed)
             </div>
           </div>
           <!-- pill toggle -->
           <label id="aiToggleWrap" style="display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;">
             <div id="aiTogglePill" style="
-              width:52px;height:28px;border-radius:14px;border:2px solid var(--border);
-              background:var(--muted);position:relative;transition:background .25s,border-color .25s;flex-shrink:0;">
+              width:52px;height:28px;border-radius:14px;border:2px solid var(--border2);
+              background:var(--tx3);position:relative;transition:background .25s,border-color .25s;flex-shrink:0;">
               <div id="aiToggleThumb" style="
                 width:20px;height:20px;border-radius:50%;background:#fff;
                 position:absolute;top:2px;left:2px;transition:transform .25s;"></div>
             </div>
-            <span id="aiToggleLabel" style="font-size:13px;font-weight:600;color:var(--muted);min-width:80px;">Checking…</span>
+            <span id="aiToggleLabel" style="font-size:13px;font-weight:600;color:var(--tx3);min-width:80px;">Checking…</span>
           </label>
         </div>
 
@@ -1044,9 +946,9 @@
         <div class="card" style="margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
           <div style="font-size:40px;">👤</div>
           <div style="flex:1;">
-            <div style="font-family:var(--font-head);font-size:18px;font-weight:700;text-transform:uppercase;" id="activeProfileTitle">default</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:4px;">
-              Role: <span id="activeProfileRoleBadge" style="color:var(--accent);font-weight:600;text-transform:uppercase;">admin</span>
+            <div style="font-size:18px;font-weight:800;letter-spacing:-0.3px;" id="activeProfileTitle">default</div>
+            <div style="font-size:12px;color:var(--tx3);margin-top:4px;">
+              Role: <span id="activeProfileRoleBadge" style="color:var(--acc);font-weight:600;text-transform:uppercase;">admin</span>
               &nbsp;•&nbsp; Active Profile
             </div>
           </div>
@@ -1074,27 +976,27 @@
         <div class="card" style="margin-top:20px;">
           <h3 class="settings-section">🔑 Role Permissions</h3>
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:12px;">
-            <div style="padding:12px;border:1px solid var(--border);background:rgba(0,240,255,0.03);">
-              <div style="font-weight:700;color:var(--accent);margin-bottom:6px;">🛡️ Admin</div>
-              <div style="font-size:11px;color:var(--muted);line-height:1.6;">
+            <div style="padding:14px;border:1px solid var(--border2);background:var(--surface2);border-radius:var(--r-sm);">
+              <div style="font-weight:700;color:var(--acc);margin-bottom:6px;">🛡️ Admin</div>
+              <div style="font-size:11px;color:var(--tx3);line-height:1.6;">
                 • Full access to all features<br>
                 • Manage all profiles & roles<br>
                 • Import/export data<br>
                 • Edit selectors & advanced settings
               </div>
             </div>
-            <div style="padding:12px;border:1px solid var(--border);background:rgba(0,240,255,0.03);">
-              <div style="font-weight:700;color:var(--warn);margin-bottom:6px;">👤 User</div>
-              <div style="font-size:11px;color:var(--muted);line-height:1.6;">
+            <div style="padding:14px;border:1px solid var(--border2);background:var(--surface2);border-radius:var(--r-sm);">
+              <div style="font-weight:700;color:var(--am);margin-bottom:6px;">👤 User</div>
+              <div style="font-size:11px;color:var(--tx3);line-height:1.6;">
                 • Edit own profile & config<br>
                 • Start/stop bot<br>
                 • View own job history<br>
                 • Export data
               </div>
             </div>
-            <div style="padding:12px;border:1px solid var(--border);background:rgba(0,240,255,0.03);">
-              <div style="font-weight:700;color:var(--muted);margin-bottom:6px;">👁️ Viewer</div>
-              <div style="font-size:11px;color:var(--muted);line-height:1.6;">
+            <div style="padding:14px;border:1px solid var(--border2);background:var(--surface2);border-radius:var(--r-sm);">
+              <div style="font-weight:700;color:var(--tx2);margin-bottom:6px;">👁️ Viewer</div>
+              <div style="font-size:11px;color:var(--tx3);line-height:1.6;">
                 • View dashboard & stats<br>
                 • Read-only access<br>
                 • Cannot start bot<br>
@@ -1215,7 +1117,7 @@
           data,
           options: {
             responsive:true, maintainAspectRatio:false,
-            plugins:{ legend:{ labels:{ color:'#E8EAF2', font:{ family:'IBM Plex Mono', size:11 } } } },
+            plugins:{ legend:{ labels:{ color:'#E8EAF2', font:{ family:'Inter', size:11 } } } },
             scales:{
               x:{ stacked:false, ticks:{ color:'#636B8A' }, grid:{ color:'#22283A' } },
               y:{ stacked:false, ticks:{ color:'#636B8A' }, grid:{ color:'#22283A' } },
@@ -1224,6 +1126,26 @@
         });
       }
       updatePortalChart();
+
+      // ── Load historical portal stats on init ─────────────────────────
+      (function loadInitialPortalStats() {
+        fetch('/api/stats/portals')
+          .then(r => r.json())
+          .then(data => {
+            // data: { linkedin: {applied,skipped,failed}, naukri: {...}, ... }
+            Object.entries(data).forEach(([rawPortal, stats]) => {
+              const p = rawPortal.charAt(0).toUpperCase() + rawPortal.slice(1).toLowerCase();
+              if (!portalStats[p]) return;
+              ['applied','skipped','failed'].forEach(k => {
+                portalStats[p][k] = stats[k] || 0;
+                const el = document.getElementById('ps-' + rawPortal.toLowerCase() + '-' + k);
+                if (el) el.textContent = portalStats[p][k];
+              });
+            });
+            updatePortalChart();
+          })
+          .catch(() => {});
+      })();
 
       // ── Cover Letters page ───────────────────────────────────────────
       let coverJobs = [];
@@ -1318,13 +1240,13 @@
       function setAiToggleUI(enabled) {
         aiOn = enabled;
         if (aiPill) {
-          aiPill.style.background     = enabled ? 'var(--accent)' : 'var(--muted)';
-          aiPill.style.borderColor    = enabled ? 'var(--accent)' : 'var(--border)';
+          aiPill.style.background  = enabled ? 'var(--acc)' : 'var(--tx3)';
+          aiPill.style.borderColor = enabled ? 'var(--acc)' : 'var(--border2)';
         }
         if (aiThumb) aiThumb.style.transform = enabled ? 'translateX(24px)' : 'translateX(0)';
         if (aiLabel) {
-          aiLabel.textContent = enabled ? '✅ Ollama ON' : '⚡ Keyword mode';
-          aiLabel.style.color = enabled ? 'var(--accent)' : 'var(--warn)';
+          aiLabel.textContent = enabled ? '✅ AI ON' : '⚡ Keyword mode';
+          aiLabel.style.color = enabled ? 'var(--acc)' : 'var(--am)';
         }
       }
 
@@ -1366,6 +1288,7 @@
       const btnRefresh     = document.getElementById('btnRefreshProfiles');
       const topName        = document.getElementById('topProfileName');
       const topRole        = document.getElementById('topProfileRole');
+      const topAvatar      = document.getElementById('topProfileAvatar');
       const activeTitle    = document.getElementById('activeProfileTitle');
       const activeRoleBadge= document.getElementById('activeProfileRoleBadge');
       const topPill        = document.getElementById('topProfilePill');
@@ -1404,15 +1327,16 @@
         const active = profiles.find(p => p.isActive) || profiles[0];
         if (topName) topName.textContent = active.displayName || active.name;
         if (topRole) topRole.textContent = active.role || 'user';
+        if (topAvatar) topAvatar.textContent = (active.displayName || active.name || 'U').charAt(0).toUpperCase();
         if (activeTitle) activeTitle.textContent = active.displayName || active.name;
         if (activeRoleBadge) {
           activeRoleBadge.textContent = active.role || 'user';
-          activeRoleBadge.style.color = active.role === 'admin' ? 'var(--accent)' : active.role === 'viewer' ? 'var(--muted)' : 'var(--warn)';
+          activeRoleBadge.style.color = active.role === 'admin' ? 'var(--acc)' : active.role === 'viewer' ? 'var(--tx3)' : 'var(--am)';
         }
 
         for (const p of profiles) {
           const tr = document.createElement('tr');
-          const roleColor = p.role === 'admin' ? 'var(--accent)' : p.role === 'viewer' ? 'var(--muted)' : 'var(--warn)';
+          const roleColor = p.role === 'admin' ? 'var(--acc)' : p.role === 'viewer' ? 'var(--tx3)' : 'var(--am)';
           const statusBadge = p.isActive
             ? '<span style="color:var(--accent);font-weight:700;">● ACTIVE</span>'
             : '<span style="color:var(--muted);">○ idle</span>';
