@@ -24,6 +24,33 @@ const {
   backoff,
 } = require('../utils/antiDetection');
 
+// ─── Filter param maps ────────────────────────────────────────────────────────
+
+const EXPERIENCE_MAP = {
+  internship: '1', entry: '2', 'entry-level': '2',
+  associate: '3', mid: '4', 'mid-senior': '4', 'mid-level': '4', senior: '4',
+  director: '5', executive: '6',
+};
+
+const JOB_TYPE_MAP = {
+  'full-time': 'F', fulltime: 'F',
+  'part-time': 'P', parttime: 'P',
+  contract: 'C', temporary: 'T', temp: 'T',
+  internship: 'I', volunteer: 'V', other: 'O',
+};
+
+const DATE_MAP = {
+  day: 'r86400', '24h': 'r86400',
+  week: 'r604800', '7d': 'r604800',
+  month: 'r2592000', '30d': 'r2592000',
+};
+
+const REMOTE_MAP = {
+  'on-site': '1', onsite: '1',
+  remote: '2', 'work-from-home': '2', wfh: '2',
+  hybrid: '3',
+};
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function makeJobId(title, company) {
@@ -51,14 +78,65 @@ async function captureScreenshot(page, db, jobId, stage) {
   }
 }
 
+/**
+ * Build LinkedIn filter query params from the linkedinFilters config object.
+ * Supported keys:
+ *   experienceLevel: string | string[]  — "mid-senior", "entry", etc.
+ *   jobType:         string | string[]  — "full-time", "contract", etc.
+ *   datePosted:      string             — "day", "week", "month"
+ *   remote:          string | string[]  — "remote", "hybrid", "on-site"
+ */
+function buildFilterParams(filters = {}) {
+  const params = {};
+
+  if (filters.experienceLevel) {
+    const levels = [].concat(filters.experienceLevel)
+      .map(l => EXPERIENCE_MAP[l.toLowerCase()])
+      .filter(Boolean);
+    if (levels.length) params.f_E = levels.join(',');
+  }
+
+  if (filters.jobType) {
+    const types = [].concat(filters.jobType)
+      .map(t => JOB_TYPE_MAP[t.toLowerCase()])
+      .filter(Boolean);
+    if (types.length) params.f_JT = types.join(',');
+  }
+
+  if (filters.datePosted) {
+    const tpr = DATE_MAP[filters.datePosted.toLowerCase()];
+    if (tpr) params.f_TPR = tpr;
+  }
+
+  if (filters.remote) {
+    const remotes = [].concat(filters.remote)
+      .map(r => REMOTE_MAP[r.toLowerCase()])
+      .filter(Boolean);
+    if (remotes.length) params.f_WT = remotes.join(',');
+  }
+
+  return params;
+}
+
 // ─── LinkedIn Search ──────────────────────────────────────────────────────────
 
-async function performLinkedinSearch(page, keyword, location = '') {
+async function performLinkedinSearch(page, keyword, location = '', filters = {}) {
   logger.info(`\n[LinkedIn] ── Searching: "${keyword}" in "${location || 'All Locations'}" ──`);
 
   const encodedKeyword  = encodeURIComponent(keyword);
   const encodedLocation = encodeURIComponent(location);
-  const searchUrl = `https://www.linkedin.com/jobs/search/?f_AL=true&keywords=${encodedKeyword}&location=${encodedLocation}`;
+
+  // Always enable Easy Apply filter; layer in any additional filters
+  const filterParams = buildFilterParams(filters);
+  const qs = new URLSearchParams({
+    f_AL: 'true',
+    keywords: keyword,
+    location,
+    ...filterParams,
+  }).toString();
+
+  const searchUrl = `https://www.linkedin.com/jobs/search/?${qs}`;
+  logger.info(`[LinkedIn] Search URL: ${searchUrl}`);
 
   await page.goto(searchUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
   await randomDelay(2500, 4000);
@@ -80,6 +158,103 @@ async function performLinkedinSearch(page, keyword, location = '') {
   return searchUrl;
 }
 
+// ─── External site application ────────────────────────────────────────────────
+
+/**
+ * Click external Apply button, handle the popup/new-tab, fill the form, submit.
+ * Returns { status: 'external_applied' | 'external_failed', unmatched: [] }
+ */
+async function handleExternalApplication(page, config, db, jobId) {
+  const unmatched = [];
+
+  // Find the plain Apply button (not Easy Apply)
+  const externalBtn = page.locator(
+    'button:has-text("Apply"):not(:has-text("Easy Apply")), a:has-text("Apply Now"), a:has-text("Apply")'
+  ).first();
+
+  if (await externalBtn.count() === 0 || !await externalBtn.isVisible()) {
+    logger.warn('[LinkedIn] External Apply button not found');
+    return { status: 'external_failed', unmatched };
+  }
+
+  logger.info('[LinkedIn] Clicking external Apply button and waiting for popup...');
+  const context = page.context();
+
+  let externalPage = null;
+  try {
+    [externalPage] = await Promise.all([
+      context.waitForEvent('page', { timeout: 8000 }),
+      externalBtn.click({ timeout: 10000 }).catch(() => {}),
+    ]);
+  } catch (_) {
+    // No popup opened — check if current page navigated
+    externalPage = null;
+  }
+
+  // If no popup, check for URL change on current page
+  if (!externalPage) {
+    await randomDelay(2000, 3000);
+    const currentUrl = page.url();
+    if (!currentUrl.includes('linkedin.com')) {
+      externalPage = page;
+    } else {
+      logger.warn('[LinkedIn] External apply did not open a new tab or navigate');
+      return { status: 'external_failed', unmatched };
+    }
+  }
+
+  try {
+    await externalPage.waitForLoadState('domcontentloaded', { timeout: 30000 });
+    await randomDelay(1500, 2500);
+
+    const externalUrl = externalPage.url();
+    logger.info(`[LinkedIn] External site: ${externalUrl}`);
+
+    await captureScreenshot(externalPage, db, jobId, 'external_form');
+
+    const formUnmatched = await fillFormSmart(externalPage, config);
+    if (formUnmatched.length) unmatched.push(...formUnmatched);
+
+    await randomDelay(600, 1200);
+
+    // Try to submit the external form
+    const submitSelectors = [
+      'button[type="submit"]',
+      'button:has-text("Submit")',
+      'button:has-text("Apply")',
+      'button:has-text("Send Application")',
+      'input[type="submit"]',
+    ];
+
+    let submitted = false;
+    for (const sel of submitSelectors) {
+      const btn = externalPage.locator(sel).first();
+      if (await btn.count() > 0 && await btn.isVisible() && await btn.isEnabled()) {
+        logger.info(`[LinkedIn] Submitting external form: "${sel}"`);
+        await btn.click({ timeout: 10000 });
+        await randomDelay(2000, 3500);
+        submitted = true;
+        break;
+      }
+    }
+
+    await captureScreenshot(externalPage, db, jobId, 'external_submitted');
+
+    // Close popup tab if it was a new tab (not the main page)
+    if (externalPage !== page) {
+      await externalPage.close().catch(() => {});
+    }
+
+    return { status: submitted ? 'external_applied' : 'external_failed', unmatched };
+  } catch (err) {
+    logger.error(`[LinkedIn] External form error: ${err.message}`);
+    if (externalPage && externalPage !== page) {
+      await externalPage.close().catch(() => {});
+    }
+    return { status: 'external_failed', unmatched };
+  }
+}
+
 // ─── Apply to a single LinkedIn job ──────────────────────────────────────────
 
 async function applyToLinkedinJob(page, jobId, config, db) {
@@ -88,9 +263,10 @@ async function applyToLinkedinJob(page, jobId, config, db) {
 
   const EASY_APPLY_SELECTORS = [
     '.jobs-apply-button--top-card button.jobs-apply-button',
-    'button.jobs-apply-button',
+    'button.jobs-apply-button:has-text("Easy Apply")',
     'button:has-text("Easy Apply")',
     '[data-control-name="jobdetails_topcard_inapply"]',
+    'button.jobs-apply-button',
   ];
 
   const NEXT_BTN_SELECTORS = [
@@ -132,24 +308,52 @@ async function applyToLinkedinJob(page, jobId, config, db) {
         }
       }
 
-      // Click Easy Apply
-      let applyClicked = false;
+      // Wait briefly for the apply button area to settle
+      await page.waitForSelector(
+        EASY_APPLY_SELECTORS.join(', ') + ', button:has-text("Apply")',
+        { state: 'visible', timeout: 8000 }
+      ).catch(() => {});
+
+      // Check if this is an Easy Apply job (look for enabled Easy Apply button)
+      let easyApplyBtn = null;
       for (const sel of EASY_APPLY_SELECTORS) {
         const btn = page.locator(sel).first();
         if (await btn.count() > 0 && await btn.isVisible()) {
-          logger.info(`[LinkedIn] Clicking Easy Apply: "${sel}"`);
-          await btn.click({ timeout: 10000 });
-          applyClicked = true;
-          await randomDelay(1500, 2500);
-          break;
+          // Confirm it says "Easy Apply" in text or has the easy-apply class
+          const text = (await btn.textContent().catch(() => '')).trim();
+          const cls  = (await btn.getAttribute('class').catch(() => '')).trim();
+          const isEasyApply = text.includes('Easy Apply') ||
+            cls.includes('jobs-apply-button') ||
+            sel.includes('Easy Apply') ||
+            sel.includes('inapply');
+          if (isEasyApply) {
+            easyApplyBtn = btn;
+            break;
+          }
         }
       }
 
-      if (!applyClicked) {
-        if (await page.locator('button:has-text("Apply")').count() > 0) {
-          return { status: 'external', unmatched };
+      if (easyApplyBtn) {
+        // Check if enabled — disabled means already applied or not eligible
+        const isEnabled = await easyApplyBtn.isEnabled().catch(() => true);
+        if (!isEnabled) {
+          logger.info(`[LinkedIn] Easy Apply button disabled (already applied?): ${jobId}`);
+          return { status: 'already_applied', unmatched };
         }
-        logger.warn(`[LinkedIn] No Easy Apply button found for ${jobId}`);
+
+        logger.info('[LinkedIn] Clicking Easy Apply button');
+        await easyApplyBtn.scrollIntoViewIfNeeded().catch(() => {});
+        await easyApplyBtn.click({ timeout: 10000 });
+        await randomDelay(1500, 2500);
+      } else {
+        // No Easy Apply — check for external Apply button
+        const externalApply = page.locator('button:has-text("Apply")').first();
+        if (await externalApply.count() > 0 && await externalApply.isVisible()) {
+          logger.info(`[LinkedIn] External Apply button found for ${jobId} — opening external form`);
+          return await handleExternalApplication(page, config, db, jobId);
+        }
+
+        logger.warn(`[LinkedIn] No apply button found for ${jobId}`);
         if (attempt >= maxRetries) return { status: 'failed', unmatched };
         continue;
       }
@@ -269,16 +473,17 @@ async function runLinkedin({ browser, config, db: dbArg, io, ai } = {}) {
   let scannedCount  = 0;
 
   const {
-    headless       = false,
-    slowMo         = 20,
-    delayMin       = 1500,
-    delayMax       = 3000,
-    maxAppsPerRun  = 20,
-    safetyMode     = false,
-    scoreThreshold = 50,
-    searchKeywords = [],
-    searchLocation = '',
+    headless        = false,
+    slowMo          = 20,
+    delayMin        = 1500,
+    delayMax        = 3000,
+    maxAppsPerRun   = 20,
+    safetyMode      = false,
+    scoreThreshold  = 50,
+    searchKeywords  = [],
+    searchLocation  = '',
     linkedinUrl,
+    linkedinFilters = {},
   } = config;
 
   // Build search entries
@@ -351,7 +556,7 @@ async function runLinkedin({ browser, config, db: dbArg, io, ai } = {}) {
 
       let currentJobsUrl = entry.url;
       if (entry.keyword) {
-        currentJobsUrl = await performLinkedinSearch(page, entry.keyword, searchLocation);
+        currentJobsUrl = await performLinkedinSearch(page, entry.keyword, searchLocation, linkedinFilters);
         if (!currentJobsUrl) continue;
       } else {
         await page.goto(currentJobsUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
@@ -507,9 +712,9 @@ async function runLinkedin({ browser, config, db: dbArg, io, ai } = {}) {
           const { status: applyResult, unmatched } = await applyToLinkedinJob(page, jobId, config, dbInstance);
           const appliedAt = new Date().toISOString();
 
-          const dbStatus = (applyResult === 'success' || applyResult === 'already_applied') ? 'applied'
-            : applyResult === 'external' ? 'skipped'
-            : 'failed';
+          const isSuccess  = applyResult === 'success' || applyResult === 'already_applied' || applyResult === 'external_applied';
+          const isExternal = applyResult === 'external' || applyResult === 'external_failed';
+          const dbStatus   = isSuccess ? 'applied' : isExternal ? 'skipped' : 'failed';
 
           try {
             dbInstance.saveApplication?.({
@@ -519,13 +724,14 @@ async function runLinkedin({ browser, config, db: dbArg, io, ai } = {}) {
             });
           } catch (_) {}
 
-          if (applyResult === 'success' || applyResult === 'already_applied') {
+          if (isSuccess) {
             appliedCount++;
-            logger.info(`[LinkedIn] ✅ Applied [${appliedCount}]: ${title}`);
+            const tag = applyResult === 'external_applied' ? '↗ External' : '✅';
+            logger.info(`[LinkedIn] ${tag} Applied [${appliedCount}]: ${title}`);
             if (io) io.emit('applied', { portal: 'LinkedIn', job: { title, company, applyUrl: cardUrl }, score, status: 'applied' });
-          } else if (applyResult === 'external') {
+          } else if (isExternal) {
             externalCount++;
-            logger.warn(`[LinkedIn] ↗ External site – skipped: ${title}`);
+            logger.warn(`[LinkedIn] ↗ External site – could not submit: ${title}`);
             if (io) io.emit('job_scored', { portal: 'LinkedIn', job: { title, company }, score, decision: 'EXTERNAL' });
           } else {
             errorCount++;
