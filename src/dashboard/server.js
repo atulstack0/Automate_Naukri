@@ -287,6 +287,51 @@ function createDashboardServer(port = 3000) {
     } catch (err) { res.status(500).json({ error: err.message }); }
   });
 
+  // ── AI API Keys editor ────────────────────────────────────────────────
+  // Keys are stored in config.json but never sent raw to the browser — the
+  // GET endpoint returns masked values + presence flags. When a key is left
+  // blank the AI provider automatically skips that provider (see aiProvider.js).
+  const _maskKey = (k) => {
+    if (!k) return '';
+    const s = String(k);
+    return s.length <= 4 ? '••••' : '••••••••' + s.slice(-4);
+  };
+  app.get('/api/api-keys', (req, res) => {
+    try {
+      const c = readConfig();
+      res.json({
+        geminiApiKey:  _maskKey(c.geminiApiKey),
+        geminiSet:     !!c.geminiApiKey,
+        openAiApiKey:  _maskKey(c.openAiApiKey),
+        openAiSet:     !!c.openAiApiKey,
+        openAiApiKey2: _maskKey(c.openAiApiKey2),
+        openAiSet2:    !!c.openAiApiKey2,
+        geminiModel:   c.geminiModel || 'gemini-2.0-flash',
+        openAiModel:   c.openAiModel || 'gpt-3.5-turbo',
+      });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+  app.put('/api/api-keys', (req, res) => {
+    try {
+      const cfg = readConfig();
+      // Only fields explicitly present in the body are updated. The frontend
+      // omits unchanged (still-masked) key fields so we never overwrite a real
+      // key with its mask. An empty string clears the key (skips that provider).
+      const fields = ['geminiApiKey', 'openAiApiKey', 'openAiApiKey2', 'geminiModel', 'openAiModel'];
+      for (const f of fields) {
+        if (req.body[f] !== undefined) cfg[f] = String(req.body[f]).trim();
+      }
+      writeConfig(cfg);
+      const active = [];
+      if (cfg.geminiApiKey) active.push('Gemini');
+      if (cfg.openAiApiKey || cfg.openAiApiKey2) active.push('OpenAI');
+      const summary = `API keys updated — active providers: ${active.join(', ') || 'none (Ollama / keyword-only)'}`;
+      logger.info(`[Dashboard] ${summary}`);
+      io.emit('bot:log', { level: 'info', msg: summary, ts: new Date().toISOString() });
+      res.json({ success: true, providers: active });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
   // ── Selectors editor ──────────────────────────────────────────────────
   app.get('/api/selectors', (req, res) => {
     try { const c = readConfig(); res.json(c.selector || {}); }

@@ -780,6 +780,41 @@
             ><textarea class="input" id="pfCoverLetter" rows="4"></textarea>
           </div>
         </div>
+
+        <!-- ─── AI API Keys ─── -->
+        <div class="card settings-card" style="margin-top:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+            <h3 class="settings-section" style="margin:0;">🔑 AI API Keys</h3>
+            <div class="hdr-actions">
+              <button class="btn-primary sm" id="btnSaveApiKeys">💾 Save API Keys</button>
+              <button class="btn-outline sm" id="btnRefreshApiKeys">↻</button>
+            </div>
+          </div>
+          <p class="page-sub" style="margin:8px 0 14px;">
+            Add the keys for the AI providers you want to use. <b>Leave a key blank to skip
+            that provider</b> — when you start applying, the bot automatically skips any
+            provider without a key and falls back to the next one (OpenAI → Gemini → Ollama →
+            keyword-only). Keys are stored locally in <code>config.json</code> and never shown
+            again in full once saved.
+          </p>
+
+          <div id="apiKeyStatus" class="page-sub" style="margin-bottom:14px;"></div>
+
+          <label class="field-label">Google Gemini API Key</label
+          ><input class="input" type="password" id="pfGeminiKey" autocomplete="off"
+                  placeholder="Leave blank to skip Gemini" />
+          <label class="field-label">Gemini Model</label
+          ><input class="input" id="pfGeminiModel" placeholder="gemini-2.0-flash" />
+
+          <label class="field-label" style="margin-top:14px;">OpenAI API Key</label
+          ><input class="input" type="password" id="pfOpenAiKey" autocomplete="off"
+                  placeholder="Leave blank to skip OpenAI" />
+          <label class="field-label">OpenAI API Key (backup / key 2)</label
+          ><input class="input" type="password" id="pfOpenAiKey2" autocomplete="off"
+                  placeholder="Optional second key (auto-rotates on quota)" />
+          <label class="field-label">OpenAI Model</label
+          ><input class="input" id="pfOpenAiModel" placeholder="gpt-3.5-turbo" />
+        </div>
       </section>
 
       <!-- ─── SELECTORS ──────────────────────────── -->
