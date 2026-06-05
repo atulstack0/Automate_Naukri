@@ -23,7 +23,7 @@ An intelligent, fully automated job application system that applies to jobs on *
 | 📄 **Resume Auto-Learn** | Upload PDF → AI extracts Q&A pairs → auto-populates form learning DB |
 | ✉️ **Cover Letter Gen** | Per-job AI-generated cover letters |
 | 📥 **CSV Export/Import** | Full job history and learning Q&A data portability |
-| 👥 **Multi-Profile & RBAC** | Admin / User / Viewer roles with per-profile configs |
+
 | 🔑 **Session Auth** | Browser cookies saved once via `saveAuth.js`; reused across all runs |
 
 ---
@@ -72,9 +72,6 @@ autoapply/
 │   │   ├── linkedinWorker.js    ← LinkedIn: Easy Apply multi-step form
 │   │   ├── indeedWorker.js      ← Indeed: native vs. external apply
 │   │   └── companyWorker.js     ← Company pages: ATS detection → delegated apply
-│   ├── profiles/
-│   │   ├── profileManager.js    ← Multi-profile create/switch/delete
-│   │   └── roles.js             ← RBAC: admin / user / viewer permissions
 │   ├── utils/
 │   │   ├── antiDetection.js     ← Human-like delays, mouse curves, typo simulation
 │   │   ├── formFiller.js        ← Dynamic field detection and filling (utils layer)
@@ -168,7 +165,7 @@ The dashboard starts at **[http://localhost:3000](http://localhost:3000)**. Clic
 | **Portals** | Launch individual portals (Naukri, LinkedIn, Indeed, Company) or run all |
 | **Blocklist** | Block companies to prevent accidental applications |
 | **Cover Letters** | View AI-generated cover letters per job |
-| **Profiles** | Multi-profile management (Admin only) |
+
 
 ---
 
@@ -285,7 +282,7 @@ Company career page worker auto-detects and handles:
 | `screenshot:new` | Server → Client | New screenshot path |
 | `ai:query_start` / `ai:query_done` | Server → Client | AI request lifecycle |
 | `selflearn:done` | Server → Client | Self-learn cycle result |
-| `profiles:update` | Server → Client | Profile list changed |
+
 | `start_bot_trigger` / `stop_bot_trigger` | Client → Server | User-initiated controls |
 | `set_ai_mode` | Client → Server | Toggle AI on/off |
 
@@ -416,30 +413,6 @@ SQLite file: **`data/autoapply.db`** (WAL mode enabled)
 | `findAnswerByKey(answerKey)` | Exact key lookup for form filling |
 | `addManualLearningQuestion(q, a, key)` | Upsert a Q&A pair |
 | `getAllAnsweredAsMap()` | Returns `{ answerKey: answer }` map for batch fill |
-
----
-
-## 👥 Multi-Profile & RBAC
-
-AutoApply supports multiple named profiles (e.g. separate configs for different job seekers or search campaigns).
-
-### Roles
-
-| Role | Permissions |
-|------|-------------|
-| **admin** | Full access: manage profiles, all settings, run bot, view everything |
-| **user** | Own profile: edit config, run bot, view jobs, manage learning |
-| **viewer** | Read-only: view dashboard, stats, and job history |
-
-### Profile API
-
-| Endpoint | Description |
-|----------|-------------|
-| `GET /api/profiles` | List all profiles + active profile name |
-| `POST /api/profiles` | Create profile `{ name, role, displayName }` |
-| `POST /api/profiles/:name/activate` | Switch active profile |
-| `DELETE /api/profiles/:name` | Delete profile |
-| `GET/PUT /api/profiles/:name/config` | Read / write profile-specific config |
 
 ---
 

@@ -19,8 +19,7 @@ const db       = require('../db/db');
 const logger   = require('../utils/logger');
 const { runSelfLearnCycle, askAI } = require('../ai/aiAgent');
 const { seedLearningList }         = require('../db/seedLearningList');
-const profileManager               = require('../profiles/profileManager');
-const { ROLES, hasPermission, getPermissions } = require('../profiles/roles');
+
 const { ollamaManager }            = require('../ai/ollamaManager');
 const { setLogEmitter }            = require('../ai/aiProvider');
 
@@ -682,96 +681,7 @@ IMPORTANT: Return ONLY the JSON array, nothing else.`;
     } catch (err) { res.status(500).json({ error: err.message }); }
   });
 
-  // ── Profile Management ────────────────────────────────────────────────
-  // Initialise profile system on server start
-  profileManager.init();
 
-  app.get('/api/profiles', (req, res) => {
-    try {
-      const profiles = profileManager.listProfiles();
-      const active   = profileManager.getActiveProfile();
-      res.json({ profiles, activeProfile: active });
-    } catch (err) { res.status(500).json({ error: err.message }); }
-  });
-
-  app.get('/api/profiles/active', (req, res) => {
-    try {
-      const name    = profileManager.getActiveProfile();
-      const meta    = profileManager.getProfile(name);
-      const perms   = meta ? getPermissions(meta.role || ROLES.user) : [];
-      res.json({ name, ...meta, permissions: perms });
-    } catch (err) { res.status(500).json({ error: err.message }); }
-  });
-
-  app.post('/api/profiles', (req, res) => {
-    try {
-      const { name, role, displayName } = req.body;
-      if (!name) return res.status(400).json({ error: 'name required' });
-      const result = profileManager.createProfile(name, role || ROLES.user, displayName || '');
-      if (!result.success) return res.status(400).json(result);
-      io.emit('profiles:update', profileManager.listProfiles());
-      res.json(result);
-    } catch (err) { res.status(500).json({ error: err.message }); }
-  });
-
-  app.delete('/api/profiles/:name', (req, res) => {
-    try {
-      const result = profileManager.deleteProfile(req.params.name);
-      if (!result.success) return res.status(400).json(result);
-      io.emit('profiles:update', profileManager.listProfiles());
-      res.json(result);
-    } catch (err) { res.status(500).json({ error: err.message }); }
-  });
-
-  app.post('/api/profiles/:name/activate', (req, res) => {
-    try {
-      const result = profileManager.switchProfile(req.params.name);
-      if (!result.success) return res.status(400).json(result);
-      io.emit('profile:switched', { name: req.params.name, profile: result.profile });
-      io.emit('profiles:update', profileManager.listProfiles());
-      res.json(result);
-    } catch (err) { res.status(500).json({ error: err.message }); }
-  });
-
-  app.patch('/api/profiles/:name/role', (req, res) => {
-    try {
-      const { role } = req.body;
-      if (!role) return res.status(400).json({ error: 'role required' });
-      const result = profileManager.updateProfileRole(req.params.name, role);
-      if (!result.success) return res.status(400).json(result);
-      io.emit('profiles:update', profileManager.listProfiles());
-      res.json(result);
-    } catch (err) { res.status(500).json({ error: err.message }); }
-  });
-
-  app.get('/api/profiles/:name/config', (req, res) => {
-    try {
-      const cfg = profileManager.readProfileConfig(req.params.name);
-      // Strip sensitive keys
-      delete cfg.geminiApiKey; delete cfg.openAiApiKey; delete cfg.openAiApiKey2;
-      res.json(cfg);
-    } catch (err) { res.status(500).json({ error: err.message }); }
-  });
-
-  app.put('/api/profiles/:name/config', (req, res) => {
-    try {
-      const current = profileManager.readProfileConfig(req.params.name);
-      const merged  = { ...current, ...req.body };
-      profileManager.writeProfileConfig(req.params.name, merged);
-      res.json({ success: true });
-    } catch (err) { res.status(500).json({ error: err.message }); }
-  });
-
-  // ── Roles & Permissions ──────────────────────────────────────────────
-  app.get('/api/roles', (req, res) => {
-    res.json({
-      roles: Object.values(ROLES),
-      current: {
-        profile: profileManager.getActiveProfile(),
-        role: (profileManager.getProfile(profileManager.getActiveProfile()) || {}).role || ROLES.user,
-      },
-    });
-  });
 
   // ─────────────────────────────────────────────────────────────────────────
   // NOTE: SPA fallback is registered AFTER all API routes (at end of function)
