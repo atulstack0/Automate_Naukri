@@ -97,6 +97,26 @@ class OllamaClient {
         return text;
       } catch (err) {
         lastErr = err;
+        // ── Detect Ollama OOM (HTTP 500 with memory error) ──────────────────
+        const status  = err?.response?.status;
+        const errBody = err?.response?.data ? JSON.stringify(err.response.data) : err.message;
+        const isOOM   = status === 500 && (
+          errBody.includes('more system memory') ||
+          errBody.includes('not enough memory')  ||
+          errBody.includes('out of memory')
+        );
+        if (isOOM) {
+          // Extract numbers from error if possible
+          const needMatch  = errBody.match(/(\d+\.?\d*)\s*GiB\)\s*than is available/);
+          const haveMatch  = errBody.match(/available\s*\((\d+\.?\d*)\s*GiB\)/);
+          const needed     = needMatch ? needMatch[1] + ' GiB' : '?';
+          const available  = haveMatch ? haveMatch[1] + ' GiB' : '~2 GiB';
+          const oomMsg     = `[Ollama] ❌ OUT OF MEMORY: Model '${this.model}' needs ${needed} but only ${available} is free. ` +
+                             `Close other apps (Chrome, etc.) or switch to a smaller model.`;
+          logger.error(oomMsg);
+          // Don't retry OOM — it will never succeed until RAM is freed
+          throw new Error(oomMsg);
+        }
         logger.warn(`[Ollama] complete() attempt ${attempt} failed: ${err.message}`);
       }
     }
@@ -110,8 +130,10 @@ class OllamaClient {
    * @param {string} prompt
    * @returns {Promise<object>}
    */
-  async completeJSON(prompt, opts = { num_predict: 200, num_ctx: 3000, temperature: 0.1 }) {
-    const raw = await this.complete(prompt, 120000, opts);
+  async completeJSON(prompt, opts = { num_predict: 200, num_ctx: 512, temperature: 0.1 }) {
+    // Ensure num_ctx is always set to minimise KV-cache memory usage
+    const safeOpts = { num_predict: 200, num_ctx: 512, temperature: 0.1, ...opts };
+    const raw = await this.complete(prompt, 120000, safeOpts);
 
     // Strip ```json fences
     const cleaned = raw
@@ -156,7 +178,8 @@ Return: { "score": 0-100, "decision": "APPLY" or "SKIP", "reason": "one sentence
 score>=60 = APPLY. Base on skill overlap, title match, seniority fit.`;
 
     try {
-      const result = await this.completeJSON(prompt);
+      // num_ctx:512 minimises KV-cache RAM usage (~74 MiB vs 432 MiB at ctx=3000)
+      const result = await this.completeJSON(prompt, { num_predict: 200, num_ctx: 512, temperature: 0.1 });
       return {
         score:    Math.min(Math.max(parseInt(result.score, 10) || 0, 0), 100),
         decision: (['APPLY', 'SKIP'].includes((result.decision || '').toUpperCase()))

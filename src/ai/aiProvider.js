@@ -17,6 +17,35 @@
 const axios = require('axios');
 const logger = require('../utils/logger');
 
+// ── Lazy-load ollamaManager to avoid circular deps ────────────────────────────
+let _ollamaManager = null;
+function _getOllamaManager() {
+  if (!_ollamaManager) {
+    try { _ollamaManager = require('./ollamaManager').ollamaManager; } catch (_) {}
+  }
+  return _ollamaManager;
+}
+
+// ── Short request-ID generator (for log correlation) ─────────────────────────
+function _shortId() {
+  return Math.random().toString(36).slice(2, 8).toUpperCase();
+}
+
+// ── Socket log emitter (injected by server.js after init) ────────────────────
+let _logEmitter = null;
+/**
+ * Inject the Socket.io emit function so AI logs stream to the Live Log panel.
+ * Call once from server.js: setLogEmitter((event, data) => io.emit(event, data))
+ */
+function setLogEmitter(fn) { _logEmitter = fn; }
+
+function _emitLog(level, msg, meta = {}) {
+  if (!_logEmitter) return;
+  try {
+    _logEmitter('bot:log', { level, msg, ts: new Date().toISOString(), ...meta });
+  } catch (_) {}
+}
+
 // Runtime state
 let _openAiApiKeys = [];
 let _currentOpenAiKeyIndex = 0;
@@ -49,6 +78,13 @@ function initAIProvider(config = {}) {
   _useOpenAi     = _openAiApiKeys.length > 0;
   _useGemini     = !!_geminiApiKey;
   _useOllama     = !config.skipAI;
+
+  // Keep ollamaManager in sync so model switches are reflected immediately
+  const mgr = _getOllamaManager();
+  if (mgr) {
+    mgr.baseUrl      = _ollamaBaseUrl;
+    if (_ollamaModel) mgr.currentModel = _ollamaModel;
+  }
 
   if (_useOpenAi) {
     logger.info(`[AIProvider] Primary: OpenAI (${_openAiModel})`);
@@ -111,23 +147,28 @@ async function _askGemini(prompt, opts = {}) {
 // Ollama caller
 // ─────────────────────────────────────────────────────────────────────────────
 async function _askOllama(prompt, opts = {}) {
-  // For deepseek models, we need higher minimum predict tokens so it can finish <think> 
+  // Always read live model from ollamaManager so dropdown switches take effect instantly
+  const mgr = _getOllamaManager();
+  const liveModel = (mgr && mgr.currentModel) ? mgr.currentModel : _ollamaModel;
+
+  // For deepseek models, we need higher minimum predict tokens so it can finish <think>
   // Ensure numPredict isn't forcing models to generate endlessly when evaluating yes/no forms
   let numPredict = opts.num_predict ?? opts.maxTokens ?? 100;
 
-  logger.info(`[AIProvider] Sending prompt to ${_ollamaModel}, length: ${prompt?.length}`);
+  logger.info(`[AIProvider] Sending prompt to ${liveModel}, length: ${prompt?.length}`);
   logger.debug(`[AIProvider] Prompt preview: ${prompt?.substring(0, 150)}...`);
 
   const response = await axios.post(
     `${_ollamaBaseUrl}/api/generate`,
     {
-      model:  _ollamaModel,
+      model:  liveModel,
       prompt,
       stream: false,
       options: {
         temperature: opts.temperature  ?? 0.2,
         top_p:       opts.top_p        ?? 0.95,
         num_predict: numPredict,
+        num_ctx:     opts.num_ctx      ?? 512,  // Low ctx = ~74 MiB KV-cache vs 432 MiB at 3000
       },
     },
     { timeout: _ollamaTimeout, headers: { 'Content-Type': 'application/json' } }
@@ -149,15 +190,24 @@ async function _askOllama(prompt, opts = {}) {
  * @returns {Promise<string>} raw response text
  */
 async function askAI(prompt, opts = {}) {
+  const reqId = _shortId();
+
   // ── 0. Try OpenAI ──────────────────────────────────────────────────────
   if (_useOpenAi && _openAiApiKeys.length > 0) {
     let attempts = 0;
     while (attempts < 2 && _useOpenAi) {
       try {
-        logger.debug(`[AIProvider] Attempt ${attempts + 1}: OpenAI (${_openAiModel}) [Key ${_currentOpenAiKeyIndex + 1}/${_openAiApiKeys.length}]`);
+        const logMsg = `[AIProvider:${reqId}] 🔵 OpenAI request (${_openAiModel}) [Key ${_currentOpenAiKeyIndex + 1}/${_openAiApiKeys.length}]`;
+        logger.debug(logMsg);
+        _emitLog('info', logMsg, { reqId, model: _openAiModel, provider: 'openai' });
+        _logEmitter && _logEmitter('ai:query_start', { reqId, model: _openAiModel, provider: 'openai', ts: new Date().toISOString() });
         const start = Date.now();
         const response = await _askOpenAI(prompt, opts);
-        logger.info(`[AIProvider] OpenAI response received in ${Date.now() - start}ms`);
+        const elapsedMs = Date.now() - start;
+        const doneMsg = `[AIProvider:${reqId}] ✅ OpenAI responded in ${elapsedMs}ms`;
+        logger.info(doneMsg);
+        _emitLog('info', doneMsg, { reqId, model: _openAiModel, provider: 'openai', elapsedMs });
+        _logEmitter && _logEmitter('ai:query_done', { reqId, model: _openAiModel, provider: 'openai', elapsedMs, ts: new Date().toISOString() });
         return response;
       } catch (err) {
         const status = err?.status;
@@ -165,26 +215,32 @@ async function askAI(prompt, opts = {}) {
         const isQuotaError = status === 429 && (msg.toLowerCase().includes('quota') || msg.toLowerCase().includes('exceeded'));
         
         if (isQuotaError || status === 401 || status === 403) {
-          logger.warn(`[AIProvider] OpenAI Key ${_currentOpenAiKeyIndex + 1} failed (${msg}).`);
+          const warnMsg = `[AIProvider:${reqId}] ⚠️ OpenAI Key ${_currentOpenAiKeyIndex + 1} failed (${msg}).`;
+          logger.warn(warnMsg);
+          _emitLog('warn', warnMsg, { reqId, provider: 'openai' });
           if (_currentOpenAiKeyIndex + 1 < _openAiApiKeys.length) {
-            logger.warn(`[AIProvider] Switching to next OpenAI key in config...`);
+            logger.warn(`[AIProvider:${reqId}] Switching to next OpenAI key in config...`);
             _currentOpenAiKeyIndex++;
             continue; // Try next key immediately (does not increment attempts counter)
           } else {
-            logger.warn(`[AIProvider] All OpenAI keys exhausted. Disabling OpenAI fallback.`);
+            logger.warn(`[AIProvider:${reqId}] All OpenAI keys exhausted. Disabling OpenAI fallback.`);
             _useOpenAi = false;
             break;
           }
         }
         
         if (status === 429 && attempts === 0) {
-          logger.warn('[AIProvider] OpenAI rate limited (429) – waiting 5s then retrying...');
+          const rateMsg = `[AIProvider:${reqId}] ⏳ OpenAI rate limited (429) – waiting 5s then retrying...`;
+          logger.warn(rateMsg);
+          _emitLog('warn', rateMsg, { reqId, provider: 'openai' });
           await new Promise(r => setTimeout(r, 5000));
           attempts++;
           continue;
         }
 
-        logger.warn(`[AIProvider] OpenAI failed (${msg}) – falling back to next provider`);
+        const fallMsg = `[AIProvider:${reqId}] ⚠️ OpenAI failed (${msg}) – falling back to next provider`;
+        logger.warn(fallMsg);
+        _emitLog('warn', fallMsg, { reqId, provider: 'openai' });
         break; // fall through to Gemini
       }
     }
@@ -195,15 +251,24 @@ async function askAI(prompt, opts = {}) {
     // Try up to 2 times: on rate limit wait 65s then retry once
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
-        logger.debug(`[AIProvider] Attempt ${attempt + 1}: Gemini (${_geminiModel})`);
+        const logMsg = `[AIProvider:${reqId}] 🟡 Gemini request (${_geminiModel}) attempt ${attempt + 1}`;
+        logger.debug(logMsg);
+        _emitLog('info', logMsg, { reqId, model: _geminiModel, provider: 'gemini' });
+        _logEmitter && _logEmitter('ai:query_start', { reqId, model: _geminiModel, provider: 'gemini', ts: new Date().toISOString() });
         const start = Date.now();
         const response = await _askGemini(prompt, opts);
-        logger.info(`[AIProvider] Gemini response received in ${Date.now() - start}ms`);
+        const elapsedMs = Date.now() - start;
+        const doneMsg = `[AIProvider:${reqId}] ✅ Gemini responded in ${elapsedMs}ms`;
+        logger.info(doneMsg);
+        _emitLog('info', doneMsg, { reqId, model: _geminiModel, provider: 'gemini', elapsedMs });
+        _logEmitter && _logEmitter('ai:query_done', { reqId, model: _geminiModel, provider: 'gemini', elapsedMs, ts: new Date().toISOString() });
         return response;
       } catch (err) {
         const status = err?.status || err?.response?.status;
         if (status === 429 && attempt === 0) {
-          logger.warn('[AIProvider] Gemini rate limited (429) – waiting 65s then retrying...');
+          const rateMsg = `[AIProvider:${reqId}] ⏳ Gemini rate limited (429) – waiting 65s then retrying...`;
+          logger.warn(rateMsg);
+          _emitLog('warn', rateMsg, { reqId, provider: 'gemini' });
           await new Promise(r => setTimeout(r, 65000));
           continue; // retry
         }
@@ -211,11 +276,12 @@ async function askAI(prompt, opts = {}) {
                      : status === 403 ? 'quota exceeded'
                      : status === 429 ? 'rate limited (retry failed)'
                      : err.message;
-        
-        logger.warn(`[AIProvider] Gemini failed (${reason}) – falling back to local model`);
+        const failMsg = `[AIProvider:${reqId}] ⚠️ Gemini failed (${reason}) – falling back to local model`;
+        logger.warn(failMsg);
+        _emitLog('warn', failMsg, { reqId, provider: 'gemini' });
         if (status === 401 || status === 403 || status === 429) {
           _useGemini = false;
-          logger.warn(`[AIProvider] Gemini disabled for this session (status:${status})`);
+          logger.warn(`[AIProvider:${reqId}] Gemini disabled for this session (status:${status})`);
         }
         break; // fall through to Ollama
       }
@@ -225,22 +291,33 @@ async function askAI(prompt, opts = {}) {
   // ── 2. Try Ollama ──────────────────────────────────────────────────────
   if (_useOllama) {
     try {
-      logger.debug(`[AIProvider] Fallback: Ollama (${_ollamaModel}) ...`);
+      const logMsg = `[AIProvider:${reqId}] 🟣 Ollama request (${_ollamaModel})…`;
+      logger.debug(logMsg);
+      _emitLog('info', logMsg, { reqId, model: _ollamaModel, provider: 'ollama' });
+      _logEmitter && _logEmitter('ai:query_start', { reqId, model: _ollamaModel, provider: 'ollama', ts: new Date().toISOString() });
       const start = Date.now();
       const response = await _askOllama(prompt, opts);
-      logger.info(`[AIProvider] Ollama response received in ${Date.now() - start}ms`);
+      const elapsedMs = Date.now() - start;
+      const doneMsg = `[AIProvider:${reqId}] ✅ Ollama (${_ollamaModel}) responded in ${(elapsedMs/1000).toFixed(2)}s`;
+      logger.info(doneMsg);
+      _emitLog('info', doneMsg, { reqId, model: _ollamaModel, provider: 'ollama', elapsedMs });
+      _logEmitter && _logEmitter('ai:query_done', { reqId, model: _ollamaModel, provider: 'ollama', elapsedMs, ts: new Date().toISOString() });
       return response;
     } catch (err) {
-      if (err.code === 'ECONNABORTED' || err.message.includes('timeout')) {
-        logger.error(`[AIProvider] Ollama TIMEOUT after ${_ollamaTimeout}ms`);
-      } else {
-        logger.error(`[AIProvider] Ollama failed: ${err.message}`);
-      }
+      const isTimeout = err.code === 'ECONNABORTED' || err.message.includes('timeout');
+      const errMsg = isTimeout
+        ? `[AIProvider:${reqId}] ⏱️ Ollama TIMEOUT after ${_ollamaTimeout}ms`
+        : `[AIProvider:${reqId}] ❌ Ollama failed: ${err.message}`;
+      logger.error(errMsg);
+      _emitLog('error', errMsg, { reqId, model: _ollamaModel, provider: 'ollama' });
+      _logEmitter && _logEmitter('ai:query_done', { reqId, model: _ollamaModel, provider: 'ollama', elapsedMs: -1, error: err.message, ts: new Date().toISOString() });
     }
   }
 
-  // ── 3. Both failed ─────────────────────────────────────────────────────
-  logger.error('[AIProvider] CRITICAL: All AI providers failed');
+  // ── 3. All providers failed ─────────────────────────────────────────────
+  const critMsg = `[AIProvider:${reqId}] ❌ CRITICAL: All AI providers failed. Returning empty response.`;
+  logger.error(critMsg);
+  _emitLog('error', critMsg, { reqId });
   return '';
 }
 
@@ -257,4 +334,4 @@ function getProviderInfo() {
   return 'keyword-only (no AI)';
 }
 
-module.exports = { initAIProvider, askAI, getProviderInfo };
+module.exports = { initAIProvider, askAI, getProviderInfo, setLogEmitter };

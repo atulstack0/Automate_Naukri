@@ -434,13 +434,40 @@ async function applyToLinkedinJob(page, jobId, config, db) {
         }
 
         if (!advanced) {
+          // Check for validation errors. Re-fill ONLY ONCE per step; do NOT
+          // loop back to the top of the step — that causes infinite re-filling.
           const errorCount = await page.locator('.artdeco-inline-feedback--error').count();
           if (errorCount > 0) {
-            logger.warn(`[LinkedIn] Validation errors on step ${step + 1} – retrying with AI correction`);
-            continue;
+            logger.warn(`[LinkedIn] Validation errors on step ${step + 1} – doing a single targeted re-fill`);
+            // Re-fill just once with error-awareness, then try Next again
+            await fillFormSmart(page, {
+              ...config,
+              scopeSelector: MODAL_SEL,
+              blockResumeUpload: true,  // don't re-upload resume on retry
+            }).catch(() => {});
+            await randomDelay(800, 1400);
+
+            // Now try Next one more time after the correction
+            for (const sel of NEXT_BTN_SELECTORS) {
+              const btn = modal.locator(sel).first();
+              if (await btn.count() > 0 && await btn.isVisible() && await btn.isEnabled()) {
+                await btn.click();
+                await randomDelay(1000, 2000);
+                advanced = true;
+                logger.info(`[LinkedIn] Clicked Next/Review after re-fill: "${sel}"`);
+                break;
+              }
+            }
+
+            // If still not advanced, skip this step to avoid infinite loop
+            if (!advanced) {
+              logger.warn(`[LinkedIn] Still stuck on step ${step + 1} after re-fill – moving on`);
+            }
+            // Either way, do NOT `continue` — fall through to next step iteration
+          } else {
+            logger.warn(`[LinkedIn] No next/submit on step ${step + 1} – breaking`);
+            break;
           }
-          logger.warn(`[LinkedIn] No next/submit on step ${step + 1} – breaking`);
-          break;
         }
       }
 

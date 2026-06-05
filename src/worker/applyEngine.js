@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 
 /**
  * ╔══════════════════════════════════════════════════════════════════════════╗
@@ -955,12 +955,16 @@ async function applyToJob(page, job, config, opts = {}) {
           logger.warn(`[ApplyEngine] Step ${stepCount} validation errors: ${validationErrs.map(e => e.message).join(' | ')}`);
           consecutiveValidationErrors++;
           if (consecutiveValidationErrors >= 3) {
-            logger.error(`[ApplyEngine] Stuck on validation errors for 3 consecutive attempts. Aborting form.`);
-            break;
+            logger.error(`[ApplyEngine] Stuck on validation errors for 3 consecutive steps. Proceeding anyway to avoid infinite loop.`);
+            consecutiveValidationErrors = 0; // reset so next step is fresh
+            // Fall through to Next/Submit \u2014 do NOT loop again
+          } else {
+            // Do ONE targeted re-fill only \u2014 never blindly re-fill in a loop
+            logger.info(`[ApplyEngine] Step ${stepCount}: doing single re-fill (attempt ${consecutiveValidationErrors})`);
+            await fillStep(page, scopeSelector, { ...config, blockResumeUpload: true }, db).catch(() => {});
+            await humanDelay(600, 1000);
+            // Fall through to Next — do NOT continue here
           }
-          // Re-fill and retry once
-          await fillStep(page, scopeSelector, config, db).catch(() => {});
-          await humanDelay(500, 800);
         } else {
           consecutiveValidationErrors = 0;
         }
