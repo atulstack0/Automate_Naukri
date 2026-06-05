@@ -156,9 +156,6 @@
         <a class="nav-item" data-tab="keywords"
           ><span class="nav-icon">🔤</span><span>Keywords</span></a
         >
-        <a class="nav-item" data-tab="profile"
-          ><span class="nav-icon">👤</span><span>Profile</span></a
-        >
         <a class="nav-item" data-tab="blocklist"
           ><span class="nav-icon">🚫</span><span>Blocklist</span
           ><span class="nav-count" id="nc-block">–</span></a
@@ -567,8 +564,6 @@
               >Auto-refreshes every 3 seconds while bot is running</span
             >
             <button class="btn-outline sm" id="btnRefreshScreenshot">
-              ↻ Refresh Now
-            </button>
             <select class="select" id="screenshotInterval">
               <option value="3000">Every 3s</option>
               <option value="5000">Every 5s</option>
@@ -601,12 +596,12 @@
         <div class="page-hdr">
           <h1 class="page-title">Settings</h1>
           <div class="hdr-actions">
-            <button class="btn-primary" id="btnSaveConfig">💾 Save</button>
+            <button class="btn-primary" id="btnSaveConfig">💾 Save All</button>
             <button class="btn-outline sm" id="btnRefreshConfig">↻</button>
           </div>
         </div>
 
-        <!-- ─── AI ENGINE TOGGLE ─────────────────────────────────────────── -->
+        <!-- ─── AI ENGINE TOGGLE -->
         <div class="card" style="margin-bottom:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
           <div style="flex:1;min-width:180px;">
             <div style="font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:4px;">🤖 AI Engine</div>
@@ -615,108 +610,83 @@
               <b style="color:var(--am);">OFF</b> — Keyword-only scoring, rule-based form fill (faster, no GPU needed)
             </div>
           </div>
-          <!-- pill toggle -->
           <label id="aiToggleWrap" style="display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;">
-            <div id="aiTogglePill" style="
-              width:52px;height:28px;border-radius:14px;border:2px solid var(--border2);
-              background:var(--tx3);position:relative;transition:background .25s,border-color .25s;flex-shrink:0;">
-              <div id="aiToggleThumb" style="
-                width:20px;height:20px;border-radius:50%;background:#fff;
-                position:absolute;top:2px;left:2px;transition:transform .25s;"></div>
+            <div id="aiTogglePill" style="width:52px;height:28px;border-radius:14px;border:2px solid var(--border2);background:var(--tx3);position:relative;transition:background .25s,border-color .25s;flex-shrink:0;">
+              <div id="aiToggleThumb" style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:transform .25s;"></div>
             </div>
             <span id="aiToggleLabel" style="font-size:13px;font-weight:600;color:var(--tx3);min-width:80px;">Checking…</span>
           </label>
         </div>
 
-        <div class="settings-grid">
+        <!-- ─── Job Search + AI & Browser -->
+        <div class="settings-grid" style="margin-bottom:20px;">
           <div class="card settings-card">
             <h3 class="settings-section">🔍 Job Search</h3>
-            <label class="field-label">Job Title</label
-            ><input class="input" id="cfgJobTitle" placeholder="QA Engineer" />
-            <label class="field-label">Search Location</label
-            ><input class="input" id="cfgLocation" placeholder="Pune" />
-            <label class="field-label">Max Applications Per Run</label
-            ><input
-              class="input"
-              type="number"
-              id="cfgMaxJobs"
-              placeholder="20"
-            />
-            <label class="field-label">Max Pages Per Search</label
-            ><input
-              class="input"
-              type="number"
-              id="cfgMaxPages"
-              placeholder="5"
-            />
-            <label class="field-label">Score Threshold (skip below)</label
-            ><input
-              class="input"
-              type="number"
-              id="cfgThreshold"
-              placeholder="40"
-            />
-            <label class="field-label">Min Delay (ms)</label
-            ><input
-              class="input"
-              type="number"
-              id="cfgDelayMin"
-              placeholder="1500"
-            />
-            <label class="field-label">Max Delay (ms)</label
-            ><input
-              class="input"
-              type="number"
-              id="cfgDelayMax"
-              placeholder="3000"
-            />
+            <label class="field-label">Job Title</label><input class="input" id="cfgJobTitle" placeholder="QA Engineer" />
+            <label class="field-label">Search Location</label><input class="input" id="cfgLocation" placeholder="Pune" />
+            <label class="field-label">Max Applications Per Run</label><input class="input" type="number" id="cfgMaxJobs" placeholder="20" />
+            <label class="field-label">Max Pages Per Search</label><input class="input" type="number" id="cfgMaxPages" placeholder="5" />
+            <label class="field-label">Score Threshold (skip below)</label><input class="input" type="number" id="cfgThreshold" placeholder="40" />
+            <label class="field-label">Min Delay (ms)</label><input class="input" type="number" id="cfgDelayMin" placeholder="1500" />
+            <label class="field-label">Max Delay (ms)</label><input class="input" type="number" id="cfgDelayMax" placeholder="3000" />
           </div>
           <div class="card settings-card">
             <h3 class="settings-section">🤖 AI &amp; Browser</h3>
-            <label class="field-label">AI Model (Ollama)</label
-            ><input
-              class="input"
-              id="cfgAiModel"
-              placeholder="qwen2.5:7b"
-              list="aiModelDatalist"
-              autocomplete="off"
-            />
-            <datalist id="aiModelDatalist"></datalist>
-            <label class="field-label">Ollama Base URL</label
-            ><input
-              class="input"
-              id="cfgOllama"
-              placeholder="http://localhost:11434"
-            />
-            <label class="field-label">Ollama Timeout (ms)</label
-            ><input
-              class="input"
-              type="number"
-              id="cfgTimeout"
-              placeholder="60000"
-            />
-            <label class="field-label">Slow Motion (ms)</label
-            ><input
-              class="input"
-              type="number"
-              id="cfgSlowMo"
-              placeholder="20"
-            />
+            <label class="field-label">AI Model (Ollama)</label><input class="input" id="cfgAiModel" placeholder="qwen2.5:7b" list="aiModelDatalist" autocomplete="off" /><datalist id="aiModelDatalist"></datalist>
+            <label class="field-label">Ollama Base URL</label><input class="input" id="cfgOllama" placeholder="http://localhost:11434" />
+            <label class="field-label">Ollama Timeout (ms)</label><input class="input" type="number" id="cfgTimeout" placeholder="60000" />
+            <label class="field-label">Slow Motion (ms)</label><input class="input" type="number" id="cfgSlowMo" placeholder="20" />
             <label class="field-label">Headless Browser</label>
-            <select class="select" id="cfgHeadless">
-              <option value="false">Visible (No)</option>
-              <option value="true">Hidden (Yes)</option>
-            </select>
+            <select class="select" id="cfgHeadless"><option value="false">Visible (No)</option><option value="true">Hidden (Yes)</option></select>
             <label class="field-label">Skip AI (keyword-only mode)</label>
-            <select class="select" id="cfgSkipAI">
-              <option value="false">No (use AI)</option>
-              <option value="true">Yes (faster)</option>
-            </select>
+            <select class="select" id="cfgSkipAI"><option value="false">No (use AI)</option><option value="true">Yes (faster)</option></select>
             <label class="field-label">Safety Mode (extra delays)</label>
-            <select class="select" id="cfgSafety">
-              <option value="false">Off</option>
-              <option value="true">On</option>
-            </select>
+            <select class="select" id="cfgSafety"><option value="false">Off</option><option value="true">On</option></select>
+          </div>
+        </div>
+
+        <!-- ─── Personal Info + Work Details -->
+        <div class="settings-grid" style="margin-bottom:20px;">
+          <div class="card settings-card">
+            <h3 class="settings-section">👤 Personal Info</h3>
+            <label class="field-label">Full Name</label><input class="input" id="pfName" placeholder="Your Name" />
+            <label class="field-label">Email</label><input class="input" type="email" id="pfEmail" placeholder="you@email.com" />
+            <label class="field-label">Phone</label><input class="input" id="pfPhone" placeholder="+91XXXXXXXXXX" />
+            <label class="field-label">Current Location</label><input class="input" id="pfLocation" placeholder="Pune, India" />
+            <label class="field-label">📄 Resume File Path</label><input class="input" id="pfResumePath" placeholder="C:\path\to\resume.pdf" />
+            <label class="field-label">LinkedIn URL</label><input class="input" id="pfLinkedIn" placeholder="https://linkedin.com/in/you" />
+            <label class="field-label">GitHub URL</label><input class="input" id="pfGitHub" placeholder="https://github.com/you" />
+            <label class="field-label">Portfolio URL</label><input class="input" id="pfPortfolio" placeholder="https://yoursite.com" />
+          </div>
+          <div class="card settings-card">
+            <h3 class="settings-section">💼 Work Details</h3>
+            <label class="field-label">Current Company</label><input class="input" id="pfCompany" placeholder="Acme Corp" />
+            <label class="field-label">Current Role</label><input class="input" id="pfRole" placeholder="QA Engineer" />
+            <label class="field-label">Years of Experience</label><input class="input" id="pfYears" placeholder="3" />
+            <label class="field-label">Expected Salary (LPA)</label><input class="input" id="pfSalary" placeholder="10" />
+            <label class="field-label">Notice Period</label><input class="input" id="pfNotice" placeholder="30 days" />
+            <label class="field-label">Professional Summary</label><textarea class="input" id="pfSummary" rows="3" placeholder="2–3 sentence professional bio…"></textarea>
+            <label class="field-label">Default Cover Letter</label><textarea class="input" id="pfCoverLetter" rows="4" placeholder="Your default cover letter text…"></textarea>
+          </div>
+        </div>
+
+        <!-- ─── AI API Keys -->
+        <div class="card" style="margin-bottom:8px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
+            <h3 class="settings-section" style="margin:0;">🔑 AI API Keys</h3>
+            <div id="apiKeyStatus" class="page-sub"></div>
+          </div>
+          <p class="page-sub" style="margin:0 0 14px;">Leave a key blank to skip that provider — the bot falls back OpenAI → Gemini → Ollama → keyword-only. Keys are stored locally in <code>config.json</code> and never shown in full once saved.</p>
+          <div class="settings-grid">
+            <div>
+              <label class="field-label">Google Gemini API Key</label><input class="input" type="password" id="pfGeminiKey" autocomplete="off" placeholder="Leave blank to skip Gemini" />
+              <label class="field-label" style="margin-top:10px;">Gemini Model</label><input class="input" id="pfGeminiModel" placeholder="gemini-2.0-flash" />
+            </div>
+            <div>
+              <label class="field-label">OpenAI API Key</label><input class="input" type="password" id="pfOpenAiKey" autocomplete="off" placeholder="Leave blank to skip OpenAI" />
+              <label class="field-label" style="margin-top:10px;">OpenAI API Key (backup)</label><input class="input" type="password" id="pfOpenAiKey2" autocomplete="off" placeholder="Optional second key (auto-rotates on quota)" />
+              <label class="field-label" style="margin-top:10px;">OpenAI Model</label><input class="input" id="pfOpenAiModel" placeholder="gpt-3.5-turbo" />
+            </div>
           </div>
         </div>
       </section>
@@ -774,92 +744,6 @@
               /><button class="btn-danger sm" id="btnAddExcl">Block</button>
             </div>
           </div>
-        </div>
-      </section>
-
-      <!-- ─── PROFILE ──────────────────────────── -->
-      <section class="page" id="page-profile">
-        <div class="page-hdr">
-          <h1 class="page-title">My Profile</h1>
-          <div class="hdr-actions">
-            <button class="btn-primary" id="btnSaveProfile">
-              💾 Save Profile
-            </button>
-            <button class="btn-outline sm" id="btnRefreshProfile">↻</button>
-          </div>
-        </div>
-        <div class="settings-grid">
-          <div class="card settings-card">
-            <h3 class="settings-section">👤 Personal Info</h3>
-            <label class="field-label">Full Name</label
-            ><input class="input" id="pfName" placeholder="Your Name" />
-            <label class="field-label">Email</label
-            ><input class="input" type="email" id="pfEmail" />
-            <label class="field-label">Phone</label
-            ><input class="input" id="pfPhone" />
-            <label class="field-label">Current Location</label
-            ><input class="input" id="pfLocation" />
-            <label class="field-label">📄 Resume File Path</label
-            ><input class="input" id="pfResumePath" placeholder="C:\path\to\resume.pdf" />
-            <label class="field-label">LinkedIn URL</label
-            ><input class="input" id="pfLinkedIn" />
-            <label class="field-label">GitHub URL</label
-            ><input class="input" id="pfGitHub" />
-            <label class="field-label">Portfolio URL</label
-            ><input class="input" id="pfPortfolio" />
-          </div>
-          <div class="card settings-card">
-            <h3 class="settings-section">💼 Work Details</h3>
-            <label class="field-label">Current Company</label
-            ><input class="input" id="pfCompany" />
-            <label class="field-label">Current Role</label
-            ><input class="input" id="pfRole" />
-            <label class="field-label">Years of Experience</label
-            ><input class="input" id="pfYears" />
-            <label class="field-label">Expected Salary (LPA)</label
-            ><input class="input" id="pfSalary" />
-            <label class="field-label">Notice Period</label
-            ><input class="input" id="pfNotice" />
-            <label class="field-label">Summary (1–2 sentences)</label
-            ><textarea class="input" id="pfSummary" rows="3"></textarea>
-            <label class="field-label">Cover Letter</label
-            ><textarea class="input" id="pfCoverLetter" rows="4"></textarea>
-          </div>
-        </div>
-
-        <!-- ─── AI API Keys ─── -->
-        <div class="card settings-card" style="margin-top:20px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-            <h3 class="settings-section" style="margin:0;">🔑 AI API Keys</h3>
-            <div class="hdr-actions">
-              <button class="btn-primary sm" id="btnSaveApiKeys">💾 Save API Keys</button>
-              <button class="btn-outline sm" id="btnRefreshApiKeys">↻</button>
-            </div>
-          </div>
-          <p class="page-sub" style="margin:8px 0 14px;">
-            Add the keys for the AI providers you want to use. <b>Leave a key blank to skip
-            that provider</b> — when you start applying, the bot automatically skips any
-            provider without a key and falls back to the next one (OpenAI → Gemini → Ollama →
-            keyword-only). Keys are stored locally in <code>config.json</code> and never shown
-            again in full once saved.
-          </p>
-
-          <div id="apiKeyStatus" class="page-sub" style="margin-bottom:14px;"></div>
-
-          <label class="field-label">Google Gemini API Key</label
-          ><input class="input" type="password" id="pfGeminiKey" autocomplete="off"
-                  placeholder="Leave blank to skip Gemini" />
-          <label class="field-label">Gemini Model</label
-          ><input class="input" id="pfGeminiModel" placeholder="gemini-2.0-flash" />
-
-          <label class="field-label" style="margin-top:14px;">OpenAI API Key</label
-          ><input class="input" type="password" id="pfOpenAiKey" autocomplete="off"
-                  placeholder="Leave blank to skip OpenAI" />
-          <label class="field-label">OpenAI API Key (backup / key 2)</label
-          ><input class="input" type="password" id="pfOpenAiKey2" autocomplete="off"
-                  placeholder="Optional second key (auto-rotates on quota)" />
-          <label class="field-label">OpenAI Model</label
-          ><input class="input" id="pfOpenAiModel" placeholder="gpt-3.5-turbo" />
         </div>
       </section>
 

@@ -49,7 +49,7 @@ document.querySelectorAll('.nav-item').forEach(el => {
     if (tab === 'learning')  { loadLearning(); loadResumeContent(); }
     if (tab === 'config')    loadConfig();
     if (tab === 'keywords')  loadKeywords();
-    if (tab === 'profile')   { loadProfile(); loadApiKeys(); }
+
 
     if (tab === 'blocklist') loadBlocklist();
     if (tab === 'liveview')  startScreenshotRefresh();
@@ -505,10 +505,16 @@ if (intEl) {
   intEl.style.display = 'none';
 }
 
-/* ═══════════════ SETTINGS TAB ══════════════════════════════ */
+/* ═══════════════ SETTINGS TAB (config + profile + api keys) ═════ */
 async function loadConfig() {
   try {
-    const c = await fetch('/api/config').then(r=>r.json());
+    const [c, p, k] = await Promise.all([
+      fetch('/api/config').then(r=>r.json()),
+      fetch('/api/profile').then(r=>r.json()),
+      fetch('/api/api-keys').then(r=>r.json()),
+    ]);
+
+    // Job Search & Browser
     document.getElementById('cfgJobTitle').value  = c.jobTitle  || c.searchKeywords?.[0] || '';
     document.getElementById('cfgLocation').value  = c.searchLocation || '';
     document.getElementById('cfgMaxJobs').value   = c.maxAppsPerRun || '';
@@ -524,11 +530,38 @@ async function loadConfig() {
     document.getElementById('cfgSkipAI').value    = String(c.skipAI === true);
     document.getElementById('cfgSafety').value    = String(c.safetyMode === true);
     document.getElementById('aiModelName').textContent = c.aiModel || 'unknown';
-  } catch(e) { toast('Config load failed','err'); }
+
+    // Profile fields
+    document.getElementById('pfName').value        = p.name            || '';
+    document.getElementById('pfEmail').value       = p.email           || '';
+    document.getElementById('pfPhone').value       = p.phone           || '';
+    document.getElementById('pfLocation').value    = p.currentLocation || '';
+    document.getElementById('pfResumePath').value  = c.resumePath      || '';
+    document.getElementById('pfLinkedIn').value    = p.linkedIn        || '';
+    document.getElementById('pfGitHub').value      = p.github          || '';
+    document.getElementById('pfPortfolio').value   = p.portfolio       || '';
+    document.getElementById('pfCompany').value     = p.currentCompany  || '';
+    document.getElementById('pfRole').value        = p.currentRole     || '';
+    document.getElementById('pfYears').value       = p.yearsExperience || '';
+    document.getElementById('pfSalary').value      = p.salary          || '';
+    document.getElementById('pfNotice').value      = p.noticePeriod    || '';
+    document.getElementById('pfSummary').value     = p.summary         || '';
+    document.getElementById('pfCoverLetter').value = p.coverLetter     || '';
+
+    // API Keys (masked)
+    const setKey = (id, val) => { const el = document.getElementById(id); if (!el) return; el.value = val || ''; el.dataset.dirty = '0'; };
+    setKey('pfGeminiKey',  k.geminiApiKey);
+    setKey('pfOpenAiKey',  k.openAiApiKey);
+    setKey('pfOpenAiKey2', k.openAiApiKey2);
+    document.getElementById('pfGeminiModel').value = k.geminiModel || '';
+    document.getElementById('pfOpenAiModel').value = k.openAiModel || '';
+    renderApiKeyStatus(k);
+  } catch(e) { toast('Settings load failed','err'); }
 }
 
 document.getElementById('btnSaveConfig').addEventListener('click', async () => {
-  const body = {
+  // 1. Bot config
+  const cfgBody = {
     searchLocation:     document.getElementById('cfgLocation').value,
     maxAppsPerRun:      parseInt(document.getElementById('cfgMaxJobs').value)||20,
     maxPagesPerSearch:  parseInt(document.getElementById('cfgMaxPages').value)||5,
@@ -542,14 +575,56 @@ document.getElementById('btnSaveConfig').addEventListener('click', async () => {
     headless:           document.getElementById('cfgHeadless').value === 'true',
     skipAI:             document.getElementById('cfgSkipAI').value === 'true',
     safetyMode:         document.getElementById('cfgSafety').value === 'true',
+    resumePath:         document.getElementById('pfResumePath').value.trim(),
   };
+
+  // 2. Profile
+  const profile = {
+    name:            document.getElementById('pfName').value,
+    email:           document.getElementById('pfEmail').value,
+    phone:           document.getElementById('pfPhone').value,
+    currentLocation: document.getElementById('pfLocation').value,
+    linkedIn:        document.getElementById('pfLinkedIn').value,
+    github:          document.getElementById('pfGitHub').value,
+    portfolio:       document.getElementById('pfPortfolio').value,
+    currentCompany:  document.getElementById('pfCompany').value,
+    currentRole:     document.getElementById('pfRole').value,
+    yearsExperience: document.getElementById('pfYears').value,
+    salary:          document.getElementById('pfSalary').value,
+    noticePeriod:    document.getElementById('pfNotice').value,
+    summary:         document.getElementById('pfSummary').value,
+    coverLetter:     document.getElementById('pfCoverLetter').value,
+  };
+
+  // 3. API keys (only dirty fields)
+  const apiBody = {
+    geminiModel: document.getElementById('pfGeminiModel').value.trim(),
+    openAiModel: document.getElementById('pfOpenAiModel').value.trim(),
+  };
+  const dirtyMap = { pfGeminiKey: 'geminiApiKey', pfOpenAiKey: 'openAiApiKey', pfOpenAiKey2: 'openAiApiKey2' };
+  for (const [id, field] of Object.entries(dirtyMap)) {
+    const el = document.getElementById(id);
+    if (el && el.dataset.dirty === '1') apiBody[field] = el.value.trim();
+  }
+
   try {
-    const r = await fetch('/api/config',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const d = await r.json();
-    if (d.success) toast('Settings saved!','ok'); else toast('Error: '+d.error,'err');
-  } catch(e) { toast('Error','err'); }
+    const [r1, r2, r3] = await Promise.all([
+      fetch('/api/config', { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(cfgBody) }),
+      fetch('/api/profile', { method:'PUT',   headers:{'Content-Type':'application/json'}, body:JSON.stringify(profile) }),
+      fetch('/api/api-keys',{ method:'PUT',   headers:{'Content-Type':'application/json'}, body:JSON.stringify(apiBody) }),
+    ]);
+    const [d1, d2, d3] = await Promise.all([r1.json(), r2.json(), r3.json()]);
+    if (d1.success && d2.success && d3.success) {
+      toast('All settings saved! ✅', 'ok');
+      await loadConfig(); // re-mask API keys
+    } else {
+      toast('Partial save error — check console', 'err');
+      console.error('Save errors:', d1, d2, d3);
+    }
+  } catch(e) { toast('Save failed: ' + e.message, 'err'); }
 });
 document.getElementById('btnRefreshConfig').addEventListener('click', loadConfig);
+
 
 /* ═══════════════ KEYWORDS TAB ══════════════════════════════ */
 let keywords = { required:[], preferred:[], excluded:[] };
@@ -606,61 +681,7 @@ document.getElementById('btnSaveKeywords').addEventListener('click', async () =>
 });
 document.getElementById('btnRefreshKeywords').addEventListener('click', loadKeywords);
 
-/* ═══════════════ PROFILE TAB ════════════════════════════════ */
-async function loadProfile() {
-  try {
-    const [p, c] = await Promise.all([
-      fetch('/api/profile').then(r=>r.json()),
-      fetch('/api/config').then(r=>r.json()),
-    ]);
-    document.getElementById('pfName').value        = p.name         ||'';
-    document.getElementById('pfEmail').value       = p.email        ||'';
-    document.getElementById('pfPhone').value       = p.phone        ||'';
-    document.getElementById('pfLocation').value    = p.currentLocation||'';
-    document.getElementById('pfResumePath').value  = c.resumePath   ||'';
-    document.getElementById('pfLinkedIn').value    = p.linkedIn     ||'';
-    document.getElementById('pfGitHub').value      = p.github       ||'';
-    document.getElementById('pfPortfolio').value   = p.portfolio    ||'';
-    document.getElementById('pfCompany').value     = p.currentCompany||'';
-    document.getElementById('pfRole').value        = p.currentRole  ||'';
-    document.getElementById('pfYears').value       = p.yearsExperience||'';
-    document.getElementById('pfSalary').value      = p.salary       ||'';
-    document.getElementById('pfNotice').value      = p.noticePeriod ||'';
-    document.getElementById('pfSummary').value     = p.summary      ||'';
-    document.getElementById('pfCoverLetter').value = p.coverLetter  ||'';
-  } catch(e) { toast('Profile load failed','err'); }
-}
-
-document.getElementById('btnSaveProfile').addEventListener('click', async () => {
-  const profile = {
-    name:            document.getElementById('pfName').value,
-    email:           document.getElementById('pfEmail').value,
-    phone:           document.getElementById('pfPhone').value,
-    currentLocation: document.getElementById('pfLocation').value,
-    linkedIn:        document.getElementById('pfLinkedIn').value,
-    github:          document.getElementById('pfGitHub').value,
-    portfolio:       document.getElementById('pfPortfolio').value,
-    currentCompany:  document.getElementById('pfCompany').value,
-    currentRole:     document.getElementById('pfRole').value,
-    yearsExperience: document.getElementById('pfYears').value,
-    salary:          document.getElementById('pfSalary').value,
-    noticePeriod:    document.getElementById('pfNotice').value,
-    summary:         document.getElementById('pfSummary').value,
-    coverLetter:     document.getElementById('pfCoverLetter').value,
-  };
-  const resumePath = document.getElementById('pfResumePath').value.trim();
-  try {
-    const [r1, r2] = await Promise.all([
-      fetch('/api/profile',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(profile)}),
-      resumePath ? fetch('/api/config',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({resumePath})}) : Promise.resolve({json:()=>({})}),
-    ]);
-    const [d1] = await Promise.all([r1.json(), r2.json ? r2.json() : r2]);
-    if (d1.success) toast('Profile saved! ✅','ok'); else toast('Error: '+d1.error,'err');
-  } catch(e) { toast('Error','err'); }
-});
-document.getElementById('btnRefreshProfile').addEventListener('click', loadProfile);
-
-/* ═══════════════ AI API KEYS ════════════════════════════════ */
+/* ═══════════════ API KEY STATUS HELPER ═══════════════ */
 // Secret key fields show a masked value when already set. We track whether the
 // user actually edited a field ("dirty") so we never re-save a mask over a real
 // key. Only dirty key fields are sent on save; an emptied field clears the key.
@@ -682,50 +703,6 @@ function renderApiKeyStatus(k) {
     el.innerHTML = '⚠️ No API keys set — the bot will use <b>Ollama / keyword-only</b> mode (online AI providers skipped).';
   }
 }
-
-async function loadApiKeys() {
-  try {
-    const k = await fetch('/api/api-keys').then(r => r.json());
-    const setKey = (id, val) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.value = val || '';
-      el.dataset.dirty = '0';
-    };
-    setKey('pfGeminiKey',  k.geminiApiKey);
-    setKey('pfOpenAiKey',  k.openAiApiKey);
-    setKey('pfOpenAiKey2', k.openAiApiKey2);
-    document.getElementById('pfGeminiModel').value = k.geminiModel || '';
-    document.getElementById('pfOpenAiModel').value = k.openAiModel || '';
-    renderApiKeyStatus(k);
-  } catch (e) { /* non-fatal */ }
-}
-
-document.getElementById('btnSaveApiKeys').addEventListener('click', async () => {
-  const body = {
-    geminiModel: document.getElementById('pfGeminiModel').value.trim(),
-    openAiModel: document.getElementById('pfOpenAiModel').value.trim(),
-  };
-  // Only include a secret key if the user actually changed it.
-  const dirtyMap = { pfGeminiKey: 'geminiApiKey', pfOpenAiKey: 'openAiApiKey', pfOpenAiKey2: 'openAiApiKey2' };
-  for (const [id, field] of Object.entries(dirtyMap)) {
-    const el = document.getElementById(id);
-    if (el && el.dataset.dirty === '1') body[field] = el.value.trim();
-  }
-  try {
-    const r = await fetch('/api/api-keys', {
-      method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-    });
-    const d = await r.json();
-    if (d.success) {
-      toast('API keys saved! ✅', 'ok');
-      await loadApiKeys(); // re-mask saved keys & refresh status
-    } else {
-      toast('Error: ' + (d.error || 'save failed'), 'err');
-    }
-  } catch (e) { toast('Error saving API keys', 'err'); }
-});
-document.getElementById('btnRefreshApiKeys').addEventListener('click', loadApiKeys);
 
 
 
@@ -966,9 +943,10 @@ function detectLevel(msg) {
   return 'info';
 }
 
-/* ══════ INIT ══════════════════════════════════════════════ */
+/* ══════ INIT ═══════════════════════════════════════════ */
 (async () => {
   await loadDashboard();
+  loadConfig(); // pre-populate settings on first load
   // Fetch initial bot status
   try { const s = await fetch('/api/bot/status').then(r=>r.json()); setBotUI(s); } catch(_) {}
   // Auto-refresh stats every 30s

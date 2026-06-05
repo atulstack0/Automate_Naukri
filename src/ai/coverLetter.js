@@ -70,11 +70,20 @@ Write only the letter body. No subject line. No "Dear Hiring Manager" preamble.`
   async mapFormFields({ formSnapshot, profile } = {}) {
     const p = profile || this.profile;
 
+    const safeSnapshot = (formSnapshot || []).map(f => {
+      if (!f || typeof f !== 'object') return f;
+      const safe = {};
+      for (const [k, v] of Object.entries(f)) {
+        if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean' || v === null) safe[k] = v;
+      }
+      return safe;
+    });
+
     const prompt = `Map each form field to the correct profile value.
 Respond ONLY with JSON: { "selector": "value", ... }
 Only include confident mappings. Skip file inputs.
 
-FIELDS: ${JSON.stringify(formSnapshot || [])}
+FIELDS: ${JSON.stringify(safeSnapshot)}
 PROFILE: ${JSON.stringify(p)}`;
 
     try {
