@@ -49,7 +49,7 @@ document.querySelectorAll('.nav-item').forEach(el => {
     if (tab === 'learning')  { loadLearning(); loadResumeContent(); }
     if (tab === 'config')    loadConfig();
     if (tab === 'keywords')  loadKeywords();
-    if (tab === 'profile')   loadProfile();
+    if (tab === 'profile')   { loadProfile(); loadApiKeys(); }
     if (tab === 'selectors') loadSelectors();
     if (tab === 'blocklist') loadBlocklist();
     if (tab === 'liveview')  startScreenshotRefresh();
@@ -659,6 +659,73 @@ document.getElementById('btnSaveProfile').addEventListener('click', async () => 
   } catch(e) { toast('Error','err'); }
 });
 document.getElementById('btnRefreshProfile').addEventListener('click', loadProfile);
+
+/* ═══════════════ AI API KEYS ════════════════════════════════ */
+// Secret key fields show a masked value when already set. We track whether the
+// user actually edited a field ("dirty") so we never re-save a mask over a real
+// key. Only dirty key fields are sent on save; an emptied field clears the key.
+const API_KEY_FIELDS = ['pfGeminiKey', 'pfOpenAiKey', 'pfOpenAiKey2'];
+API_KEY_FIELDS.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', () => { el.dataset.dirty = '1'; });
+});
+
+function renderApiKeyStatus(k) {
+  const providers = [];
+  if (k.geminiSet) providers.push('Gemini');
+  if (k.openAiSet || k.openAiSet2) providers.push('OpenAI');
+  const el = document.getElementById('apiKeyStatus');
+  if (!el) return;
+  if (providers.length) {
+    el.innerHTML = `✅ Active AI providers: <b>${providers.join(', ')}</b> → Ollama → keyword-only`;
+  } else {
+    el.innerHTML = '⚠️ No API keys set — the bot will use <b>Ollama / keyword-only</b> mode (online AI providers skipped).';
+  }
+}
+
+async function loadApiKeys() {
+  try {
+    const k = await fetch('/api/api-keys').then(r => r.json());
+    const setKey = (id, val) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.value = val || '';
+      el.dataset.dirty = '0';
+    };
+    setKey('pfGeminiKey',  k.geminiApiKey);
+    setKey('pfOpenAiKey',  k.openAiApiKey);
+    setKey('pfOpenAiKey2', k.openAiApiKey2);
+    document.getElementById('pfGeminiModel').value = k.geminiModel || '';
+    document.getElementById('pfOpenAiModel').value = k.openAiModel || '';
+    renderApiKeyStatus(k);
+  } catch (e) { /* non-fatal */ }
+}
+
+document.getElementById('btnSaveApiKeys').addEventListener('click', async () => {
+  const body = {
+    geminiModel: document.getElementById('pfGeminiModel').value.trim(),
+    openAiModel: document.getElementById('pfOpenAiModel').value.trim(),
+  };
+  // Only include a secret key if the user actually changed it.
+  const dirtyMap = { pfGeminiKey: 'geminiApiKey', pfOpenAiKey: 'openAiApiKey', pfOpenAiKey2: 'openAiApiKey2' };
+  for (const [id, field] of Object.entries(dirtyMap)) {
+    const el = document.getElementById(id);
+    if (el && el.dataset.dirty === '1') body[field] = el.value.trim();
+  }
+  try {
+    const r = await fetch('/api/api-keys', {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+    });
+    const d = await r.json();
+    if (d.success) {
+      toast('API keys saved! ✅', 'ok');
+      await loadApiKeys(); // re-mask saved keys & refresh status
+    } else {
+      toast('Error: ' + (d.error || 'save failed'), 'err');
+    }
+  } catch (e) { toast('Error saving API keys', 'err'); }
+});
+document.getElementById('btnRefreshApiKeys').addEventListener('click', loadApiKeys);
 
 /* ═══════════════ SELECTORS TAB ════════════════════════════ */
 async function loadSelectors() {
