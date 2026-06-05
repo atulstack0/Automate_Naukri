@@ -467,7 +467,7 @@ SQLite file: **`data/autoapply.db`** (WAL mode enabled)
 | `GET/PUT` | `/api/keywords` | Read / write keyword lists |
 | `GET/PUT` | `/api/profile` | Read / write profile info |
 | `GET/PUT` | `/api/api-keys` | Read (masked) / write API keys |
-| `GET/PUT` | `/api/selectors` | Read / write CSS selectors |
+
 | `GET/POST` | `/api/ai-mode` | Read / toggle AI on or off |
 
 ### Ollama

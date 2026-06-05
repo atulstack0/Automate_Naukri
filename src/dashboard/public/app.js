@@ -50,7 +50,7 @@ document.querySelectorAll('.nav-item').forEach(el => {
     if (tab === 'config')    loadConfig();
     if (tab === 'keywords')  loadKeywords();
     if (tab === 'profile')   { loadProfile(); loadApiKeys(); }
-    if (tab === 'selectors') loadSelectors();
+
     if (tab === 'blocklist') loadBlocklist();
     if (tab === 'liveview')  startScreenshotRefresh();
   });
@@ -727,37 +727,7 @@ document.getElementById('btnSaveApiKeys').addEventListener('click', async () => 
 });
 document.getElementById('btnRefreshApiKeys').addEventListener('click', loadApiKeys);
 
-/* ═══════════════ SELECTORS TAB ════════════════════════════ */
-async function loadSelectors() {
-  try {
-    const s = await fetch('/api/selectors').then(r=>r.json());
-    const grid = document.getElementById('selectorsGrid');
-    const labels = {
-      jobCard:'Job Card', jobTitle:'Job Title', companyName:'Company Name', applyButton:'Apply Button',
-      nextPage:'Next Page', nameField:'Name Field', emailField:'Email Field', phoneField:'Phone Field',
-      coverLetterField:'Cover Letter', resumeUpload:'Resume Upload', submitButton:'Submit Button',
-      successIndicator:'Success Indicator', applyModal:'Apply Modal',
-    };
-    grid.innerHTML = Object.entries(s).map(([key,val]) =>
-      `<div class="selector-row">
-        <div class="selector-key">${labels[key]||key}</div>
-        <input class="input" id="sel-${key}" value="${esc(val||'')}" placeholder="${key}"/>
-      </div>`
-    ).join('');
-  } catch(e) { toast('Selectors load failed','err'); }
-}
 
-document.getElementById('btnSaveSelectors').addEventListener('click', async () => {
-  const inputs = document.querySelectorAll('[id^="sel-"]');
-  const body = {};
-  inputs.forEach(el => { body[el.id.replace('sel-','')] = el.value.trim(); });
-  try {
-    const r = await fetch('/api/selectors',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const d = await r.json();
-    if (d.success) toast('Selectors saved!','ok'); else toast('Error: '+d.error,'err');
-  } catch(e) { toast('Error','err'); }
-});
-document.getElementById('btnRefreshSelectors').addEventListener('click', loadSelectors);
 
 /* ═══════════════ BLOCKLIST TAB ════════════════════════════ */
 async function loadBlocklist() {

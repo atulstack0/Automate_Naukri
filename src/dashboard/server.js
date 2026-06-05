@@ -333,19 +333,7 @@ function createDashboardServer(port = 3000) {
     } catch (err) { res.status(500).json({ error: err.message }); }
   });
 
-  // ── Selectors editor ──────────────────────────────────────────────────
-  app.get('/api/selectors', (req, res) => {
-    try { const c = readConfig(); res.json(c.selector || {}); }
-    catch (err) { res.status(500).json({ error: err.message }); }
-  });
-  app.put('/api/selectors', (req, res) => {
-    try {
-      const cfg = readConfig();
-      cfg.selector = { ...(cfg.selector || {}), ...req.body };
-      writeConfig(cfg);
-      res.json({ success: true });
-    } catch (err) { res.status(500).json({ error: err.message }); }
-  });
+
 
   // ── Config read/write ─────────────────────────────────────────────────
   app.get('/api/config', (req, res) => {
