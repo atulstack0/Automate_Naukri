@@ -400,7 +400,7 @@ async function loadResumeContent() {
   try {
     const d = await fetch('/api/resume/content').then(r=>r.json());
     if (d.text) {
-      document.getElementById('resumeEditor').value = d.text;
+      document.getElementById('resumeEditor').value = d.text.trim();
       document.getElementById('btnAutoLearnResume').disabled = false;
     }
   } catch(_) {}
@@ -414,7 +414,7 @@ document.getElementById('resumeUpload').addEventListener('change', async e => {
     const r = await fetch('/api/resume/upload',{method:'POST',body:fd});
     const d = await r.json();
     if (d.success) {
-      document.getElementById('resumeEditor').value = d.text;
+      document.getElementById('resumeEditor').value = d.text.trim();
       document.getElementById('btnAutoLearnResume').disabled = false;
       toast(`Extracted ${d.length} characters from resume`,'ok');
     } else toast('Upload failed: '+d.error,'err');

@@ -454,6 +454,7 @@ body { display: flex; flex-direction: column; }
 }
 .page-sub  { font-size: 12px; color: var(--tx3); margin-top: 3px; }
 .hdr-actions { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.hdr-actions .select { width: auto; }
 
 /* ── Cards ─────────────────────────────────────────────── */
 .card {
