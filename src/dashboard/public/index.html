@@ -29,6 +29,51 @@
       /* ── Topbar separator (legacy alias) ── */
       .topbar-sep { width: 1px; height: 22px; background: var(--border2); flex-shrink: 0; }
     </style>
+    <style>
+      /* ── AI Engine sidebar enhancements ── */
+      .ai-model-select {
+        background: transparent;
+        border: none;
+        color: var(--tx);
+        font-size: 11px;
+        font-family: var(--font-body);
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        outline: none;
+        padding: 0;
+      }
+      .ai-model-select option {
+        background: var(--surface2, #1e293b);
+        color: var(--tx, #e2e8f0);
+      }
+      .ai-timer {
+        font-size: 10px;
+        color: var(--acc, #818cf8);
+        margin-top: 3px;
+        animation: aiTimerFadeIn .3s ease;
+      }
+      @keyframes aiTimerFadeIn {
+        from { opacity: 0; transform: translateY(4px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .model-count-badge {
+        font-size: 9px;
+        background: var(--acc, #818cf8);
+        color: #000;
+        border-radius: 10px;
+        padding: 2px 7px;
+        font-weight: 700;
+        white-space: nowrap;
+        flex-shrink: 0;
+        align-self: flex-start;
+        margin-top: 2px;
+      }
+      /* ── AI log entry highlights in Live Log ── */
+      .log-row.ai-start { border-left: 3px solid #818cf8; }
+      .log-row.ai-done  { border-left: 3px solid #34d399; }
+      .log-row.ai-error { border-left: 3px solid #f87171; }
+    </style>
   </head>
   <body>
     <!-- ══════ TOPBAR ══════════════════════════════════════════ -->
@@ -139,12 +184,21 @@
 
       <!-- Footer -->
       <div class="sidebar-footer">
-        <div class="ai-pill">
-          <span>✨</span>
-          <div>
+        <div class="ai-pill" id="aiEnginePill">
+          <span style="font-size:16px;flex-shrink:0;">✨</span>
+          <div style="flex:1;min-width:0;">
             <div class="ai-pill-label">AI ENGINE</div>
-            <div class="ai-pill-val" id="aiModelName">qwen2.5:7b</div>
+            <!-- Model selector dropdown -->
+            <select id="aiModelSelect" class="ai-model-select" title="Switch AI model">
+              <option id="aiModelName">qwen2.5:7b</option>
+            </select>
+            <!-- Response timer -->
+            <div class="ai-timer" id="aiTimerDisplay" style="display:none;">
+              ⏱ <span id="aiTimerVal">–</span>
+            </div>
           </div>
+          <!-- model count badge -->
+          <span class="model-count-badge" id="modelCountBadge" style="display:none;"></span>
         </div>
         <div class="ollama-status">
           <span class="ollama-dot" id="ollamaDot"></span>
@@ -635,7 +689,10 @@
               class="input"
               id="cfgAiModel"
               placeholder="qwen2.5:7b"
+              list="aiModelDatalist"
+              autocomplete="off"
             />
+            <datalist id="aiModelDatalist"></datalist>
             <label class="field-label">Ollama Base URL</label
             ><input
               class="input"
@@ -1059,16 +1116,131 @@
         fetch('/api/bot/stop', { method:'POST' });
       });
 
-      // ── Ollama status check every 10s ────────────────────────────────
+      // ── Ollama status check every 30s (via backend) ─────────────────────
       const ollamaDot   = document.getElementById('ollamaDot');
       const ollamaLabel = document.getElementById('ollamaLabel');
       function checkOllama() {
-        fetch('http://localhost:11434', { mode:'no-cors' })
-          .then(() => { ollamaDot.className = 'ollama-dot ok'; ollamaLabel.textContent = 'Ollama running'; })
+        fetch('/api/ollama/status')
+          .then(r => r.json())
+          .then(d => {
+            if (d.running) {
+              ollamaDot.className = 'ollama-dot ok';
+              ollamaLabel.textContent = `Ollama running`;
+            } else {
+              ollamaDot.className = 'ollama-dot err';
+              ollamaLabel.textContent = 'Ollama offline';
+            }
+          })
           .catch(() => { ollamaDot.className = 'ollama-dot err'; ollamaLabel.textContent = 'Ollama offline'; });
       }
       checkOllama();
-      setInterval(checkOllama, 10000);
+      setInterval(checkOllama, 30000);
+
+      // ── AI Engine: Model list + switcher ──────────────────────────────────
+      async function loadOllamaModels() {
+        try {
+          const res  = await fetch('/api/ollama/models');
+          const data = await res.json();
+          const { models = [], current } = data;
+
+          // Populate sidebar dropdown
+          const sidebarSel = document.getElementById('aiModelSelect');
+          if (sidebarSel) {
+            sidebarSel.innerHTML = models.length
+              ? models.map(m => `<option value="${m.name}" ${m.name === current ? 'selected' : ''}>${m.name}</option>`).join('')
+              : `<option value="${current || 'qwen2.5:7b'}">${current || 'qwen2.5:7b'}</option>`;
+          }
+
+          // Populate Settings datalist
+          const dl = document.getElementById('aiModelDatalist');
+          if (dl) dl.innerHTML = models.map(m => `<option value="${m.name}">`).join('');
+
+          // Sync Settings text input
+          const cfgInput = document.getElementById('cfgAiModel');
+          if (cfgInput && current) cfgInput.value = current;
+
+          // Model count badge
+          const badge = document.getElementById('modelCountBadge');
+          if (badge) {
+            if (models.length > 1) {
+              badge.textContent = models.length + ' models';
+              badge.style.display = '';
+            } else {
+              badge.style.display = 'none';
+            }
+          }
+        } catch (_) {}
+      }
+
+      async function switchModel(modelName) {
+        if (!modelName) return;
+        try {
+          await fetch('/api/ollama/model', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model: modelName }),
+          });
+          // Sync sidebar select
+          const sel = document.getElementById('aiModelSelect');
+          if (sel) sel.value = modelName;
+          // Sync settings input
+          const inp = document.getElementById('cfgAiModel');
+          if (inp) inp.value = modelName;
+        } catch (_) {}
+      }
+
+      const sidebarModelSel = document.getElementById('aiModelSelect');
+      if (sidebarModelSel) {
+        sidebarModelSel.addEventListener('change', e => switchModel(e.target.value));
+      }
+
+      // ── Response timer (per AI query) ─────────────────────────────────────
+      socket.on('ai:query_start', ({ reqId, model, provider }) => {
+        const disp = document.getElementById('aiTimerDisplay');
+        const val  = document.getElementById('aiTimerVal');
+        if (disp) disp.style.display = '';
+        if (val)  val.textContent = `⏳ ${model || provider || '...'} running…`;
+      });
+
+      socket.on('ai:query_done', ({ reqId, model, elapsedMs, error }) => {
+        const disp = document.getElementById('aiTimerDisplay');
+        const val  = document.getElementById('aiTimerVal');
+        if (disp) disp.style.display = '';
+        if (val) {
+          if (elapsedMs > 0) {
+            const sec = (elapsedMs / 1000).toFixed(2);
+            val.textContent = `${sec}s — ${model || ''}${error ? ' ❌' : ' ✅'}`;
+          } else {
+            val.textContent = error ? `❌ ${error.substring(0, 40)}` : '–';
+          }
+        }
+      });
+
+      // ── Model switched (from any client) ─────────────────────────────────
+      socket.on('ai:model_changed', ({ model, prev, models }) => {
+        const sel = document.getElementById('aiModelSelect');
+        if (sel && model) {
+          // Re-populate if server sent updated list
+          if (models && models.length) {
+            sel.innerHTML = models.map(m =>
+              `<option value="${m.name}" ${m.name === model ? 'selected' : ''}>${m.name}</option>`
+            ).join('');
+          } else {
+            sel.value = model;
+          }
+        }
+        const inp = document.getElementById('cfgAiModel');
+        if (inp && model) inp.value = model;
+      });
+
+      // ── Startup log from server ───────────────────────────────────────────
+      socket.on('ai:startup_log', ({ msg, models, current, status }) => {
+        // Refresh model list once server announces it's ready
+        loadOllamaModels();
+      });
+
+      // Initial model load
+      loadOllamaModels();
 
       // ── Portal live-dot updates ──────────────────────────────────────
       // Normalize portal name: 'linkedin' | 'LinkedIn' → canonical key

@@ -36,11 +36,19 @@ const FIELD_MAP = [
 
   // Location & availability
   { keys: ['current location', 'city', 'location', 'where are you based'],   answerKey: 'location' },
-  { keys: ['notice period', 'when can you join', 'joining', 'availability'], answerKey: 'notice' },
+  { keys: ['notice period', 'when can you join', 'joining', 'availability', 'notice ?', 'what is your notice', 'your notice period'], answerKey: 'notice' },
   { keys: ['relocation', 'remote', 'work from home', 'wfh', 'hybrid'],       answerKey: 'relocation' },
 
-  // Experience
-  { keys: ['years of experience', 'total experience', 'work experience', 'experience in years', 'years experince', 'years experience', 'how many years', 'mcu testing'], answerKey: 'experience' },
+  // Salary — MUST be ordered: current before expected before generic
+  // "current ctc" / "current salary" must NOT match expected-salary entries
+  { keys: ['current ctc', 'current salary', 'current compensation', 'present ctc', 'present salary', 'current package'], answerKey: 'currentSalary' },
+  { keys: ['expected ctc', 'expected salary', 'desired salary', 'salary expectation', 'expected package', 'expected compensation'], answerKey: 'expectedSalary' },
+  // Generic salary fallback — only matched when neither current nor expected keyword is present
+  { keys: ['salary', 'ctc', 'compensation', 'package', 'lpa'],               answerKey: 'salary' },
+
+  // Experience — numeric (years)
+  { keys: ['relevant experience', 'experience in automation', 'automation testing experience', 'years in automation', 'experience with automation', 'hands-on experience with automation', 'hands on experience with automation'], answerKey: 'automationYears' },
+  { keys: ['years of experience', 'total experience', 'work experience', 'experience in years', 'years experince', 'years experience', 'how many years', 'total years', 'overall experience'], answerKey: 'experience' },
   { keys: ['current role', 'current designation', 'present role'],           answerKey: 'currentRole' },
   { keys: ['current company', 'present company', 'employer'],                answerKey: 'currentCompany' },
   { keys: ['previous role', 'past role', 'work history', 'career history'], answerKey: 'previousRoles' },
@@ -48,7 +56,7 @@ const FIELD_MAP = [
 
   // Technical
   { keys: ['programming language', 'languages known', 'coding language'],    answerKey: 'languages' },
-  { keys: ['tools', 'testing tools', 'automation tool', 'tech stack', 'skills'], answerKey: 'tools' },
+  { keys: ['tools', 'testing tools', 'tech stack', 'skills'],                answerKey: 'tools' },
   { keys: ['selenium', 'playwright'],                                          answerKey: 'selenium' },
   { keys: ['testng', 'junit', 'parallel test'],                               answerKey: 'testng' },
   { keys: ['rest assured', 'restassured', 'rest-assured'],                    answerKey: 'restAssured' },
@@ -68,9 +76,6 @@ const FIELD_MAP = [
   { keys: ['strength', 'strong point', 'what are you good at'],                answerKey: 'strengths' },
   { keys: ['weakness', 'area of improvement', 'where can you improve'],        answerKey: 'weaknesses' },
   { keys: ['award', 'achievement', 'recognition', 'accomplishment'],           answerKey: 'awards' },
-
-  // Salary
-  { keys: ['salary', 'ctc', 'compensation', 'expected salary', 'package', 'lpa'], answerKey: 'salary' },
 
   // Cover letter / summary
   { keys: ['cover letter', 'coverletter', 'why should we hire'],               answerKey: 'coverLetter' },
@@ -112,41 +117,57 @@ function findBestMatch(labelText, threshold = 20) {
  */
 function buildQaAnswers(profile) {
   if (!profile || typeof profile !== 'object') return {};
+
+  // Derive numeric-only year values from profile
+  const rawExp = profile.yearsExperience || profile.experience || '4';
+  const expYears = String(parseFloat(rawExp) || 4);
+
+  // Automation/selenium years — default to total experience if not separately configured
+  const autoYears = String(parseFloat(profile.automationYears || profile.yearsExperience || profile.experience || '4') || 4);
+
+  // Salary: store raw number. getAnswer() will format it.
+  const currentSalaryRaw = profile.currentSalary || profile.salary || '';
+  const expectedSalaryRaw = profile.expectedSalary || profile.salary || '';
+
   return {
-    name:           profile.name            || '',
-    email:          profile.email           || '',
-    phone:          profile.phone           || '',
-    linkedIn:       profile.linkedIn        || profile.linkedin        || '',
-    portfolio:      profile.portfolio       || '',
-    github:         profile.github          || '',
-    location:       profile.currentLocation || profile.location        || '',
-    notice:         profile.noticePeriod    || profile.notice          || '',
-    relocation:     profile.relocation      || 'Yes',
-    experience:     profile.yearsExperience || profile.experience      || '',
-    currentRole:    profile.currentRole     || '',
-    currentCompany: profile.currentCompany  || '',
-    previousRoles:  profile.previousRoles   || '',
+    name:            profile.name            || '',
+    email:           profile.email           || '',
+    phone:           profile.phone           || '',
+    linkedIn:        profile.linkedIn        || profile.linkedin        || '',
+    portfolio:       profile.portfolio       || '',
+    github:          profile.github          || '',
+    location:        profile.currentLocation || profile.location        || '',
+    notice:          profile.noticePeriod    || profile.notice          || '30',
+    relocation:      profile.relocation      || 'Yes',
+    experience:      expYears,
+    automationYears: autoYears,
+    currentRole:     profile.currentRole     || '',
+    currentCompany:  profile.currentCompany  || '',
+    previousRoles:   profile.previousRoles   || '',
     responsibilities: profile.responsibilities || profile.summary || '',
-    languages:      profile.languages       || '',
-    tools:          profile.tools           || profile.skills          || '',
-    selenium:       profile.selenium        || profile.tools           || '',
-    testng:         profile.testng          || '',
-    restAssured:    profile.restAssured     || '',
-    apiTesting:     profile.apiTesting      || profile.tools           || '',
-    cicd:           profile.cicd            || '',
-    frameworks:     profile.frameworks      || profile.tools           || '',
-    sql:            profile.sql             || '',
-    genai:          profile.genai           || '',
-    improvements:   profile.improvements   || '',
-    education:      profile.education       || '',
-    undergraduate:  profile.undergraduate   || profile.education       || '',
-    whyRole:        profile.qaWhyThisRole   || profile.whyRole         || '',
-    strengths:      profile.qaStrengths     || profile.strengths       || '',
-    weaknesses:     profile.qaWeaknesses    || profile.weaknesses      || '',
-    awards:         profile.awards          || '',
-    salary:         profile.salary          || '',
-    coverLetter:    profile.coverLetter     || '',
-    shortSummary:   profile.summary         || '',
+    languages:       profile.languages       || '',
+    tools:           profile.tools           || profile.skills          || '',
+    selenium:        profile.selenium        || profile.tools           || '',
+    testng:          profile.testng          || '',
+    restAssured:     profile.restAssured     || '',
+    apiTesting:      profile.apiTesting      || profile.tools           || '',
+    cicd:            profile.cicd            || '',
+    frameworks:      profile.frameworks      || profile.tools           || '',
+    sql:             profile.sql             || '',
+    genai:           profile.genai           || '',
+    improvements:    profile.improvements    || '',
+    education:       profile.education       || '',
+    undergraduate:   profile.undergraduate   || profile.education       || '',
+    whyRole:         profile.qaWhyThisRole   || profile.whyRole         || '',
+    strengths:       profile.qaStrengths     || profile.strengths       || '',
+    weaknesses:      profile.qaWeaknesses    || profile.weaknesses      || '',
+    awards:          profile.awards          || '',
+    // Salary keys — separate current from expected
+    currentSalary:   currentSalaryRaw,
+    expectedSalary:  expectedSalaryRaw,
+    salary:          expectedSalaryRaw,  // generic fallback
+    coverLetter:     profile.coverLetter     || '',
+    shortSummary:    profile.summary         || '',
   };
 }
 
@@ -154,26 +175,74 @@ function buildQaAnswers(profile) {
  * Get the answer value — Learning List DB is the primary source.
  * Falls back to qaAnswers / profile only if DB has no answer.
  */
+/**
+ * Format a raw salary string into LPA notation.
+ * Input can be "8.3", "8,30,000", "830000", "10 LPA", etc.
+ * Always returns a plain decimal LPA string like "8.3" or "10".
+ */
+function _formatSalaryLPA(raw) {
+  if (!raw) return '';
+  const s = String(raw).trim();
+  // Already "X LPA" or "X lpa" — strip unit, re-format
+  const lpaMatch = s.match(/^([\d,.]+)\s*lpa$/i);
+  if (lpaMatch) {
+    const n = parseFloat(lpaMatch[1].replace(/,/g, ''));
+    return isNaN(n) ? s : String(n);
+  }
+  // Large number — convert to LPA (e.g. 1000000 → 10, 830000 → 8.3)
+  const numStr = s.replace(/,/g, '');
+  const num = parseFloat(numStr);
+  if (!isNaN(num)) {
+    if (num >= 10000) {
+      // Treat as absolute rupees — divide by 100000 to get LPA
+      const lpa = num / 100000;
+      return String(Math.round(lpa * 10) / 10);
+    }
+    // Already in LPA (e.g. 8.3, 10)
+    return String(num);
+  }
+  return s;
+}
+
 function getAnswer(answerKey, qaAnswers, profile) {
   // Primary source: Learning List DB
   const dbAnswer = db.findAnswerByKey(answerKey);
   if (dbAnswer) {
-    // Special compound: salary → "X LPA"
-    if (answerKey === 'salary' && /^\d+$/.test(dbAnswer.trim())) return `${dbAnswer} LPA`;
+    if (answerKey === 'currentSalary' || answerKey === 'expectedSalary' || answerKey === 'salary') {
+      return _formatSalaryLPA(dbAnswer);
+    }
     return dbAnswer;
   }
 
-  // Fallback: config.json data (backward compat)
+  // Fallback: config.json data
+  if (answerKey === 'currentSalary') {
+    const raw = qaAnswers.currentSalary || profile.currentSalary || profile.salary || '';
+    return _formatSalaryLPA(raw);
+  }
+  if (answerKey === 'expectedSalary') {
+    const raw = qaAnswers.expectedSalary || profile.expectedSalary || profile.salary || '';
+    return _formatSalaryLPA(raw);
+  }
   if (answerKey === 'salary') {
     const raw = qaAnswers.salary || profile.salary || '';
-    if (/^\d+$/.test(raw.trim())) return `${raw} LPA`;
-    return 'Open to market standards for this role; exact expectation can be discussed after understanding role responsibilities.';
+    return _formatSalaryLPA(raw);
+  }
+  if (answerKey === 'notice') {
+    // Return plain number (days) if the field expects a number
+    const raw = qaAnswers.notice || profile.noticePeriod || '30';
+    // Strip non-numeric text for numeric fields (caller will decide)
+    const num = parseInt(String(raw).replace(/[^0-9]/g, ''), 10);
+    return isNaN(num) ? raw : String(num);
+  }
+  if (answerKey === 'experience' || answerKey === 'automationYears') {
+    const raw = answerKey === 'automationYears'
+      ? (qaAnswers.automationYears || profile.automationYears || qaAnswers.experience || profile.yearsExperience || '4')
+      : (qaAnswers.experience || profile.experience || profile.yearsExperience || '4');
+    const num = parseFloat(String(raw).replace(/[^0-9.]/g, ''));
+    return isNaN(num) ? String(raw) : String(num);
   }
   if (answerKey === 'linkedIn' && !qaAnswers.linkedIn) {
     return profile.linkedIn || '';
-  }
-  if (answerKey === 'experience') {
-    return qaAnswers.experience || profile.experience || profile.yearsExperience || '';
   }
   return qaAnswers[answerKey] || profile[answerKey] || '';
 }
@@ -447,13 +516,26 @@ async function fillFormSmart(page, config) {
           logger.warn(`[FormFiller] Validation error detected for "${label}": ${errorText}`);
         }
 
+        // Detect if this field expects a numeric value based on label + input type
+        const inputType = await el.getAttribute('type').catch(() => 'text') || 'text';
+        const isNumericField = inputType === 'number' ||
+          /how many years|how much|total years|experience with|years of exp|relevant exp|years in|\byears\b|\bctc\b|\bsalary\b|\blpa\b|notice period/i.test(label || '');
+
         // Pass 1: keyword match (skip if error, as we need fresh AI logic)
         let answer = '';
         if (!errorText) {
           const match = label ? findBestMatch(label) : null;
           if (match) {
             answer = getAnswer(match.answerKey, qaAnswers, profile);
-            logger.info(`[FormFiller] Keyword "${label.trim().substring(0, 50)}" → ${match.answerKey}`);
+            logger.info(`[FormFiller] Keyword "${label.trim().substring(0, 50)}" → ${match.answerKey} = "${String(answer).substring(0, 40)}"`);
+          }
+        }
+
+        // Post-process keyword answer: strip non-numeric chars for number fields
+        if (answer && isNumericField) {
+          const numOnly = parseFloat(String(answer).replace(/[^0-9.]/g, ''));
+          if (!isNaN(numOnly)) {
+            answer = String(numOnly);
           }
         }
 
@@ -472,15 +554,18 @@ async function fillFormSmart(page, config) {
         // Pass 3: per-field AI call (always do if error or unknown)
         if (!answer && !skipAI) {
           const rejectedValue = errorText ? await getElementValue(page, handle) : '';
-          
-          // Auto-detect numeric fields from label context
-          let typeOverride = 'text';
-          if (/how many years|how much|total years|experience with/i.test(label || '')) {
-             typeOverride = 'number';
-          }
+
+          // Auto-detect numeric fields from label context and input[type]
+          let typeOverride = isNumericField ? 'number' : 'text';
 
           answer = await answerField(label, typeOverride, [], profile, errorText || '', null, rejectedValue);
           if (answer) logger.info(`[FormFiller] AI-field "${label.trim().substring(0, 50)}" → "${answer.substring(0, 60)}" ${errorText ? `(RETRY: rejected "${rejectedValue}")` : ''}`);
+
+          // Strip non-numeric from AI answer for number fields
+          if (answer && isNumericField) {
+            const numOnly = parseFloat(String(answer).replace(/[^0-9.]/g, ''));
+            if (!isNaN(numOnly)) answer = String(numOnly);
+          }
         }
 
         if (!answer) {

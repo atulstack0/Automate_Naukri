@@ -21,6 +21,8 @@ const { runSelfLearnCycle, askAI } = require('../ai/aiAgent');
 const { seedLearningList }         = require('../db/seedLearningList');
 const profileManager               = require('../profiles/profileManager');
 const { ROLES, hasPermission, getPermissions } = require('../profiles/roles');
+const { ollamaManager }            = require('../ai/ollamaManager');
+const { setLogEmitter }            = require('../ai/aiProvider');
 
 const PUBLIC_DIR      = path.join(__dirname, 'public');
 const SCREENSHOTS_DIR = path.join(process.cwd(), 'data', 'screenshots');
@@ -726,8 +728,10 @@ IMPORTANT: Return ONLY the JSON array, nothing else.`;
     });
   });
 
-  // SPA fallback
-  app.get('*', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));
+  // ─────────────────────────────────────────────────────────────────────────
+  // NOTE: SPA fallback is registered AFTER all API routes (at end of function)
+  // Moving it here would break all GET /api/* routes below.
+  // ─────────────────────────────────────────────────────────────────────────
 
   // ── AI mode toggle ──────────────────────────────────────────────────────
   app.get('/api/ai-mode', (req, res) => {
@@ -745,6 +749,56 @@ IMPORTANT: Return ONLY the JSON array, nothing else.`;
       res.json({ ok: true, aiEnabled: enabled });
     } catch (err) { res.status(500).json({ error: err.message }); }
   });
+
+  // ── Ollama model management ───────────────────────────────────────────────
+
+  // GET /api/ollama/status  — health + model list
+  app.get('/api/ollama/status', async (req, res) => {
+    try {
+      const status = await ollamaManager.getStatus();
+      res.json(status);
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // GET /api/ollama/models  — list all installed models + current
+  app.get('/api/ollama/models', async (req, res) => {
+    try {
+      const cfg    = readConfig();
+      const models = await ollamaManager.listModels();
+      res.json({ models, current: cfg.aiModel || ollamaManager.currentModel });
+    } catch (err) {
+      // If Ollama is offline, return empty list gracefully
+      res.json({ models: [], current: readConfig().aiModel || 'qwen2.5:7b', error: err.message });
+    }
+  });
+
+  // POST /api/ollama/model  — switch active model, persist to config
+  app.post('/api/ollama/model', (req, res) => {
+    try {
+      const { model } = req.body;
+      if (!model || typeof model !== 'string') return res.status(400).json({ error: 'model name required' });
+      const cfg = readConfig();
+      const prev = cfg.aiModel || ollamaManager.currentModel;
+      cfg.aiModel = model;
+      writeConfig(cfg);
+      ollamaManager.setCurrentModel(model);
+      const switchMsg = `[AIEngine] 🔄 Model switched: '${prev}' → '${model}'`;
+      logger.info(switchMsg);
+      io.emit('bot:log', { level: 'info', msg: switchMsg, ts: new Date().toISOString() });
+      io.emit('ai:model_changed', { model, prev, models: ollamaManager._models });
+      res.json({ success: true, model, prev });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // POST /api/ollama/start  — force-start Ollama (also called automatically on boot)
+  app.post('/api/ollama/start', async (req, res) => {
+    try {
+      const result = await ollamaManager.ensureRunning();
+      const models = ollamaManager._models;
+      res.json({ success: true, result, models, current: ollamaManager.currentModel });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
 
   // ── Spec routes (added alongside existing) ────────────────────────────
 
@@ -816,9 +870,81 @@ IMPORTANT: Return ONLY the JSON array, nothing else.`;
     socket.on('disconnect', () => logger.debug(`[WS] ${socket.id} disconnected`));
   });
 
+  // ── SPA fallback — MUST be last, after all /api/* routes ───────────────
+  app.get('*', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));
+
   server.listen(port, () => {
     logger.info(`Dashboard v3 → http://localhost:${port}`);
     try { const c = readConfig(); seedLearningList(db.getDb(), c); } catch (_) {}
+
+    // ── Inject socket log emitter into AI provider ─────────────────────────
+    setLogEmitter((event, data) => { if (io) io.emit(event, data); });
+
+    // ── Auto-start Ollama & announce models ───────────────────────────────
+    ;(async () => {
+      try {
+        const cfg = readConfig();
+        // Configure manager from config
+        ollamaManager.baseUrl      = cfg.ollamaBaseUrl || cfg.ollamaUrl || 'http://localhost:11434';
+        ollamaManager.currentModel = cfg.aiModel || 'qwen2.5:7b';
+        ollamaManager.setLogEmitter((event, data) => { if (io) io.emit(event, data); });
+
+        const result = await ollamaManager.ensureRunning();
+        const models  = ollamaManager._models;
+        const names   = models.map(m => m.name).join(', ') || '(none found)';
+
+        // ── Auto-correct model if configured one is not installed ──────────
+        if (models.length > 0) {
+          const installedNames = models.map(m => m.name);
+          if (!installedNames.includes(ollamaManager.currentModel)) {
+            // Pick the SMALLEST available model to maximise chance of fitting in RAM
+            const smallest = models.slice().sort((a, b) => (a.size || 0) - (b.size || 0))[0];
+            const firstAvailable = smallest.name;
+            const sizeGB = smallest.size ? (smallest.size / 1e9).toFixed(1) + ' GB' : '?';
+            const warnMsg = `[AIEngine] ⚠️ Configured model '${ollamaManager.currentModel}' not found. ` +
+                            `Auto-switching to smallest available: '${firstAvailable}' (${sizeGB}).`;
+            logger.warn(warnMsg);
+            // Persist the correction to config.json
+            try {
+              const cfgToFix = readConfig();
+              cfgToFix.aiModel = firstAvailable;
+              writeConfig(cfgToFix);
+            } catch (_) {}
+            ollamaManager.currentModel = firstAvailable;
+            if (io) io.emit('bot:log', { level: 'warn', msg: warnMsg, ts: new Date().toISOString() });
+          } else {
+            // Model exists — but check if it might be too big (warn if > 5 GiB)
+            const activeModel = models.find(m => m.name === ollamaManager.currentModel);
+            if (activeModel && activeModel.size > 5e9) {
+              const sizeGB = (activeModel.size / 1e9).toFixed(1);
+              const memMsg = `[AIEngine] ⚠️ RAM WARNING: '${ollamaManager.currentModel}' (${sizeGB} GB) is large. ` +
+                             `If you see 500 errors, switch to a smaller model or free up RAM.`;
+              logger.warn(memMsg);
+              if (io) io.emit('bot:log', { level: 'warn', msg: memMsg, ts: new Date().toISOString() });
+            }
+          }
+        }
+
+        const startupMsg = result === 'failed'
+          ? `[AIEngine] ⚠️ Ollama could not be started automatically. Run 'ollama serve' manually.`
+          : `[AIEngine] ✅ Ollama ready. Available models (${models.length}): ${names}. Active: ${ollamaManager.currentModel}`;
+
+        logger.info(startupMsg);
+        if (io) {
+          io.emit('ai:startup_log', {
+            msg:     startupMsg,
+            models,
+            current: ollamaManager.currentModel,
+            status:  result,
+          });
+          io.emit('bot:log', { level: result === 'failed' ? 'warn' : 'info', msg: startupMsg, ts: new Date().toISOString() });
+          // Push updated model list to all connected clients
+          io.emit('ai:model_changed', { model: ollamaManager.currentModel, models });
+        }
+      } catch (err) {
+        logger.error(`[AIEngine] Auto-start error: ${err.message}`);
+      }
+    })();
 
     // Auto self-learn every 5 min
     const cycle = async () => {
