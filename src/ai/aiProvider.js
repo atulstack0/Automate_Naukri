@@ -151,24 +151,42 @@ async function _askOllama(prompt, opts = {}) {
   const mgr = _getOllamaManager();
   const liveModel = (mgr && mgr.currentModel) ? mgr.currentModel : _ollamaModel;
 
-  // For deepseek models, we need higher minimum predict tokens so it can finish <think>
-  // Ensure numPredict isn't forcing models to generate endlessly when evaluating yes/no forms
-  let numPredict = opts.num_predict ?? opts.maxTokens ?? 100;
+  // Detect "thinking" models (qwen3, deepseek-r1) that use <think> blocks —
+  // they need higher num_predict because reasoning tokens consume the budget
+  // before the actual answer is generated.
+  const isThinkingModel = /qwen3|deepseek-r1/i.test(liveModel);
 
-  logger.info(`[AIProvider] Sending prompt to ${liveModel}, length: ${prompt?.length}`);
+  let numPredict = opts.num_predict ?? opts.maxTokens ?? 100;
+  if (isThinkingModel && numPredict < 300) {
+    numPredict = 300;  // enough for <think>…</think> + answer
+  }
+
+  // Context window: must be large enough to hold the full prompt + output.
+  // 512 tokens truncates prompts > ~380 words, causing wrong or empty answers.
+  // 2048 is a good balance between memory (~300 MiB KV-cache) and prompt capacity.
+  const numCtx = opts.num_ctx ?? 2048;
+
+  // For thinking models, prepend /no_think to short-answer prompts to skip
+  // the expensive reasoning phase when the answer is brief (e.g. form fields).
+  let effectivePrompt = prompt;
+  if (isThinkingModel && numPredict <= 300) {
+    effectivePrompt = '/no_think\n' + prompt;
+  }
+
+  logger.info(`[AIProvider] Sending prompt to ${liveModel}, length: ${prompt?.length}${isThinkingModel ? ' [thinking model]' : ''}`);
   logger.debug(`[AIProvider] Prompt preview: ${prompt?.substring(0, 150)}...`);
 
   const response = await axios.post(
     `${_ollamaBaseUrl}/api/generate`,
     {
       model:  liveModel,
-      prompt,
+      prompt: effectivePrompt,
       stream: false,
       options: {
         temperature: opts.temperature  ?? 0.2,
         top_p:       opts.top_p        ?? 0.95,
         num_predict: numPredict,
-        num_ctx:     opts.num_ctx      ?? 512,  // Low ctx = ~74 MiB KV-cache vs 432 MiB at 3000
+        num_ctx:     numCtx,
       },
     },
     { timeout: _ollamaTimeout, headers: { 'Content-Type': 'application/json' } }
