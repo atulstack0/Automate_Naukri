@@ -52,7 +52,7 @@ const KEYWORD_MAP = [
   [/\byears?\s*of\s*exp|\bhow\s*many\s*years?\b/i,            'yearsExperience'],
   [/\bmonths?\s*of\s*exp/i,                                   'monthsExperience'],
   [/\btotal\s*(it)?\s*exp/i,                                   'totalExperience'],
-  [/\bcurrent\s*(company|employer|organisation|organization)\b/i, 'currentCompany'],
+  [/^(?!.*why)(?!.*leave).*\bcurrent\s*(company|employer|organisation|organization)\b/i, 'currentCompany'],
   [/\bcurrent\s*(role|designation|position|title)\b/i,         'currentRole'],
   [/\bprevious\s*company\b|\blast\s*company\b/i,               'previousCompany'],
   [/\bprevious\s*role\b|\bpast\s*role\b/i,                     'previousRole'],

@@ -404,7 +404,8 @@ async function fillFormSmart(page, config) {
     } else {
       try {
         const pageText = await root.evaluate((el) => el.innerText || document.body.innerText).catch(() => '');
-        const aiAnswers = await analyzeFormAndAnswer(pageText, profile);
+        // Skip heavy batch AI on local models due to timeout issues
+        const aiAnswers = []; // await analyzeFormAndAnswer(pageText, profile);
         for (const { label, answer } of aiAnswers) {
           if (label && answer) aiAnswerMap[label.toLowerCase().trim()] = answer;
         }
@@ -721,14 +722,23 @@ async function fillFormSmart(page, config) {
            const legend = fieldset.querySelector('legend');
            if (legend) return legend.textContent.trim();
         }
+        
+        if (node.classList && (node.classList.contains('radio-group') || node.classList.contains('form-group'))) {
+            const labels = Array.from(node.querySelectorAll('label'));
+            const questionLabel = labels.find(l => !l.getAttribute('for'));
+            if (questionLabel) return questionLabel.textContent.trim();
+        }
+
         const allElements = Array.from(document.querySelectorAll('*'));
         const index = allElements.indexOf(node);
         let searchLimit = Math.max(0, index - 100);
         for (let i = index - 1; i >= searchLimit; i--) {
           const prev = allElements[i];
-          if (['SCRIPT', 'STYLE', 'SVG', 'PATH', 'INPUT', 'BUTTON'].includes(prev.tagName)) continue;
+          if (['SCRIPT', 'STYLE', 'SVG', 'PATH', 'INPUT', 'BUTTON', 'OPTION', 'SELECT'].includes(prev.tagName)) continue;
+          if (prev.tagName === 'LABEL' && prev.getAttribute('for')) continue;
+          
           let text = (prev.innerText || prev.textContent || '').trim();
-          if (text.length > 5 && (text.includes('?') || text.toLowerCase().includes('willing') || text.toLowerCase().includes('select') || text.toLowerCase().includes('choose') || text.toLowerCase().includes('relocate'))) {
+          if (text.length > 5 && (text.includes('?') || text.toLowerCase().includes('willing') || text.toLowerCase().includes('select') || text.toLowerCase().includes('choose') || text.toLowerCase().includes('relocate') || text.toLowerCase().includes('experience'))) {
             if (prev.children.length === 0 || (prev.children.length === 1 && prev.children[0].tagName === 'SPAN')) {
                 return text;
             }
@@ -737,7 +747,7 @@ async function fillFormSmart(page, config) {
         return node.name || 'Unknown Group';
       }
 
-      const parent = rootEl === window ? document : rootEl;
+      const parent = (rootEl && rootEl.nodeType) ? rootEl : document;
       const radios = Array.from(parent.querySelectorAll('input[type="radio"]'));
       const groups = {};
       let groupCounter = 0;

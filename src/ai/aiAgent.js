@@ -189,7 +189,7 @@ function _matchOption(answer, options) {
 }
 
 function _buildProfileSummary(ll, profile, fullContext) {
-  return `### CANDIDATE RESUME PROFILE ###
+  return `### CANDIDATE PROFILE ###
 - Name: ${profile.name || ll.name || 'Candidate'}
 - Email: ${profile.email || ll.email || ''}
 - Phone: ${profile.phone || ll.phone || ''}
@@ -197,22 +197,15 @@ function _buildProfileSummary(ll, profile, fullContext) {
 - Current Role: ${profile.currentRole || ll.currentRole || ''} at ${profile.currentCompany || ll.currentCompany || ''}
 - Experience: ${profile.yearsExperience || ll.yearsExperience || ll.experience || '0'} years
 - Notice Period: ${profile.noticePeriod || ll.notice || ''}
-- Salary Expectation: ${profile.salary || ll.salary || ll.expectedCTC || ''}
-- Skills/Tools: ${ll.tools || profile.summary || ''}
-- Programming Languages: ${ll.languages || ''}
+- Salary: ${profile.salary || ll.salary || ll.expectedCTC || ''}
+- Skills: ${(ll.tools || profile.summary || '').substring(0, 150)}
+- Languages: ${(ll.languages || '').substring(0, 80)}
 - Education: ${profile.education || ll.qualification || ''}
 - LinkedIn: ${profile.linkedIn || ll.linkedIn || ''}
 - Portfolio: ${profile.portfolio || ll.portfolio || ''}
 - GitHub: ${profile.github || ll.github || ''}
 
-CANDIDATE SUMMARY:
-${(profile.summary || '').substring(0, 500)}
-
-COVER LETTER CONTEXT:
-${(profile.coverLetter || '').substring(0, 500)}
-
-Extended Context:
-${fullContext.substring(0, 1000)}`.trim();
+Summary: ${(profile.summary || '').substring(0, 200)}`.trim();
 }
 
 async function _selfLearnAndSave(question, fieldType, options, sourceJobId) {
