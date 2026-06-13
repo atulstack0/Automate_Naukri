@@ -27,6 +27,7 @@ data/uploads/
 data/blocklist.json
 data/screenshots/
 data/verify_screenshots/
+data/profiles/
 
 # ─── Logs ──────────────────────────────────────────────
 logs/

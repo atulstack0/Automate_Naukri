@@ -11,7 +11,7 @@ Node ≥ 18 required. No TypeScript, no build step, no test framework, no linter
 ## Commands
 
 ```bash
-# Install dependencies
+# Install dependencies 
 npm install
 
 # Install Playwright browser (required once)

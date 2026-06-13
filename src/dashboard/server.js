@@ -594,57 +594,78 @@ function createDashboardServer(port = 3000) {
     selfLearnRunning = true;
     try {
       const text = req.body.text || (fs.existsSync(RESUME_PATH) ? fs.readFileSync(RESUME_PATH, 'utf8') : '');
-      if (!text.trim()) return res.status(400).json({ error: 'Resume text is empty. Upload your resume first.' });
+      if (!text.trim()) {
+        selfLearnRunning = false;
+        return res.status(400).json({ error: 'Resume text is empty. Upload your resume first.' });
+      }
 
-      const prompt = `You are a job application assistant. Based on the following resume/profile, generate a comprehensive list of question-answer pairs that would appear in job application forms.
+      // Respond immediately to free up the frontend
+      res.json({ success: true, status: 'started' });
 
+      // Run generation in the background
+      (async () => {
+        try {
+          const categories = [
+            "Personal info, Contact, and Location",
+            "Work Experience and Current Role",
+            "Skills, Tools, and Technologies",
+            "Education, Certifications, and Languages",
+            "Salary Expectations, Notice Period, and Job Preferences"
+          ];
+
+          let saved = 0;
+          let totalGenerated = 0;
+
+          for (let i = 0; i < categories.length; i++) {
+            const cat = categories[i];
+            const prompt = `You are a job application assistant. Based on the following resume/profile, generate 6 question-answer pairs about: ${cat}.
 RESUME/PROFILE:
 ${text.substring(0, 4000)}
 
-Generate 30 question-answer pairs in this EXACT JSON format (no extra text):
+Generate 6 question-answer pairs in this EXACT JSON format (no extra text):
 [
-  { "question": "...", "answer": "..." },
-  ...
+  { "question": "...", "answer": "..." }
 ]
-
-Include questions about:
-- Personal info (name, email, phone, location)
-- Experience (years, current role, previous roles, company names)
-- Skills and tools mentioned in resume
-- Education (degree, institution, year)
-- Expected CTC / salary expectation
-- Notice period
-- Willingness to relocate
-- Cover letter / summarize yourself
-- Why are you looking for a job change
-- Languages known (programming + spoken)
-- Certifications if any
-- LinkedIn / GitHub URLs if mentioned
-- Any technical skills specifically mentioned
-
 IMPORTANT: Return ONLY the JSON array, nothing else.`;
 
-      const rawAI = await askAI(prompt, { temperature: 0.3, num_predict: 2000 });
-      // Extract JSON from AI response
-      const jsonMatch = rawAI.match(/\[[\s\S]*\]/);
-      if (!jsonMatch) throw new Error('AI did not return valid JSON');
-      const pairs = JSON.parse(jsonMatch[0]);
+            try {
+              const rawAI = await askAI(prompt, { temperature: 0.3, num_predict: 800 });
+              const jsonMatch = rawAI.match(/\[[\s\S]*\]/);
+              if (jsonMatch) {
+                const pairs = JSON.parse(jsonMatch[0]);
+                totalGenerated += pairs.length;
+                let chunkSaved = 0;
+                for (const pair of pairs) {
+                  if (!pair.question || !pair.answer) continue;
+                  try {
+                    db.addManualLearningQuestion(pair.question.trim(), pair.answer.trim());
+                    saved++;
+                    chunkSaved++;
+                  } catch (_) {}
+                }
+                if (chunkSaved > 0) {
+                  // Emit live progress to update UI one by one / chunk by chunk
+                  io.emit('resume:learn:progress', { saved: chunkSaved, total: saved });
+                }
+              }
+            } catch (chunkErr) {
+              logger.warn(`[ResumeLearn] Chunk error: ${chunkErr.message}`);
+            }
+          }
 
-      let saved = 0;
-      for (const pair of pairs) {
-        if (!pair.question || !pair.answer) continue;
-        try {
-          db.addManualLearningQuestion(pair.question.trim(), pair.answer.trim());
-          saved++;
-        } catch (_) {}
-      }
-
-      io.emit('selflearn:done', { answered: saved, processed: pairs.length });
-      res.json({ success: true, generated: pairs.length, saved, pairs });
+          io.emit('resume:learn:done', { generated: totalGenerated, saved });
+        } catch (bgErr) {
+          logger.error('[ResumeLearn] Background Error', { err: bgErr.message });
+          io.emit('resume:learn:done', { generated: 0, saved: 0, error: bgErr.message });
+        } finally {
+          selfLearnRunning = false;
+        }
+      })();
     } catch (err) {
       logger.error('[ResumeLearn] Error', { err: err.message });
+      selfLearnRunning = false;
       res.status(500).json({ error: err.message });
-    } finally { selfLearnRunning = false; }
+    }
   });
 
   // ── Logs ──────────────────────────────────────────────────────────────
