@@ -28,43 +28,6 @@ An intelligent, fully automated job application system that applies to jobs on *
 
 ---
 
-## 🏛️ The OLYMPUS Dashboard
-
-The web dashboard wears a **Greek-mythos "superpower" theme** called **OLYMPUS — the Mythic Job Conquest Engine**. The whole automation pipeline is reframed as a campaign waged by the gods, so the controls read like a saga while behaving exactly like the underlying bot.
-
-| Mythic name | What it really is |
-|-------------|-------------------|
-| **Hermes** | The bot worker process (Start = *Summon*, Stop = *Banish*) |
-| **The Oracle** | The cascading AI engine (OpenAI → Gemini → Ollama). Toggle = the Oracle's *Sight* |
-| **The Pantheon** | The four portals — **Zeus** (Naukri), **Athena** (LinkedIn), **Poseidon** (Indeed), **Hephaestus** (company sites) |
-| **Quests** | Jobs. *Conquered* = applied, *Spared* = skipped, *Fallen* = failed, *Fated* = pending |
-| **Athena's Codex** | The form-learning Q&A list (scrolls of wisdom) |
-| **The Chronicle** | The real-time live log |
-| **Eye of Argus** | The live browser screenshot stream |
-| **Divine Scrolls** | AI-generated cover letters |
-| **Sacred Sigils** | Keyword rules (binding / favor / forbidden) |
-| **Tartarus** | The company blocklist (banish into the pit) |
-| **The Forge** | Settings — temper the engine, hero profile, and API keys |
-
-### New mythic components (built on the existing data)
-
-- **⚡ Ascension** — an XP + rank emblem that climbs **Mortal → Initiate → Hero → Champion → Demigod → Olympian → Titan → God** as your conquest count grows. XP = `10 × conquests + scrolls learned`.
-- **🏆 Feats of Legend** — eight live achievement tiles (First Blood, Decathlon, Hydra Slayer, Centurion, Favored by the Gods, Athena's Apprentice, Untouchable, Throne of Olympus) that unlock automatically from your real stats.
-- **🌌 Constellation sky** — a lightweight animated starfield backdrop (respects `prefers-reduced-motion`).
-- **🌙 Two realms (themes)** — **Night of Nyx** (obsidian + gold, default) and **Dawn of Helios** (warm marble), toggled from the sidebar and remembered in `localStorage`.
-
-The frontend is plain HTML/CSS/vanilla JS (no framework, no build step) served from `src/dashboard/public/`:
-
-| File | Role |
-|------|------|
-| `index.html` | Full single-page temple layout |
-| `mythos.css` | Complete design system + both realm themes |
-| `mythos.js` | All client logic: stats, charts, quests, codex, controls, Ascension, Feats, sky |
-
-> The REST + Socket.io API in `src/dashboard/server.js` is unchanged — the rebuild is a from-scratch, themed frontend over the same backend contract, so every existing feature keeps working.
-
----
-
 ## 🗂 Project Structure
 
 ```

@@ -1,416 +1,521 @@
 <!doctype html>
-<html lang="en" data-theme="nyx">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>OLYMPUS — Mythic Job Conquest Engine</title>
+    <title>AutoApply — AI Job Bot v3</title>
     <meta
       name="description"
-      content="OLYMPUS — the mythic command temple of the AutoApply job conquest engine. Hermes carries your applications across the realms."
+      content="AI-powered job application bot dashboard"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="mythos.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="cyberpunk.css" />
     <script src="/socket.io/socket.io.js"></script>
+    <style>
+      :root {
+        /* Bridge legacy var names → new design tokens (used by inline HTML + JS) */
+        --text:      var(--tx);
+        --accent:    var(--acc);
+        --warn:      var(--am);
+        --danger:    var(--rd);
+        --muted:     var(--tx3);
+        --primary:   var(--acc2);
+        --font-body: "Inter", sans-serif;
+        --font-head: "Inter", sans-serif;
+      }
+      /* ── Topbar separator (legacy alias) ── */
+      .topbar-sep { width: 1px; height: 22px; background: var(--border2); flex-shrink: 0; }
+    </style>
+    <style>
+      /* ── AI Engine sidebar enhancements ── */
+      .ai-model-select {
+        background: transparent;
+        border: none;
+        color: var(--tx);
+        font-size: 11px;
+        font-family: var(--font-body);
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        outline: none;
+        padding: 0;
+      }
+      .ai-model-select option {
+        background: var(--surface2, #1e293b);
+        color: var(--tx, #e2e8f0);
+      }
+      .ai-timer {
+        font-size: 10px;
+        color: var(--acc, #818cf8);
+        margin-top: 3px;
+        animation: aiTimerFadeIn .3s ease;
+      }
+      @keyframes aiTimerFadeIn {
+        from { opacity: 0; transform: translateY(4px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .model-count-badge {
+        font-size: 9px;
+        background: var(--acc, #818cf8);
+        color: #000;
+        border-radius: 10px;
+        padding: 2px 7px;
+        font-weight: 700;
+        white-space: nowrap;
+        flex-shrink: 0;
+        align-self: flex-start;
+        margin-top: 2px;
+      }
+      /* ── AI log entry highlights in Live Log ── */
+      .log-row.ai-start { border-left: 3px solid #818cf8; }
+      .log-row.ai-done  { border-left: 3px solid #34d399; }
+      .log-row.ai-error { border-left: 3px solid #f87171; }
+    </style>
   </head>
   <body>
-    <!-- Constellation sky -->
-    <canvas id="cosmos" aria-hidden="true"></canvas>
-
-    <!-- ══════ TOPBAR ═══════════════════════════════════════════════════ -->
-    <header class="topbar" id="topbar">
+    <!-- ══════ TOPBAR ══════════════════════════════════════════ -->
+    <div class="topbar" id="topbar">
       <div class="topbar-logo">
-        <span class="topbar-logo-icon">⚡</span>
-        <span>OLYMPUS</span>
-        <span class="topbar-tagline">Mythic Job Conquest Engine</span>
+        <div class="topbar-logo-icon">⚡</div>
+        <span>AutoApply</span>
       </div>
-      <div class="topbar-sep"></div>
+      <div class="topbar-divider"></div>
       <div class="status-pill">
         <span class="status-dot" id="topStatusDot"></span>
-        <span id="topStatusLabel">Hermes rests</span>
+        <span id="topStatusLabel">Idle</span>
       </div>
       <span class="run-timer" id="topTimer"></span>
       <div class="topbar-actions">
-        <button class="topbar-btn start" id="topBtnStart">⚡ SUMMON</button>
-        <button class="topbar-btn stop" id="topBtnStop" disabled>■ BANISH</button>
+        <button class="topbar-btn start" id="topBtnStart">▶ Start</button>
+        <button class="topbar-btn stop" id="topBtnStop" disabled>■ Stop</button>
       </div>
-      <div class="topbar-sep"></div>
+      <div class="topbar-divider"></div>
       <div class="conn-badge" id="connBadge">
-        <span class="conn-dot" id="connDot"></span>
-        <span id="connLabel">Seeking Olympus…</span>
+        <span class="conn-dot" id="connDot"></span><span id="connLabel">Connecting…</span>
       </div>
-    </header>
-
-    <!-- ══════ SIDEBAR ══════════════════════════════════════════════════ -->
+    </div>
+    <!-- ══════ SIDEBAR ══════════════════════════════════════════ -->
     <aside class="sidebar" id="sidebar">
+      <!-- Brand -->
       <div class="sidebar-brand">
-        <div class="brand-logo">🏛️</div>
+        <div class="brand-logo">🤖</div>
         <div>
-          <div class="brand-name">OLYMPUS</div>
-          <div class="brand-tagline">Where careers ascend</div>
+          <div class="brand-name">AutoApply</div>
+          <div class="brand-tagline">AI Job Bot v3</div>
         </div>
       </div>
-      <div class="laurel-divider"></div>
 
-      <!-- Hermes (the bot) -->
+      <!-- Bot card -->
       <div class="bot-card" id="botCard">
         <div class="bot-card-top">
           <div class="bot-dot idle" id="botDot"></div>
-          <span class="bot-label" id="botLabel">Hermes rests</span>
+          <span class="bot-label" id="botLabel">Idle</span>
           <span class="bot-uptime" id="botUptime"></span>
         </div>
         <div class="bot-controls">
-          <button class="bot-btn start" id="btnStart">▶ Summon</button>
-          <button class="bot-btn stop" id="btnStop" disabled>■ Banish</button>
-          <button class="bot-btn restart" id="btnRestart" disabled title="Rebirth — restart the messenger">↺</button>
+          <button class="bot-btn start" id="btnStart">▶ Start</button>
+          <button class="bot-btn stop" id="btnStop" disabled>■ Stop</button>
+          <button
+            class="bot-btn restart"
+            id="btnRestart"
+            disabled
+            title="Restart"
+          >
+            ↺
+          </button>
         </div>
       </div>
 
       <!-- Nav -->
       <nav class="sidebar-nav">
-        <a class="nav-item active" data-tab="dashboard">
-          <span class="nav-icon">🏛️</span><span>Olympus</span>
-          <span class="nav-count" id="nc-total">–</span>
-        </a>
-        <a class="nav-item" data-tab="jobs">
-          <span class="nav-icon">⚔️</span><span>Quests</span>
-          <span class="nav-count" id="nc-jobs">–</span>
-        </a>
-        <a class="nav-item" data-tab="learning">
-          <span class="nav-icon">🦉</span><span>Athena's Codex</span>
-          <span class="nav-count" id="nc-learning">–</span>
-        </a>
-        <a class="nav-item" data-tab="activity">
-          <span class="nav-icon">📜</span><span>Chronicle</span>
-          <span class="nav-badge">LIVE</span>
-        </a>
-        <a class="nav-item" data-tab="liveview">
-          <span class="nav-icon">👁️</span><span>Eye of Argus</span>
-        </a>
-        <a class="nav-item" data-tab="portals">
-          <span class="nav-icon">🌩️</span><span>Pantheon</span>
-        </a>
-        <a class="nav-item" data-tab="coverletters">
-          <span class="nav-icon">🪶</span><span>Divine Scrolls</span>
-        </a>
-        <a class="nav-item" data-tab="keywords">
-          <span class="nav-icon">🔱</span><span>Sacred Sigils</span>
-        </a>
-        <a class="nav-item" data-tab="blocklist">
-          <span class="nav-icon">🌋</span><span>Tartarus</span>
-          <span class="nav-count" id="nc-block">–</span>
-        </a>
-        <a class="nav-item" data-tab="config">
-          <span class="nav-icon">🔨</span><span>The Forge</span>
-        </a>
+        <a class="nav-item active" data-tab="dashboard"
+          ><span class="nav-icon">📊</span><span>Dashboard</span
+          ><span class="nav-count" id="nc-total">–</span></a
+        >
+        <a class="nav-item" data-tab="jobs"
+          ><span class="nav-icon">💼</span><span>Jobs</span
+          ><span class="nav-count" id="nc-jobs">–</span></a
+        >
+        <a class="nav-item" data-tab="learning"
+          ><span class="nav-icon">🧠</span><span>AI Learning</span
+          ><span class="nav-count" id="nc-learning">–</span></a
+        >
+        <a class="nav-item" data-tab="activity"
+          ><span class="nav-icon">⚡</span><span>Live Log</span
+          ><span class="nav-badge">LIVE</span></a
+        >
+        <a class="nav-item" data-tab="liveview"
+          ><span class="nav-icon">📸</span><span>Live Browser</span></a
+        >
+        <a class="nav-item" data-tab="config"
+          ><span class="nav-icon">⚙️</span><span>Settings</span></a
+        >
+        <a class="nav-item" data-tab="keywords"
+          ><span class="nav-icon">🔤</span><span>Keywords</span></a
+        >
+        <a class="nav-item" data-tab="blocklist"
+          ><span class="nav-icon">🚫</span><span>Blocklist</span
+          ><span class="nav-count" id="nc-block">–</span></a
+        >
+        <a class="nav-item" data-tab="portals"
+          ><span class="nav-icon">🌐</span><span>Portals</span></a
+        >
+        <a class="nav-item" data-tab="coverletters"
+          ><span class="nav-icon">✉️</span><span>Cover Letters</span></a
+        >
       </nav>
 
-      <!-- The Oracle (AI engine) -->
+      <!-- Footer -->
       <div class="sidebar-footer">
-        <div class="oracle-pill" id="aiEnginePill">
-          <span class="oracle-pill-icon">🔮</span>
-          <div style="flex: 1; min-width: 0">
-            <div class="oracle-pill-label">THE ORACLE</div>
-            <select id="aiModelSelect" class="oracle-model-select" title="Choose which spirit answers the Oracle">
-              <option>qwen2.5:7b</option>
+        <div class="ai-pill" id="aiEnginePill">
+          <span style="font-size:16px;flex-shrink:0;">✨</span>
+          <div style="flex:1;min-width:0;">
+            <div class="ai-pill-label">AI ENGINE</div>
+            <!-- Model selector dropdown -->
+            <select id="aiModelSelect" class="ai-model-select" title="Switch AI model">
+              <option id="aiModelName">qwen2.5:7b</option>
             </select>
-            <div class="oracle-timer" id="aiTimerDisplay" style="display: none">
+            <!-- Response timer -->
+            <div class="ai-timer" id="aiTimerDisplay" style="display:none;">
               ⏱ <span id="aiTimerVal">–</span>
             </div>
           </div>
-          <span class="model-count-badge" id="modelCountBadge" style="display: none"></span>
+          <!-- model count badge -->
+          <span class="model-count-badge" id="modelCountBadge" style="display:none;"></span>
         </div>
         <div class="ollama-status">
           <span class="ollama-dot" id="ollamaDot"></span>
-          <span id="ollamaLabel">Consulting the Oracle…</span>
+          <span id="ollamaLabel">Ollama checking…</span>
         </div>
         <div class="footer-row">
-          <button class="theme-toggle" id="themeToggle" title="Night of Nyx / Dawn of Helios">🌙</button>
-          <button class="footer-btn" id="btnExportCsv">⬇ Export Saga</button>
+          <button
+            class="theme-toggle"
+            id="themeToggle"
+            title="Toggle dark/light"
+          >
+            🌙
+          </button>
+          <button class="footer-btn" id="btnExportCsv">⬇ Export</button>
         </div>
       </div>
     </aside>
 
-    <!-- ══════ MAIN ═════════════════════════════════════════════════════ -->
+    <!-- ══════ MAIN ══════════════════════════════════════════════ -->
     <main class="main" id="main">
       <div id="toasts" class="toasts"></div>
 
-      <!-- ─── OLYMPUS (dashboard) ─────────────────────────────────────── -->
+      <!-- ─── DASHBOARD ─────────────────────────── -->
       <section class="page active" id="page-dashboard">
         <div class="page-hdr">
           <div>
-            <h1 class="page-title"><span class="title-deco">⚡</span> Hall of Olympus</h1>
+            <h1 class="page-title">Dashboard</h1>
             <p class="page-sub" id="lastRefresh">–</p>
           </div>
-          <button class="btn-outline sm" id="btnRefreshDash">↻ Consult the Fates</button>
+          <button class="btn-outline sm" id="btnRefreshDash">↻ Refresh</button>
         </div>
 
-        <!-- Ascension — mythic XP & rank -->
-        <div class="card ascension-card">
-          <div class="asc-emblem" id="ascRankIcon">🧍</div>
-          <div class="asc-body">
-            <div class="asc-rank-row">
-              <span class="asc-rank" id="ascRankName">Mortal</span>
-              <span class="asc-xp" id="ascXp">0 XP</span>
-            </div>
-            <div class="asc-bar"><div class="asc-bar-fill" id="ascBarFill"></div></div>
-            <div class="asc-next" id="ascNext">Begin your trials to earn the favor of the gods.</div>
+        <!-- ── Quick Actions ── -->
+        <div class="card apply-section" style="margin-bottom:24px">
+          <div class="card-hdr" style="margin-bottom:14px">
+            <h3>🚀 Quick Actions</h3>
+            <p class="page-sub">Start a specific portal or run all at once.</p>
           </div>
-        </div>
 
-        <!-- Quick summons -->
-        <div class="card">
-          <div class="card-hdr">
-            <h3>⚡ Summon the Gods</h3>
-            <p class="page-sub">Dispatch Hermes to a single realm — or unleash the whole pantheon.</p>
-          </div>
-          <div class="summon-grid">
+          <!-- Row 1 — Portal Launchers -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:12px">
             <button id="btnApplyNaukri" class="qa-btn" data-platform="naukri"
-              style="--qa-color: #2563eb; --qa-glow: rgba(37, 99, 235, 0.25)">
-              <span class="qa-icon">🌩️</span>
-              <span class="qa-label">Zeus · Naukri</span>
-              <span class="qa-sub">Lord of the job boards</span>
+              style="--qa-color:#2563eb;--qa-glow:rgba(37,99,235,.25)">
+              <span class="qa-icon">🏢</span>
+              <span class="qa-label">Naukri.com</span>
+              <span class="qa-sub">Start portal</span>
             </button>
             <button id="btnApplyLinkedIn" class="qa-btn" data-platform="linkedin"
-              style="--qa-color: #0077b5; --qa-glow: rgba(0, 119, 181, 0.25)">
-              <span class="qa-icon">🦉</span>
-              <span class="qa-label">Athena · LinkedIn</span>
-              <span class="qa-sub">Easy Apply, wisely</span>
+              style="--qa-color:#0077b5;--qa-glow:rgba(0,119,181,.25)">
+              <span class="qa-icon">💼</span>
+              <span class="qa-label">LinkedIn</span>
+              <span class="qa-sub">Easy Apply</span>
             </button>
             <button id="btnApplyIndeed" class="qa-btn" data-platform="indeed"
-              style="--qa-color: #003a9b; --qa-glow: rgba(0, 58, 155, 0.25)">
-              <span class="qa-icon">🔱</span>
-              <span class="qa-label">Poseidon · Indeed</span>
-              <span class="qa-sub">Trawl the deep listings</span>
+              style="--qa-color:#003A9B;--qa-glow:rgba(0,58,155,.25)">
+              <span class="qa-icon">🔍</span>
+              <span class="qa-label">Indeed</span>
+              <span class="qa-sub">Start portal</span>
             </button>
-            <div style="display: flex; flex-direction: column; gap: 6px">
+            <!-- Company Sites — with URL input -->
+            <div style="display:flex;flex-direction:column;gap:6px;flex:1;min-width:180px;">
               <button id="btnApplyCompany" class="qa-btn" data-platform="company"
-                style="--qa-color: #7c3aed; --qa-glow: rgba(124, 58, 237, 0.25); width: 100%">
-                <span class="qa-icon">🔥</span>
-                <span class="qa-label">Hephaestus · Company</span>
-                <span class="qa-sub" id="companyBtnSub">Direct to the forge</span>
+                style="--qa-color:#7c3aed;--qa-glow:rgba(124,58,237,.25);width:100%">
+                <span class="qa-icon">🏭</span>
+                <span class="qa-label">Company Sites</span>
+                <span class="qa-sub" id="companyBtnSub">Direct apply</span>
               </button>
-              <div class="summon-url-row">
-                <input id="companyUrlInput" class="input" type="url"
-                  placeholder="https://company.com/careers (optional)" />
-                <button id="btnCompanyUrlClear" class="url-clear-btn" title="Clear URL">✕</button>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <input id="companyUrlInput" type="url"
+                  placeholder="https://company.com/careers (optional)"
+                  style="flex:1;padding:7px 10px;font-size:11px;font-family:inherit;
+                         background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);
+                         color:var(--tx);outline:none;transition:border-color .2s;"
+                  onfocus="this.style.borderColor='var(--acc)'"
+                  onblur="this.style.borderColor=''"
+                />
+                <button id="btnCompanyUrlClear" title="Clear URL"
+                  style="background:none;border:1px solid var(--border2);border-radius:var(--r-sm);
+                         padding:6px 8px;cursor:pointer;color:var(--tx3);font-size:12px;">✕</button>
               </div>
             </div>
           </div>
-          <div class="summon-row">
-            <button id="btnRunAll" class="qa-btn qa-btn--accent" style="flex: 1; min-width: 170px">
+
+          <!-- Row 2 — Global actions -->
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button id="btnRunAll" class="qa-btn qa-btn--accent" style="flex:1;min-width:160px">
               <span class="qa-icon">⚡</span>
-              <span class="qa-label">Unleash the Pantheon</span>
-              <span class="qa-sub">All realms · sequential</span>
+              <span class="qa-label">Run All Portals</span>
+              <span class="qa-sub">Sequential · all platforms</span>
             </button>
-            <button id="btnSaveAuth" class="qa-btn qa-btn--warn" style="flex: 1; min-width: 170px">
-              <span class="qa-icon">🗝️</span>
-              <span class="qa-label">Forge the Keys</span>
+            <button id="btnSaveAuth" class="qa-btn qa-btn--warn" style="flex:1;min-width:160px">
+              <span class="qa-icon">🔑</span>
+              <span class="qa-label">Save Auth</span>
               <span class="qa-sub">Log in &amp; save cookies</span>
             </button>
-            <button id="btnStopBot" class="qa-btn qa-btn--danger" style="flex: 1; min-width: 170px" disabled>
-              <span class="qa-icon">⛓️</span>
-              <span class="qa-label">Banish Hermes</span>
+            <button id="btnStopBot" class="qa-btn qa-btn--danger" style="flex:1;min-width:160px" disabled>
+              <span class="qa-icon">⏹</span>
+              <span class="qa-label">Stop Bot</span>
               <span class="qa-sub">Graceful shutdown</span>
             </button>
           </div>
         </div>
 
-        <!-- KPIs -->
+        <!-- Quick Action styles -->
+        <style>
+          .qa-btn {
+            display:flex;flex-direction:column;align-items:flex-start;gap:2px;
+            background:var(--surface2);border:1px solid var(--border2);
+            border-radius:var(--r);padding:14px 16px;cursor:pointer;
+            transition:var(--t);text-align:left;font-family:inherit;
+            position:relative;overflow:hidden;color:var(--tx);
+          }
+          .qa-btn[data-platform]::before {
+            content:'';position:absolute;inset:0;
+            background:var(--qa-color,transparent);opacity:0;
+            transition:opacity .2s;
+          }
+          .qa-btn[data-platform]:hover::before { opacity:.08; }
+          .qa-btn[data-platform] {
+            border-color:color-mix(in srgb, var(--qa-color) 35%, var(--border2));
+          }
+          .qa-btn[data-platform]:hover {
+            border-color:var(--qa-color);
+            box-shadow:0 4px 20px var(--qa-glow,rgba(0,0,0,.2));
+            transform:translateY(-2px);
+          }
+          .qa-btn--accent { background:var(--gn-bg);border:1px solid var(--gn-bd);color:var(--gn); }
+          .qa-btn--accent:hover { background:rgba(52,211,153,.15);border-color:var(--gn);transform:translateY(-1px); }
+          .qa-btn--warn   { background:var(--am-bg);border:1px solid var(--am-bd);color:var(--am); }
+          .qa-btn--warn:hover   { background:rgba(251,191,36,.15);border-color:var(--am);transform:translateY(-1px); }
+          .qa-btn--danger { background:var(--rd-bg);border:1px solid var(--rd-bd);color:var(--rd); }
+          .qa-btn--danger:hover { background:rgba(248,113,113,.15);border-color:var(--rd);transform:translateY(-1px); }
+          .qa-btn:disabled { opacity:.4;cursor:not-allowed;transform:none !important; }
+          .qa-icon  { font-size:22px;line-height:1; }
+          .qa-label { font-size:13px;font-weight:600;margin-top:2px; }
+          .qa-sub   { font-size:10.5px;color:var(--tx3);margin-top:1px; }
+        </style>
         <div class="kpi-row">
-          <div class="kpi" data-color="gold">
-            <div class="kpi-icon">📜</div>
+          <div class="kpi" data-color="blue">
+            <div class="kpi-icon">📋</div>
             <div>
               <div class="kpi-val" id="kTotal">0</div>
-              <div class="kpi-lbl">Trials Beheld</div>
+              <div class="kpi-lbl">Total Scanned</div>
             </div>
           </div>
           <div class="kpi" data-color="green">
-            <div class="kpi-icon">⚔️</div>
+            <div class="kpi-icon">✅</div>
             <div>
               <div class="kpi-val" id="kApplied">0</div>
-              <div class="kpi-lbl">Conquests</div>
+              <div class="kpi-lbl">Applied</div>
             </div>
           </div>
           <div class="kpi" data-color="amber">
-            <div class="kpi-icon">🕊️</div>
+            <div class="kpi-icon">⏭</div>
             <div>
               <div class="kpi-val" id="kSkipped">0</div>
-              <div class="kpi-lbl">Spared</div>
+              <div class="kpi-lbl">Skipped</div>
             </div>
           </div>
           <div class="kpi" data-color="red">
-            <div class="kpi-icon">💀</div>
+            <div class="kpi-icon">❌</div>
             <div>
               <div class="kpi-val" id="kFailed">0</div>
-              <div class="kpi-lbl">Fallen</div>
+              <div class="kpi-lbl">Failed</div>
             </div>
           </div>
           <div class="kpi" data-color="purple">
-            <div class="kpi-icon">🏺</div>
+            <div class="kpi-icon">🎯</div>
             <div>
               <div class="kpi-val" id="kRate">0%</div>
-              <div class="kpi-lbl">Divine Favor</div>
+              <div class="kpi-lbl">Success Rate</div>
             </div>
           </div>
           <div class="kpi" data-color="cyan">
-            <div class="kpi-icon">🦉</div>
+            <div class="kpi-icon">🧠</div>
             <div>
               <div class="kpi-val" id="kLearning">0</div>
-              <div class="kpi-lbl">Wisdom Scrolls</div>
+              <div class="kpi-lbl">Q&amp;A Learned</div>
             </div>
           </div>
         </div>
-
-        <!-- Feats of Legend -->
-        <div class="card">
-          <div class="card-hdr">
-            <h3>🏆 Feats of Legend</h3>
-            <p class="page-sub">Deeds immortalised by the Fates — earned through conquest.</p>
-          </div>
-          <div class="feats-grid" id="featsGrid"></div>
-        </div>
-
-        <!-- Charts -->
         <div class="charts-grid">
-          <div class="card">
-            <div class="card-hdr"><h3>📈 Saga of the Last 14 Days</h3></div>
+          <div class="card lg">
+            <div class="card-hdr"><h3>Application Trend</h3></div>
             <div class="chart-box"><canvas id="cTrend"></canvas></div>
           </div>
           <div class="card">
-            <div class="card-hdr"><h3>🏺 Wheel of Fate</h3></div>
+            <div class="card-hdr"><h3>Status Mix</h3></div>
             <div class="chart-box donut"><canvas id="cDonut"></canvas></div>
           </div>
         </div>
-        <div class="charts-grid even">
+        <div class="charts-grid">
           <div class="card">
-            <div class="card-hdr"><h3>🏛️ Titans of Industry</h3></div>
+            <div class="card-hdr"><h3>Top Companies</h3></div>
             <div class="chart-box"><canvas id="cCompanies"></canvas></div>
           </div>
           <div class="card">
-            <div class="card-hdr"><h3>🔮 Oracle's Judgement</h3></div>
+            <div class="card-hdr"><h3>Score Distribution</h3></div>
             <div class="chart-box"><canvas id="cScores"></canvas></div>
           </div>
         </div>
-        <div class="card">
-          <div class="card-hdr"><h3>🌩️ Deeds by Realm</h3></div>
+        <div class="card portal-chart-card">
+          <div class="card-hdr"><h3>Portal Breakdown</h3></div>
           <div class="chart-box"><canvas id="cPortals"></canvas></div>
         </div>
-
-        <!-- Recent chronicle -->
         <div class="card">
-          <div class="card-hdr"><h3>🕯️ Latest Deeds</h3></div>
+          <div class="card-hdr"><h3>Recent Activity</h3></div>
           <div id="recentList" class="recent-list"></div>
         </div>
       </section>
 
-      <!-- ─── QUESTS (jobs) ───────────────────────────────────────────── -->
+      <!-- ─── JOBS ──────────────────────────────── -->
       <section class="page" id="page-jobs">
         <div class="page-hdr">
-          <div>
-            <h1 class="page-title"><span class="title-deco">⚔️</span> Book of Quests</h1>
-            <p class="page-sub">Every trial Hermes has beheld across the realms.</p>
-          </div>
+          <h1 class="page-title">Jobs</h1>
           <div class="hdr-actions">
-            <input class="input-search" id="jobSearch" placeholder="🔍 Search the quests…" />
+            <input
+              class="input-search"
+              id="jobSearch"
+              placeholder="🔍 Search…"
+            />
             <select class="select" id="jobFilter">
-              <option value="">All Fates</option>
-              <option value="success">Conquered</option>
-              <option value="skipped">Spared</option>
-              <option value="failed">Fallen</option>
-              <option value="pending">Fated</option>
+              <option value="">All Status</option>
+              <option value="success">Applied</option>
+              <option value="skipped">Skipped</option>
+              <option value="failed">Failed</option>
+              <option value="pending">Pending</option>
             </select>
             <select class="select" id="jobSort">
               <option value="created_at-desc">Newest</option>
               <option value="created_at-asc">Oldest</option>
-              <option value="score-desc">Judgement ↓</option>
-              <option value="score-asc">Judgement ↑</option>
-              <option value="company-asc">Patron A–Z</option>
+              <option value="score-desc">Score ↓</option>
+              <option value="score-asc">Score ↑</option>
+              <option value="company-asc">Company A–Z</option>
             </select>
             <button class="btn-outline sm" id="btnRefreshJobs">↻</button>
-            <button class="btn-outline sm" id="btnJobExport">⬇ Export CSV</button>
-            <button class="btn-outline sm" id="btnJobImport">⬆ Import CSV</button>
-            <input type="file" id="jobImportFile" accept=".csv" style="display: none" />
+            <button class="btn-outline sm" id="btnJobExport">
+              ⬇ Export CSV
+            </button>
+            <button class="btn-outline sm" onclick="document.getElementById('jobImportFile').click()">⬆ Import CSV</button>
+            <input type="file" id="jobImportFile" accept=".csv" style="display:none" />
           </div>
         </div>
         <div class="card p0">
           <table class="tbl" id="tblJobs">
             <thead>
               <tr>
-                <th>Quest</th>
-                <th>Patron</th>
-                <th>Realm</th>
-                <th>Judgement</th>
-                <th>Fate</th>
-                <th>Oracle's Word</th>
-                <th>Day</th>
-                <th>Portal</th>
+                <th>Title</th>
+                <th>Company</th>
+                <th>Location</th>
+                <th>Score</th>
+                <th>Status</th>
+                <th>Reason</th>
+                <th>Date</th>
+                <th>Job Link</th>
               </tr>
             </thead>
             <tbody id="tblJobsBody"></tbody>
           </table>
-          <div class="empty-state" id="jobsEmpty">The book of quests is empty. Summon Hermes to begin.</div>
+          <div class="empty-state" id="jobsEmpty">No jobs yet.</div>
         </div>
       </section>
 
-      <!-- ─── ATHENA'S CODEX (learning) ───────────────────────────────── -->
+      <!-- ─── LEARNING ─────────────────────────── -->
       <section class="page" id="page-learning">
         <div class="page-hdr">
-          <div>
-            <h1 class="page-title"><span class="title-deco">🦉</span> Athena's Codex</h1>
-            <p class="page-sub">Wisdom the Oracle has gathered to answer the trials' questions.</p>
-          </div>
+          <h1 class="page-title">AI Learning List</h1>
           <div class="hdr-actions">
-            <input class="input-search" id="lSearch" placeholder="🔍 Search the codex…" />
+            <input class="input-search" id="lSearch" placeholder="🔍 Search…" />
             <select class="select" id="lFilter">
-              <option value="">All Scrolls</option>
-              <option value="answered">Inscribed</option>
-              <option value="unanswered">Blank</option>
+              <option value="">All</option>
+              <option value="answered">Answered</option>
+              <option value="unanswered">Unanswered</option>
             </select>
-            <button class="btn-primary sm" id="btnSelfLearn">✨ Divine Insight</button>
+            <button class="btn-primary sm" id="btnSelfLearn">
+              ✨ Auto-Learn
+            </button>
             <button class="btn-outline sm" id="btnRefreshL">↻</button>
             <button class="btn-outline sm" id="btnLearningExport">⬇ CSV</button>
-            <button class="btn-outline sm" id="btnLearningImport">⬆ Import</button>
-            <input type="file" id="lImportFile" accept=".csv" style="display: none" />
+            <button class="btn-outline sm" onclick="document.getElementById('lImportFile').click()">⬆ Import</button>
+            <input type="file" id="lImportFile" accept=".csv" style="display:none" />
           </div>
         </div>
 
-        <!-- Hero's Legend (resume) -->
+        <!-- Resume Upload -->
         <div class="card resume-card">
           <div class="resume-hdr">
             <div>
-              <h3>📜 The Hero's Legend</h3>
+              <h3>📄 Resume → AI Auto-Learn</h3>
               <p class="page-sub">
-                Offer your resume to the Oracle — it will inscribe answers for the
-                questions every trial may ask.
+                Upload your resume to auto-generate Q&amp;A pairs for all common
+                job application questions.
               </p>
             </div>
             <div class="resume-actions">
-              <button class="btn-primary sm" id="btnResumeUpload">📎 Offer Resume</button>
-              <input type="file" id="resumeUpload" accept=".pdf,.txt,.doc" style="display: none" />
-              <button class="btn-primary sm" id="btnAutoLearnResume" disabled>🔮 Oracle, Inscribe Q&amp;A</button>
+              <button class="btn-primary sm" onclick="document.getElementById('resumeUpload').click()">📎 Upload Resume</button>
+              <input type="file" id="resumeUpload" accept=".pdf,.txt,.doc" style="display:none" />
+              <button class="btn-primary sm" id="btnAutoLearnResume" disabled>
+                🤖 AI Auto-Generate Q&amp;A
+              </button>
             </div>
           </div>
           <textarea
             class="input resume-editor"
             id="resumeEditor"
-            placeholder="Your legend will appear here after the offering. You may also paste or type it directly, then ask the Oracle to inscribe…"
+            placeholder="Resume text will appear here after upload. You can also paste/type your resume directly and click Auto-Generate…"
             rows="8"
           ></textarea>
         </div>
 
         <!-- Add Q&A -->
         <details class="card add-qa" id="addQaPanel">
-          <summary>➕ Inscribe Wisdom by Hand</summary>
+          <summary>➕ Add Q&amp;A Manually</summary>
           <div class="add-qa-grid" style="margin-top: 12px">
-            <input class="input" id="lNewQ" placeholder="Question / field label" />
-            <input class="input" id="lNewKey" placeholder="Answer key (optional)" />
-            <textarea class="input" id="lNewA" placeholder="Answer" rows="2"></textarea>
-            <button class="btn-primary" id="btnAddQA">Inscribe</button>
+            <input
+              class="input"
+              id="lNewQ"
+              placeholder="Question / field label"
+            />
+            <input
+              class="input"
+              id="lNewKey"
+              placeholder="Answer key (optional)"
+            />
+            <textarea
+              class="input"
+              id="lNewA"
+              placeholder="Answer"
+              rows="2"
+            ></textarea>
+            <button class="btn-primary" id="btnAddQA">Add Entry</button>
           </div>
         </details>
 
@@ -423,27 +528,26 @@
                 <th>Question</th>
                 <th>Key</th>
                 <th>Answer</th>
-                <th>State</th>
-                <th>Rites</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="tblLBody"></tbody>
           </table>
-          <div class="empty-state" id="lEmpty">The codex holds no scrolls yet.</div>
+          <div class="empty-state" id="lEmpty">No entries found.</div>
         </div>
       </section>
 
-      <!-- ─── CHRONICLE (live log) ────────────────────────────────────── -->
+      <!-- ─── LIVE LOG ─────────────────────────── -->
       <section class="page" id="page-activity">
         <div class="page-hdr">
-          <div>
-            <h1 class="page-title"><span class="title-deco">📜</span> The Chronicle</h1>
-            <p class="page-sub">Hermes' deeds, recorded the instant they happen.</p>
-          </div>
+          <h1 class="page-title">Live Log</h1>
           <div class="hdr-actions">
             <span class="live-chip">● LIVE</span>
-            <button class="btn-outline sm" id="btnLoadLogs">🗞️ Unfurl Old Scrolls</button>
-            <button class="btn-outline sm" id="btnClearLog">🔥 Burn the Page</button>
+            <button class="btn-outline sm" id="btnLoadLogs">
+              📄 Load File Logs
+            </button>
+            <button class="btn-outline sm" id="btnClearLog">🗑 Clear</button>
           </div>
         </div>
         <div class="card log-card">
@@ -451,298 +555,690 @@
         </div>
       </section>
 
-      <!-- ─── EYE OF ARGUS (live browser) ─────────────────────────────── -->
+      <!-- ─── LIVE BROWSER ─────────────────────── -->
       <section class="page" id="page-liveview">
         <div class="page-hdr">
-          <div>
-            <h1 class="page-title"><span class="title-deco">👁️</span> Eye of Argus</h1>
-            <p class="page-sub">The hundred-eyed watcher streams Hermes' sight in real time.</p>
-          </div>
+          <h1 class="page-title">Live Browser View</h1>
           <div class="hdr-actions">
-            <button class="btn-outline sm" id="btnRefreshScreenshot">↻ Blink</button>
+            <span class="page-sub"
+              >Auto-refreshes every 3 seconds while bot is running</span
+            >
+            <button class="btn-outline sm" id="btnRefreshScreenshot">
+            <select class="select" id="screenshotInterval">
+              <option value="3000">Every 3s</option>
+              <option value="5000">Every 5s</option>
+              <option value="10000">Every 10s</option>
+              <option value="0">Manual only</option>
+            </select>
           </div>
         </div>
         <div class="card liveview-card">
           <div class="liveview-frame" id="liveviewFrame">
             <div class="liveview-placeholder" id="lvPlaceholder">
-              <div style="font-size: 48px">👁️</div>
-              <p>Argus sleeps. Summon Hermes and his sight shall appear here.</p>
+              <div style="font-size: 48px">📸</div>
+              <p>
+                No screenshot yet. Start the bot to see the live browser view.
+              </p>
             </div>
-            <img id="lvImg" class="liveview-img" style="display: none" alt="Live browser screenshot" />
+            <img
+              id="lvImg"
+              class="liveview-img"
+              style="display: none"
+              alt="Live browser screenshot"
+            />
           </div>
           <div class="liveview-meta" id="lvMeta">–</div>
         </div>
       </section>
 
-      <!-- ─── PANTHEON (portals) ──────────────────────────────────────── -->
-      <section class="page" id="page-portals">
-        <div class="page-hdr">
-          <div>
-            <h1 class="page-title"><span class="title-deco">🌩️</span> The Pantheon</h1>
-            <p class="page-sub">Each realm is watched over by a god. Live status and tallies per realm.</p>
-          </div>
-        </div>
-        <div class="portal-cards">
-          <div class="portal-card" id="pc-naukri">
-            <div class="portal-card-top">
-              <span class="portal-icon">🌩️</span>
-              <span class="portal-name">Zeus</span>
-              <span class="portal-live-dot" id="pd-naukri"></span>
-            </div>
-            <div class="portal-epithet">King of Naukri, Thunderer of Listings</div>
-            <div class="portal-stats">
-              <div class="portal-stat"><div class="ps-val" id="ps-naukri-applied">–</div><div class="ps-lbl">Conquered</div></div>
-              <div class="portal-stat"><div class="ps-val" id="ps-naukri-skipped">–</div><div class="ps-lbl">Spared</div></div>
-              <div class="portal-stat"><div class="ps-val" id="ps-naukri-failed">–</div><div class="ps-lbl">Fallen</div></div>
-            </div>
-          </div>
-          <div class="portal-card" id="pc-linkedin">
-            <div class="portal-card-top">
-              <span class="portal-icon">🦉</span>
-              <span class="portal-name">Athena</span>
-              <span class="portal-live-dot" id="pd-linkedin"></span>
-            </div>
-            <div class="portal-epithet">Keeper of LinkedIn, Goddess of Easy Apply</div>
-            <div class="portal-stats">
-              <div class="portal-stat"><div class="ps-val" id="ps-linkedin-applied">–</div><div class="ps-lbl">Conquered</div></div>
-              <div class="portal-stat"><div class="ps-val" id="ps-linkedin-skipped">–</div><div class="ps-lbl">Spared</div></div>
-              <div class="portal-stat"><div class="ps-val" id="ps-linkedin-failed">–</div><div class="ps-lbl">Fallen</div></div>
-            </div>
-          </div>
-          <div class="portal-card" id="pc-indeed">
-            <div class="portal-card-top">
-              <span class="portal-icon">🔱</span>
-              <span class="portal-name">Poseidon</span>
-              <span class="portal-live-dot" id="pd-indeed"></span>
-            </div>
-            <div class="portal-epithet">Ruler of Indeed, Master of the Deep Listings</div>
-            <div class="portal-stats">
-              <div class="portal-stat"><div class="ps-val" id="ps-indeed-applied">–</div><div class="ps-lbl">Conquered</div></div>
-              <div class="portal-stat"><div class="ps-val" id="ps-indeed-skipped">–</div><div class="ps-lbl">Spared</div></div>
-              <div class="portal-stat"><div class="ps-val" id="ps-indeed-failed">–</div><div class="ps-lbl">Fallen</div></div>
-            </div>
-          </div>
-          <div class="portal-card" id="pc-company">
-            <div class="portal-card-top">
-              <span class="portal-icon">🔥</span>
-              <span class="portal-name">Hephaestus</span>
-              <span class="portal-live-dot" id="pd-company"></span>
-            </div>
-            <div class="portal-epithet">Smith of Company Forges &amp; Career Pages</div>
-            <div class="portal-stats">
-              <div class="portal-stat"><div class="ps-val" id="ps-company-applied">–</div><div class="ps-lbl">Conquered</div></div>
-              <div class="portal-stat"><div class="ps-val" id="ps-company-skipped">–</div><div class="ps-lbl">Spared</div></div>
-              <div class="portal-stat"><div class="ps-val" id="ps-company-failed">–</div><div class="ps-lbl">Fallen</div></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ─── DIVINE SCROLLS (cover letters) ──────────────────────────── -->
-      <section class="page" id="page-coverletters">
-        <div class="page-hdr">
-          <div>
-            <h1 class="page-title"><span class="title-deco">🪶</span> Divine Scrolls</h1>
-            <p class="page-sub">Letters penned by the Oracle for the quests you have conquered.</p>
-          </div>
-        </div>
-        <div class="cover-split">
-          <div class="cover-list" id="coverJobList">
-            <div class="empty-state" id="coverEmpty">No conquered quests yet — the quill awaits.</div>
-          </div>
-          <div class="cover-panel">
-            <div class="cover-job-title" id="coverJobTitle">Choose a conquest →</div>
-            <div class="cover-actions">
-              <button class="btn-primary sm" id="btnGenCover" disabled>🪶 Pen the Scroll</button>
-              <button class="btn-outline sm" id="btnCopyCover" disabled>📋 Copy</button>
-              <button class="btn-outline sm" id="btnRegenCover" disabled>↻ Pen Anew</button>
-            </div>
-            <div class="cover-output" id="coverOutput">Select a conquered quest and the Oracle shall pen your scroll.</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ─── SACRED SIGILS (keywords) ────────────────────────────────── -->
-      <section class="page" id="page-keywords">
-        <div class="page-hdr">
-          <div>
-            <h1 class="page-title"><span class="title-deco">🔱</span> Sacred Sigils</h1>
-            <p class="page-sub">Words of power that guide the Oracle's judgement of every trial.</p>
-          </div>
-          <div class="hdr-actions">
-            <button class="btn-primary" id="btnSaveKeywords">🏺 Seal the Sigils</button>
-            <button class="btn-outline sm" id="btnRefreshKeywords">↻</button>
-          </div>
-        </div>
-        <div class="keywords-grid">
-          <div class="card">
-            <h3 class="settings-section">⚜️ Sigils of Binding</h3>
-            <p class="page-sub">A trial must bear at least one of these to earn high judgement.</p>
-            <div class="tag-input-area" id="reqTagArea"></div>
-            <div class="tag-add-row">
-              <input class="input" id="reqInput" placeholder="Add binding sigil…" />
-              <button class="btn-primary sm" id="btnAddReq">Add</button>
-            </div>
-          </div>
-          <div class="card">
-            <h3 class="settings-section">🌟 Sigils of Favor</h3>
-            <p class="page-sub">Trials bearing these earn extra favor from the Oracle.</p>
-            <div class="tag-input-area" id="prefTagArea"></div>
-            <div class="tag-add-row">
-              <input class="input" id="prefInput" placeholder="Add favor sigil…" />
-              <button class="btn-primary sm" id="btnAddPref">Add</button>
-            </div>
-          </div>
-          <div class="card">
-            <h3 class="settings-section">☠️ Forbidden Words</h3>
-            <p class="page-sub">Trials bearing these are cast aside (e.g. "10 years", "senior architect").</p>
-            <div class="tag-input-area" id="exclTagArea"></div>
-            <div class="tag-add-row">
-              <input class="input" id="exclInput" placeholder="Add forbidden word…" />
-              <button class="btn-danger sm" id="btnAddExcl">Forbid</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ─── TARTARUS (blocklist) ────────────────────────────────────── -->
-      <section class="page" id="page-blocklist">
-        <div class="page-hdr">
-          <div>
-            <h1 class="page-title"><span class="title-deco">🌋</span> Tartarus</h1>
-            <p class="page-sub">Companies banished to the abyss — Hermes shall never knock on their gates.</p>
-          </div>
-        </div>
-        <div class="card add-qa">
-          <h3 class="settings-section">⛓️ Cast a Company into the Pit</h3>
-          <div class="block-add-row">
-            <input class="input" id="blockInput" placeholder="Company name…" />
-            <button class="btn-danger" id="btnAddBlock">🌋 Banish</button>
-          </div>
-        </div>
-        <div class="card p0">
-          <ul class="block-list" id="blockList"></ul>
-          <div class="empty-state" id="blockEmpty">The pit is empty. No company has been banished.</div>
-        </div>
-      </section>
-
-      <!-- ─── THE FORGE (settings) ────────────────────────────────────── -->
+      <!-- ─── SETTINGS ─────────────────────────── -->
       <section class="page" id="page-config">
         <div class="page-hdr">
-          <div>
-            <h1 class="page-title"><span class="title-deco">🔨</span> The Forge of Hephaestus</h1>
-            <p class="page-sub">Temper the engine — every gear, every charm, every key.</p>
-          </div>
+          <h1 class="page-title">Settings</h1>
           <div class="hdr-actions">
-            <button class="btn-primary" id="btnSaveConfig">🔨 Strike the Anvil</button>
+            <button class="btn-primary" id="btnSaveConfig">💾 Save All</button>
             <button class="btn-outline sm" id="btnRefreshConfig">↻</button>
           </div>
         </div>
 
-        <!-- Oracle toggle -->
-        <div class="card ai-toggle-card">
-          <div class="ai-toggle-info">
-            <div class="ai-toggle-title">🔮 The Oracle's Sight</div>
-            <div class="ai-toggle-desc">
-              <b style="color: var(--gold)">AWAKE</b> — the Oracle judges every trial and answers forms with divine insight<br />
-              <b style="color: var(--am)">ASLEEP</b> — mere keyword augury and rule-bound form filling (faster, no GPU)
+        <!-- ─── AI ENGINE TOGGLE -->
+        <div class="card" style="margin-bottom:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:180px;">
+            <div style="font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:4px;">🤖 AI Engine</div>
+            <div style="font-size:11px;color:var(--tx3);line-height:1.5;">
+              <b style="color:var(--acc);">ON</b> — AI scores jobs &amp; maps forms intelligently<br>
+              <b style="color:var(--am);">OFF</b> — Keyword-only scoring, rule-based form fill (faster, no GPU needed)
             </div>
           </div>
-          <label class="ai-toggle-wrap" id="aiToggleWrap">
-            <div class="ai-toggle-pill" id="aiTogglePill">
-              <div class="ai-toggle-thumb" id="aiToggleThumb"></div>
+          <label id="aiToggleWrap" style="display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;">
+            <div id="aiTogglePill" style="width:52px;height:28px;border-radius:14px;border:2px solid var(--border2);background:var(--tx3);position:relative;transition:background .25s,border-color .25s;flex-shrink:0;">
+              <div id="aiToggleThumb" style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:transform .25s;"></div>
             </div>
-            <span class="ai-toggle-label" id="aiToggleLabel">Divining…</span>
+            <span id="aiToggleLabel" style="font-size:13px;font-weight:600;color:var(--tx3);min-width:80px;">Checking…</span>
           </label>
         </div>
 
-        <!-- Hunt + Oracle & Chariot -->
-        <div class="settings-grid" style="margin-bottom: 20px">
+        <!-- ─── Job Search + AI & Browser -->
+        <div class="settings-grid" style="margin-bottom:20px;">
           <div class="card settings-card">
-            <h3 class="settings-section">🏹 The Hunt</h3>
-            <label class="field-label">Quest Title</label><input class="input" id="cfgJobTitle" placeholder="QA Engineer" />
-            <label class="field-label">Hunting Grounds (location)</label><input class="input" id="cfgLocation" placeholder="Pune" />
-            <label class="field-label">Max Conquests Per Run</label><input class="input" type="number" id="cfgMaxJobs" placeholder="20" />
+            <h3 class="settings-section">🔍 Job Search</h3>
+            <label class="field-label">Job Title</label><input class="input" id="cfgJobTitle" placeholder="QA Engineer" />
+            <label class="field-label">Search Location</label><input class="input" id="cfgLocation" placeholder="Pune" />
+            <label class="field-label">Max Applications Per Run</label><input class="input" type="number" id="cfgMaxJobs" placeholder="20" />
             <label class="field-label">Max Pages Per Search</label><input class="input" type="number" id="cfgMaxPages" placeholder="5" />
-            <label class="field-label">Judgement Threshold (spare below)</label><input class="input" type="number" id="cfgThreshold" placeholder="40" />
-            <label class="field-label">Min Pause Between Trials (ms)</label><input class="input" type="number" id="cfgDelayMin" placeholder="1500" />
-            <label class="field-label">Max Pause Between Trials (ms)</label><input class="input" type="number" id="cfgDelayMax" placeholder="3000" />
+            <label class="field-label">Score Threshold (skip below)</label><input class="input" type="number" id="cfgThreshold" placeholder="40" />
+            <label class="field-label">Min Delay (ms)</label><input class="input" type="number" id="cfgDelayMin" placeholder="1500" />
+            <label class="field-label">Max Delay (ms)</label><input class="input" type="number" id="cfgDelayMax" placeholder="3000" />
           </div>
           <div class="card settings-card">
-            <h3 class="settings-section">🔮 Oracle &amp; Chariot</h3>
-            <label class="field-label">Oracle Spirit (Ollama model)</label>
-            <input class="input" id="cfgAiModel" placeholder="qwen2.5:7b" list="aiModelDatalist" autocomplete="off" />
-            <datalist id="aiModelDatalist"></datalist>
+            <h3 class="settings-section">🤖 AI &amp; Browser</h3>
+            <label class="field-label">AI Model (Ollama)</label><input class="input" id="cfgAiModel" placeholder="qwen2.5:7b" list="aiModelDatalist" autocomplete="off" /><datalist id="aiModelDatalist"></datalist>
             <label class="field-label">Ollama Base URL</label><input class="input" id="cfgOllama" placeholder="http://localhost:11434" />
-            <label class="field-label">Oracle Patience (timeout ms)</label><input class="input" type="number" id="cfgTimeout" placeholder="60000" />
-            <label class="field-label">Chariot Slow Motion (ms)</label><input class="input" type="number" id="cfgSlowMo" placeholder="20" />
-            <label class="field-label">Invisible Chariot (headless)</label>
+            <label class="field-label">Ollama Timeout (ms)</label><input class="input" type="number" id="cfgTimeout" placeholder="60000" />
+            <label class="field-label">Slow Motion (ms)</label><input class="input" type="number" id="cfgSlowMo" placeholder="20" />
+            <label class="field-label">Headless Browser</label>
             <select class="select" id="cfgHeadless"><option value="false">Visible (No)</option><option value="true">Hidden (Yes)</option></select>
-            <label class="field-label">Silence the Oracle (keyword-only)</label>
-            <select class="select" id="cfgSkipAI"><option value="false">No (use the Oracle)</option><option value="true">Yes (faster)</option></select>
-            <label class="field-label">Cloak of Hades (safety mode, extra delays)</label>
+            <label class="field-label">Skip AI (keyword-only mode)</label>
+            <select class="select" id="cfgSkipAI"><option value="false">No (use AI)</option><option value="true">Yes (faster)</option></select>
+            <label class="field-label">Safety Mode (extra delays)</label>
             <select class="select" id="cfgSafety"><option value="false">Off</option><option value="true">On</option></select>
           </div>
         </div>
 
-        <!-- Hero identity + deeds -->
-        <div class="settings-grid" style="margin-bottom: 20px">
+        <!-- ─── Personal Info + Work Details -->
+        <div class="settings-grid" style="margin-bottom:20px;">
           <div class="card settings-card">
-            <h3 class="settings-section">🛡️ The Hero</h3>
+            <h3 class="settings-section">👤 Personal Info</h3>
             <label class="field-label">Full Name</label><input class="input" id="pfName" placeholder="Your Name" />
             <label class="field-label">Email</label><input class="input" type="email" id="pfEmail" placeholder="you@email.com" />
             <label class="field-label">Phone</label><input class="input" id="pfPhone" placeholder="+91XXXXXXXXXX" />
             <label class="field-label">Current Location</label><input class="input" id="pfLocation" placeholder="Pune, India" />
-            <label class="field-label">📜 Resume File Path</label><input class="input" id="pfResumePath" placeholder="/path/to/resume.pdf" />
+            <label class="field-label">📄 Resume File Path</label><input class="input" id="pfResumePath" placeholder="C:\path\to\resume.pdf" />
             <label class="field-label">LinkedIn URL</label><input class="input" id="pfLinkedIn" placeholder="https://linkedin.com/in/you" />
             <label class="field-label">GitHub URL</label><input class="input" id="pfGitHub" placeholder="https://github.com/you" />
             <label class="field-label">Portfolio URL</label><input class="input" id="pfPortfolio" placeholder="https://yoursite.com" />
           </div>
           <div class="card settings-card">
-            <h3 class="settings-section">⚒️ Deeds &amp; Tribute</h3>
+            <h3 class="settings-section">💼 Work Details</h3>
             <label class="field-label">Current Company</label><input class="input" id="pfCompany" placeholder="Acme Corp" />
             <label class="field-label">Current Role</label><input class="input" id="pfRole" placeholder="QA Engineer" />
             <label class="field-label">Years of Experience</label><input class="input" id="pfYears" placeholder="3" />
-            <label class="field-label">Expected Tribute (salary, LPA)</label><input class="input" id="pfSalary" placeholder="10" />
+            <label class="field-label">Expected Salary (LPA)</label><input class="input" id="pfSalary" placeholder="10" />
             <label class="field-label">Notice Period</label><input class="input" id="pfNotice" placeholder="30 days" />
-            <label class="field-label">The Hero's Tale (summary)</label>
-            <textarea class="input" id="pfSummary" rows="3" placeholder="2–3 sentence professional bio…"></textarea>
-            <label class="field-label">Default Scroll (cover letter)</label>
-            <textarea class="input" id="pfCoverLetter" rows="4" placeholder="Your default cover letter text…"></textarea>
+            <label class="field-label">Professional Summary</label><textarea class="input" id="pfSummary" rows="3" placeholder="2–3 sentence professional bio…"></textarea>
+            <label class="field-label">Default Cover Letter</label><textarea class="input" id="pfCoverLetter" rows="4" placeholder="Your default cover letter text…"></textarea>
           </div>
         </div>
 
-        <!-- API keys -->
-        <div class="card">
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px">
-            <h3 class="settings-section" style="margin: 0">🗝️ Keys to the Higher Realms</h3>
+        <!-- ─── AI API Keys -->
+        <div class="card" style="margin-bottom:8px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
+            <h3 class="settings-section" style="margin:0;">🔑 AI API Keys</h3>
             <div id="apiKeyStatus" class="page-sub"></div>
           </div>
-          <p class="page-sub" style="margin: 0 0 14px">
-            Leave a key blank to skip that realm — the Oracle falls back OpenAI → Gemini → Ollama → keyword augury.
-            Keys rest locally in <code>config.json</code> and are never shown in full once sealed.
-          </p>
+          <p class="page-sub" style="margin:0 0 14px;">Leave a key blank to skip that provider — the bot falls back OpenAI → Gemini → Ollama → keyword-only. Keys are stored locally in <code>config.json</code> and never shown in full once saved.</p>
           <div class="settings-grid">
             <div>
-              <label class="field-label">Google Gemini API Key</label>
-              <input class="input" type="password" id="pfGeminiKey" autocomplete="off" placeholder="Leave blank to skip Gemini" />
-              <label class="field-label">Gemini Model</label>
-              <input class="input" id="pfGeminiModel" placeholder="gemini-2.0-flash" />
+              <label class="field-label">Google Gemini API Key</label><input class="input" type="password" id="pfGeminiKey" autocomplete="off" placeholder="Leave blank to skip Gemini" />
+              <label class="field-label" style="margin-top:10px;">Gemini Model</label><input class="input" id="pfGeminiModel" placeholder="gemini-2.0-flash" />
             </div>
             <div>
-              <label class="field-label">OpenAI API Key</label>
-              <input class="input" type="password" id="pfOpenAiKey" autocomplete="off" placeholder="Leave blank to skip OpenAI" />
-              <label class="field-label">OpenAI API Key (backup)</label>
-              <input class="input" type="password" id="pfOpenAiKey2" autocomplete="off" placeholder="Optional second key (auto-rotates on quota)" />
-              <label class="field-label">OpenAI Model</label>
-              <input class="input" id="pfOpenAiModel" placeholder="gpt-3.5-turbo" />
+              <label class="field-label">OpenAI API Key</label><input class="input" type="password" id="pfOpenAiKey" autocomplete="off" placeholder="Leave blank to skip OpenAI" />
+              <label class="field-label" style="margin-top:10px;">OpenAI API Key (backup)</label><input class="input" type="password" id="pfOpenAiKey2" autocomplete="off" placeholder="Optional second key (auto-rotates on quota)" />
+              <label class="field-label" style="margin-top:10px;">OpenAI Model</label><input class="input" id="pfOpenAiModel" placeholder="gpt-3.5-turbo" />
             </div>
           </div>
         </div>
       </section>
+
+      <!-- ─── KEYWORDS ─────────────────────────── -->
+      <section class="page" id="page-keywords">
+        <div class="page-hdr">
+          <h1 class="page-title">Keywords</h1>
+          <div class="hdr-actions">
+            <button class="btn-primary" id="btnSaveKeywords">
+              💾 Save All Keywords
+            </button>
+            <button class="btn-outline sm" id="btnRefreshKeywords">↻</button>
+          </div>
+        </div>
+        <div class="keywords-grid">
+          <div class="card">
+            <h3 class="settings-section">✅ Required Keywords</h3>
+            <p class="page-sub mb-8">
+              Jobs must contain at least one of these to get a high score.
+            </p>
+            <div class="tag-input-area" id="reqTagArea"></div>
+            <div class="tag-add-row">
+              <input
+                class="input"
+                id="reqInput"
+                placeholder="Add required keyword…"
+              /><button class="btn-primary sm" id="btnAddReq">Add</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3 class="settings-section">⭐ Preferred Keywords</h3>
+            <p class="page-sub mb-8">Boost score if job contains these.</p>
+            <div class="tag-input-area" id="prefTagArea"></div>
+            <div class="tag-add-row">
+              <input
+                class="input"
+                id="prefInput"
+                placeholder="Add preferred keyword…"
+              /><button class="btn-primary sm" id="btnAddPref">Add</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3 class="settings-section">🚫 Excluded Keywords</h3>
+            <p class="page-sub mb-8">
+              Skip jobs containing these phrases (e.g. "10 years", "senior
+              architect").
+            </p>
+            <div class="tag-input-area" id="exclTagArea"></div>
+            <div class="tag-add-row">
+              <input
+                class="input"
+                id="exclInput"
+                placeholder="Add excluded phrase…"
+              /><button class="btn-danger sm" id="btnAddExcl">Block</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ─── BLOCKLIST ────────────────────────── -->
+      <section class="page" id="page-blocklist">
+        <div class="page-hdr">
+          <h1 class="page-title">Company Blocklist</h1>
+          <p class="page-sub">Companies to always skip.</p>
+        </div>
+        <div class="card add-qa">
+          <h3>➕ Block Company</h3>
+          <div class="block-add-row">
+            <input
+              class="input"
+              id="blockInput"
+              placeholder="Company name…"
+            /><button class="btn-danger" id="btnAddBlock">🚫 Block</button>
+          </div>
+        </div>
+        <div class="card p0">
+          <ul class="block-list" id="blockList"></ul>
+          <div class="empty-state" id="blockEmpty">No companies blocked.</div>
+        </div>
+      </section>
+
+      <!-- ─── PORTALS ─────────────────────────── -->
+      <section class="page" id="page-portals">
+        <div class="page-hdr">
+          <h1 class="page-title">Portals</h1>
+          <span class="page-sub">Live status and stats per portal</span>
+        </div>
+        <div class="portal-cards">
+          <div class="portal-card" id="pc-naukri">
+            <div class="portal-card-top">
+              <span class="portal-icon">🏢</span>
+              <span class="portal-name">Naukri</span>
+              <span class="portal-live-dot" id="pd-naukri"></span>
+            </div>
+            <div class="portal-stats">
+              <div class="portal-stat"><div class="ps-val" id="ps-naukri-applied">–</div><div class="ps-lbl">Applied</div></div>
+              <div class="portal-stat"><div class="ps-val" id="ps-naukri-skipped">–</div><div class="ps-lbl">Skipped</div></div>
+              <div class="portal-stat"><div class="ps-val" id="ps-naukri-failed">–</div><div class="ps-lbl">Failed</div></div>
+            </div>
+          </div>
+          <div class="portal-card" id="pc-linkedin">
+            <div class="portal-card-top">
+              <span class="portal-icon">💼</span>
+              <span class="portal-name">LinkedIn</span>
+              <span class="portal-live-dot" id="pd-linkedin"></span>
+            </div>
+            <div class="portal-stats">
+              <div class="portal-stat"><div class="ps-val" id="ps-linkedin-applied">–</div><div class="ps-lbl">Applied</div></div>
+              <div class="portal-stat"><div class="ps-val" id="ps-linkedin-skipped">–</div><div class="ps-lbl">Skipped</div></div>
+              <div class="portal-stat"><div class="ps-val" id="ps-linkedin-failed">–</div><div class="ps-lbl">Failed</div></div>
+            </div>
+          </div>
+          <div class="portal-card" id="pc-indeed">
+            <div class="portal-card-top">
+              <span class="portal-icon">🔍</span>
+              <span class="portal-name">Indeed</span>
+              <span class="portal-live-dot" id="pd-indeed"></span>
+            </div>
+            <div class="portal-stats">
+              <div class="portal-stat"><div class="ps-val" id="ps-indeed-applied">–</div><div class="ps-lbl">Applied</div></div>
+              <div class="portal-stat"><div class="ps-val" id="ps-indeed-skipped">–</div><div class="ps-lbl">Skipped</div></div>
+              <div class="portal-stat"><div class="ps-val" id="ps-indeed-failed">–</div><div class="ps-lbl">Failed</div></div>
+            </div>
+          </div>
+          <div class="portal-card" id="pc-company">
+            <div class="portal-card-top">
+              <span class="portal-icon">🏭</span>
+              <span class="portal-name">Company</span>
+              <span class="portal-live-dot" id="pd-company"></span>
+            </div>
+            <div class="portal-stats">
+              <div class="portal-stat"><div class="ps-val" id="ps-company-applied">–</div><div class="ps-lbl">Applied</div></div>
+              <div class="portal-stat"><div class="ps-val" id="ps-company-skipped">–</div><div class="ps-lbl">Skipped</div></div>
+              <div class="portal-stat"><div class="ps-val" id="ps-company-failed">–</div><div class="ps-lbl">Failed</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── COVER LETTERS ───────────────────── -->
+      <section class="page" id="page-coverletters">
+        <div class="page-hdr">
+          <h1 class="page-title">Cover Letters</h1>
+          <span class="page-sub">AI-generated letters for applied jobs</span>
+        </div>
+        <div class="cover-split">
+          <div class="cover-list" id="coverJobList">
+            <div class="empty-state" id="coverEmpty">No applied jobs yet.</div>
+          </div>
+          <div class="cover-panel">
+            <div id="coverJobTitle" style="font-family:var(--font-head);font-size:16px;font-weight:700;">Select a job →</div>
+            <div class="cover-actions">
+              <button class="btn-primary sm" id="btnGenCover" disabled>✨ Generate</button>
+              <button class="btn-outline sm" id="btnCopyCover" disabled>📋 Copy</button>
+              <button class="btn-outline sm" id="btnRegenCover" disabled>↻ Regenerate</button>
+            </div>
+            <div class="cover-output" id="coverOutput">Generate a cover letter by selecting a job and clicking Generate.</div>
+          </div>
+        </div>
+      </section>
+
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="mythos.js"></script>
+    <script src="app.js"></script>
+    <script>
+    // ── New-tab glue injected alongside existing app.js ────────────────
+    (function() {
+      const socket = window._socket || (window._socket = io());
+
+      // ── Topbar wiring ────────────────────────────────────────────────
+      const topDot   = document.getElementById('topStatusDot');
+      const topLabel = document.getElementById('topStatusLabel');
+      const topTimer = document.getElementById('topTimer');
+      const topStart = document.getElementById('topBtnStart');
+      const topStop  = document.getElementById('topBtnStop');
+
+      let timerInterval = null;
+      let botStartTime  = null;
+
+      function setTopStatus(status, startedAt) {
+        const running = status === 'running';
+        topDot.className = 'status-dot ' + (running ? 'running' : status === 'error' ? 'error' : 'idle');
+        topLabel.textContent = running ? 'Running' : status === 'stopping' ? 'Stopping…' : 'Idle';
+        topStart.disabled = running;
+        topStop.disabled  = !running;
+        // mirror to sidebar buttons if they exist
+        const s = document.getElementById('btnStart'), e = document.getElementById('btnStop');
+        if (s) s.disabled = running;
+        if (e) e.disabled = !running;
+        if (running && startedAt) {
+          botStartTime = new Date(startedAt);
+          if (!timerInterval) {
+            timerInterval = setInterval(() => {
+              const s = Math.floor((Date.now() - botStartTime) / 1000);
+              const mm = String(Math.floor(s/60)).padStart(2,'0');
+              const ss = String(s % 60).padStart(2,'0');
+              topTimer.textContent = mm + ':' + ss;
+            }, 1000);
+          }
+        } else {
+          clearInterval(timerInterval); timerInterval = null;
+          topTimer.textContent = '';
+        }
+      }
+
+      socket.on('bot:status', d => setTopStatus(d.status, d.startedAt));
+
+      topStart.addEventListener('click', () => {
+        fetch('/api/bot/start', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({}) });
+      });
+      topStop.addEventListener('click', () => {
+        fetch('/api/bot/stop', { method:'POST' });
+      });
+
+      // ── Ollama status check every 30s (via backend) ─────────────────────
+      const ollamaDot   = document.getElementById('ollamaDot');
+      const ollamaLabel = document.getElementById('ollamaLabel');
+      function checkOllama() {
+        fetch('/api/ollama/status')
+          .then(r => r.json())
+          .then(d => {
+            if (d.running) {
+              ollamaDot.className = 'ollama-dot ok';
+              ollamaLabel.textContent = `Ollama running`;
+            } else {
+              ollamaDot.className = 'ollama-dot err';
+              ollamaLabel.textContent = 'Ollama offline';
+            }
+          })
+          .catch(() => { ollamaDot.className = 'ollama-dot err'; ollamaLabel.textContent = 'Ollama offline'; });
+      }
+      checkOllama();
+      setInterval(checkOllama, 30000);
+
+      // ── AI Engine: Model list + switcher ──────────────────────────────────
+      async function loadOllamaModels() {
+        try {
+          const res  = await fetch('/api/ollama/models');
+          const data = await res.json();
+          const { models = [], current } = data;
+
+          // Populate sidebar dropdown
+          const sidebarSel = document.getElementById('aiModelSelect');
+          if (sidebarSel) {
+            sidebarSel.innerHTML = models.length
+              ? models.map(m => `<option value="${m.name}" ${m.name === current ? 'selected' : ''}>${m.name}</option>`).join('')
+              : `<option value="${current || 'qwen2.5:7b'}">${current || 'qwen2.5:7b'}</option>`;
+          }
+
+          // Populate Settings datalist
+          const dl = document.getElementById('aiModelDatalist');
+          if (dl) dl.innerHTML = models.map(m => `<option value="${m.name}">`).join('');
+
+          // Sync Settings text input
+          const cfgInput = document.getElementById('cfgAiModel');
+          if (cfgInput && current) cfgInput.value = current;
+
+          // Model count badge
+          const badge = document.getElementById('modelCountBadge');
+          if (badge) {
+            if (models.length > 1) {
+              badge.textContent = models.length + ' models';
+              badge.style.display = '';
+            } else {
+              badge.style.display = 'none';
+            }
+          }
+        } catch (_) {}
+      }
+
+      async function switchModel(modelName) {
+        if (!modelName) return;
+        try {
+          await fetch('/api/ollama/model', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model: modelName }),
+          });
+          // Sync sidebar select
+          const sel = document.getElementById('aiModelSelect');
+          if (sel) sel.value = modelName;
+          // Sync settings input
+          const inp = document.getElementById('cfgAiModel');
+          if (inp) inp.value = modelName;
+        } catch (_) {}
+      }
+
+      const sidebarModelSel = document.getElementById('aiModelSelect');
+      if (sidebarModelSel) {
+        sidebarModelSel.addEventListener('change', e => switchModel(e.target.value));
+      }
+
+      // ── Response timer (per AI query) ─────────────────────────────────────
+      socket.on('ai:query_start', ({ reqId, model, provider }) => {
+        const disp = document.getElementById('aiTimerDisplay');
+        const val  = document.getElementById('aiTimerVal');
+        if (disp) disp.style.display = '';
+        if (val)  val.textContent = `⏳ ${model || provider || '...'} running…`;
+      });
+
+      socket.on('ai:query_done', ({ reqId, model, elapsedMs, error }) => {
+        const disp = document.getElementById('aiTimerDisplay');
+        const val  = document.getElementById('aiTimerVal');
+        if (disp) disp.style.display = '';
+        if (val) {
+          if (elapsedMs > 0) {
+            const sec = (elapsedMs / 1000).toFixed(2);
+            val.textContent = `${sec}s — ${model || ''}${error ? ' ❌' : ' ✅'}`;
+          } else {
+            val.textContent = error ? `❌ ${error.substring(0, 40)}` : '–';
+          }
+        }
+      });
+
+      // ── Model switched (from any client) ─────────────────────────────────
+      socket.on('ai:model_changed', ({ model, prev, models }) => {
+        const sel = document.getElementById('aiModelSelect');
+        if (sel && model) {
+          // Re-populate if server sent updated list
+          if (models && models.length) {
+            sel.innerHTML = models.map(m =>
+              `<option value="${m.name}" ${m.name === model ? 'selected' : ''}>${m.name}</option>`
+            ).join('');
+          } else {
+            sel.value = model;
+          }
+        }
+        const inp = document.getElementById('cfgAiModel');
+        if (inp && model) inp.value = model;
+      });
+
+      // ── Startup log from server ───────────────────────────────────────────
+      socket.on('ai:startup_log', ({ msg, models, current, status }) => {
+        // Refresh model list once server announces it's ready
+        loadOllamaModels();
+      });
+
+      // Initial model load
+      loadOllamaModels();
+
+      // ── Portal live-dot updates ──────────────────────────────────────
+      // Normalize portal name: 'linkedin' | 'LinkedIn' → canonical key
+      function canonicalPortal(raw) {
+        const lower = (raw || '').toLowerCase();
+        return { naukri:'Naukri', linkedin:'Linkedin', indeed:'Indeed', company:'Company' }[lower] || raw;
+      }
+      const portalDotMap = { Naukri:'pd-naukri', Linkedin:'pd-linkedin', Indeed:'pd-indeed', Company:'pd-company' };
+      const portalStats  = { Naukri:{applied:0,skipped:0,failed:0}, Linkedin:{applied:0,skipped:0,failed:0}, Indeed:{applied:0,skipped:0,failed:0}, Company:{applied:0,skipped:0,failed:0} };
+
+      function updatePortalDot(portal, status) {
+        const key = canonicalPortal(portal);
+        const dotId = portalDotMap[key];
+        if (!dotId) return;
+        const dot = document.getElementById(dotId);
+        if (!dot) return;
+        dot.className = 'portal-live-dot' + (status === 'started' ? ' active' : '');
+      }
+
+      function updatePortalStat(portal, key, delta) {
+        const p = canonicalPortal(portal);
+        if (!portalStats[p]) return;
+        portalStats[p][key] = (portalStats[p][key] || 0) + delta;
+        const el = document.getElementById('ps-' + p.toLowerCase() + '-' + key);
+        if (el) el.textContent = portalStats[p][key];
+        updatePortalChart();
+      }
+
+      socket.on('portal', d => updatePortalDot(d.portal, d.status));
+      socket.on('applied', d => updatePortalStat(d.portal, 'applied', 1));
+      socket.on('job_scored', d => { if (d.decision === 'SKIP') updatePortalStat(d.portal, 'skipped', 1); });
+      socket.on('error',    d => updatePortalStat(d.portal, 'failed', 1));
+
+      // ── Portal bar chart ─────────────────────────────────────────────
+      let portalChart = null;
+      function updatePortalChart() {
+        const canvas = document.getElementById('cPortals');
+        if (!canvas) return;
+        const displayLabels = ['Naukri','LinkedIn','Indeed','Company'];
+        const dataKeys      = displayLabels.map(canonicalPortal); // ['Naukri','Linkedin','Indeed','Company']
+        const applied  = dataKeys.map(k => portalStats[k]?.applied  || 0);
+        const skipped  = dataKeys.map(k => portalStats[k]?.skipped  || 0);
+        const failed   = dataKeys.map(k => portalStats[k]?.failed   || 0);
+        const data = { labels: displayLabels, datasets: [
+          { label:'Applied',  data:applied,  backgroundColor:'#34d399', borderRadius:4 },
+          { label:'Skipped',  data:skipped,  backgroundColor:'#fbbf24', borderRadius:4 },
+          { label:'Failed',   data:failed,   backgroundColor:'#f87171', borderRadius:4 },
+        ]};
+        if (portalChart) { portalChart.data = data; portalChart.update(); return; }
+        portalChart = new Chart(canvas, {
+          type: 'bar',
+          data,
+          options: {
+            responsive:true, maintainAspectRatio:false,
+            plugins:{ legend:{ labels:{ color:'#94a3b8', font:{ family:'Inter', size:11 } } } },
+            scales:{
+              x:{ stacked:false, ticks:{ color:'#475569' }, grid:{ color:'rgba(148,163,184,.08)' } },
+              y:{ stacked:false, ticks:{ color:'#475569' }, grid:{ color:'rgba(148,163,184,.08)' } },
+            }
+          }
+        });
+      }
+      updatePortalChart();
+
+      // ── Load historical portal stats on init ─────────────────────────
+      (function loadInitialPortalStats() {
+        fetch('/api/stats/portals')
+          .then(r => r.json())
+          .then(data => {
+            Object.entries(data).forEach(([rawPortal, stats]) => {
+              const p = canonicalPortal(rawPortal);
+              if (!portalStats[p]) return;
+              ['applied','skipped','failed'].forEach(k => {
+                portalStats[p][k] = stats[k] || 0;
+                const el = document.getElementById('ps-' + p.toLowerCase() + '-' + k);
+                if (el) el.textContent = portalStats[p][k];
+              });
+            });
+            updatePortalChart();
+          })
+          .catch(() => {});
+      })();
+
+      // ── Cover Letters page ───────────────────────────────────────────
+      let coverJobs = [];
+      let selectedCoverJob = null;
+
+      function loadCoverJobs() {
+        fetch('/api/jobs')
+          .then(r => r.json())
+          .then(jobs => {
+            coverJobs = (jobs || []).filter(j => j.apply_status === 'success' || j.status === 'applied');
+            const list  = document.getElementById('coverJobList');
+            const empty = document.getElementById('coverEmpty');
+            if (!list) return;
+            // Clear dynamic items
+            list.querySelectorAll('.cover-list-item').forEach(e => e.remove());
+            if (coverJobs.length === 0) { if (empty) empty.style.display = ''; return; }
+            if (empty) empty.style.display = 'none';
+            coverJobs.forEach((j, i) => {
+              const el = document.createElement('div');
+              el.className = 'cover-list-item';
+              el.innerHTML = `<div class="cl-title">${j.title || 'Untitled'}</div><div class="cl-co">${j.company || ''}</div>`;
+              el.addEventListener('click', () => selectCoverJob(j, el));
+              list.appendChild(el);
+            });
+          }).catch(() => {});
+      }
+
+      function selectCoverJob(job, el) {
+        selectedCoverJob = job;
+        document.querySelectorAll('.cover-list-item').forEach(e => e.classList.remove('active'));
+        el.classList.add('active');
+        const titleEl = document.getElementById('coverJobTitle');
+        if (titleEl) titleEl.textContent = (job.title || '') + ' @ ' + (job.company || '');
+        const genBtn = document.getElementById('btnGenCover');
+        if (genBtn) genBtn.disabled = false;
+      }
+
+      async function generateCoverLetter(regenerate) {
+        if (!selectedCoverJob) return;
+        const out    = document.getElementById('coverOutput');
+        const genBtn = document.getElementById('btnGenCover');
+        const cpBtn  = document.getElementById('btnCopyCover');
+        const rgBtn  = document.getElementById('btnRegenCover');
+        if (out) out.textContent = '⏳ Generating…';
+        if (genBtn) genBtn.disabled = true;
+        try {
+          const res = await fetch('/api/cover-letter', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ job: selectedCoverJob }),
+          });
+          const data = await res.json();
+          if (out) out.textContent = data.letter || '(empty response)';
+          if (cpBtn) cpBtn.disabled = false;
+          if (rgBtn) rgBtn.disabled = false;
+        } catch (err) {
+          if (out) out.textContent = 'Error: ' + err.message;
+        } finally {
+          if (genBtn) genBtn.disabled = false;
+        }
+      }
+
+      const genBtn  = document.getElementById('btnGenCover');
+      const cpBtn   = document.getElementById('btnCopyCover');
+      const rgBtn   = document.getElementById('btnRegenCover');
+      if (genBtn)  genBtn.addEventListener('click',  () => generateCoverLetter(false));
+      if (rgBtn)   rgBtn.addEventListener('click',   () => generateCoverLetter(true));
+      if (cpBtn)   cpBtn.addEventListener('click',   () => {
+        const txt = document.getElementById('coverOutput')?.textContent;
+        if (txt) navigator.clipboard.writeText(txt).catch(() => {});
+      });
+
+      // Load cover jobs when tab is activated
+      document.querySelectorAll('.nav-item[data-tab="coverletters"]').forEach(el => {
+        el.addEventListener('click', loadCoverJobs);
+      });
+
+      // ── Wire spec socket events for topbar Start/Stop ────────────────
+      socket.on('start_bot_trigger', () => {
+        fetch('/api/bot/start', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
+      });
+      socket.on('stop_bot_trigger', () => {
+        fetch('/api/bot/stop', { method:'POST' });
+      });
+
+      // ── AI Engine Toggle ────────────────────────────────────────────────
+      const aiPill   = document.getElementById('aiTogglePill');
+      const aiThumb  = document.getElementById('aiToggleThumb');
+      const aiLabel  = document.getElementById('aiToggleLabel');
+      let   aiOn     = true;
+
+      function setAiToggleUI(enabled) {
+        aiOn = enabled;
+        if (aiPill) {
+          aiPill.style.background  = enabled ? 'var(--acc)' : 'var(--tx3)';
+          aiPill.style.borderColor = enabled ? 'var(--acc)' : 'var(--border2)';
+        }
+        if (aiThumb) aiThumb.style.transform = enabled ? 'translateX(24px)' : 'translateX(0)';
+        if (aiLabel) {
+          aiLabel.textContent = enabled ? '✅ AI ON' : '⚡ Keyword mode';
+          aiLabel.style.color = enabled ? 'var(--acc)' : 'var(--am)';
+        }
+      }
+
+      // Read initial state
+      fetch('/api/ai-mode').then(r => r.json()).then(d => setAiToggleUI(d.aiEnabled !== false)).catch(() => {});
+
+      // Toggle on click
+      const aiWrap = document.getElementById('aiToggleWrap');
+      if (aiWrap) {
+        aiWrap.addEventListener('click', () => {
+          const next = !aiOn;
+          setAiToggleUI(next);
+          fetch('/api/ai-mode', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ aiEnabled: next }),
+          }).then(r => r.json())
+            .then(d => setAiToggleUI(d.aiEnabled !== false))
+            .catch(() => setAiToggleUI(!next)); // revert on error
+        });
+      }
+
+      // Server-side push (e.g., index.js changed mode)
+      socket.on('ai_mode', d => setAiToggleUI(d.aiEnabled !== false));
+
+    })();
+
+    </script>
   </body>
 </html>
