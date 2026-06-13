@@ -618,18 +618,18 @@ function createDashboardServer(port = 3000) {
 
           for (let i = 0; i < categories.length; i++) {
             const cat = categories[i];
-            const prompt = `You are a job application assistant. Based on the following resume/profile, generate 6 question-answer pairs about: ${cat}.
+            const prompt = `You are a job application assistant. Based on the following resume/profile, generate 2 question-answer pairs about: ${cat}.
 RESUME/PROFILE:
-${text.substring(0, 4000)}
+${text.substring(0, 1500)}
 
-Generate 6 question-answer pairs in this EXACT JSON format (no extra text):
+Generate 2 question-answer pairs in this EXACT JSON format (no extra text):
 [
   { "question": "...", "answer": "..." }
 ]
 IMPORTANT: Return ONLY the JSON array, nothing else.`;
 
             try {
-              const rawAI = await askAI(prompt, { temperature: 0.3, num_predict: 800 });
+              const rawAI = await askAI(prompt, { temperature: 0.3, num_predict: 200, num_ctx: 2048, timeout: 900000, skip_think: true });
               const jsonMatch = rawAI.match(/\[[\s\S]*\]/);
               if (jsonMatch) {
                 const pairs = JSON.parse(jsonMatch[0]);
