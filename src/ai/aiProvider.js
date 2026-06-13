@@ -169,7 +169,7 @@ async function _askOllama(prompt, opts = {}) {
   // For thinking models, prepend /no_think to short-answer prompts to skip
   // the expensive reasoning phase when the answer is brief (e.g. form fields).
   let effectivePrompt = prompt;
-  if (isThinkingModel && numPredict <= 300) {
+  if (isThinkingModel && (numPredict <= 300 || opts.skip_think)) {
     effectivePrompt = '/no_think\n' + prompt;
   }
 
@@ -189,7 +189,7 @@ async function _askOllama(prompt, opts = {}) {
         num_ctx:     numCtx,
       },
     },
-    { timeout: _ollamaTimeout, headers: { 'Content-Type': 'application/json' } }
+    { timeout: opts.timeout ?? _ollamaTimeout, headers: { 'Content-Type': 'application/json' } }
   );
 
   const raw = response.data?.response || '';
