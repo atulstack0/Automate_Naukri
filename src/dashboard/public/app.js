@@ -434,14 +434,34 @@ document.getElementById('btnAutoLearnResume').addEventListener('click', async ()
   const text = document.getElementById('resumeEditor').value.trim();
   if (!text) { toast('Please upload or paste your resume first','err'); return; }
   const btn = document.getElementById('btnAutoLearnResume');
-  btn.disabled=true; btn.textContent='🤖 AI Generating… (may take 30s)';
+  btn.disabled=true; btn.textContent='🤖 AI Generating… (processing in background)';
   try {
     const r = await fetch('/api/resume/auto-learn',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});
     const d = await r.json();
-    if (d.success) { toast(`🎉 Generated ${d.generated} Q&As, saved ${d.saved} to DB`,'ok'); loadLearning(); }
-    else toast('Error: '+d.error,'err');
-  } catch(err) { toast('Error: '+err.message,'err'); }
-  btn.disabled=false; btn.textContent='🤖 AI Auto-Generate Q&A';
+    if (d.success) { 
+      toast(`Started generating Q&As in background. They will appear live.`,'info'); 
+    } else {
+      toast('Error: '+d.error,'err');
+      btn.disabled=false; btn.textContent='🤖 AI Auto-Generate Q&A';
+    }
+  } catch(err) { 
+    toast('Error: '+err.message,'err'); 
+    btn.disabled=false; btn.textContent='🤖 AI Auto-Generate Q&A';
+  }
+});
+
+socket.on('resume:learn:progress', () => {
+  loadLearning();
+});
+
+socket.on('resume:learn:done', d => {
+  const btn = document.getElementById('btnAutoLearnResume');
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = '🤖 AI Auto-Generate Q&A';
+  }
+  toast(`🎉 Generated ${d.generated} Q&As, saved ${d.saved} to DB`, 'ok');
+  loadLearning();
 });
 
 /* ═══════════════ LIVE LOG TAB ═══════════════════════════════ */
