@@ -208,6 +208,94 @@ The dashboard starts at **[http://localhost:3000](http://localhost:3000)**. Clic
 
 ## 🏗 Architecture
 
+### System Architecture & Data Flow (Macro View)
+
+The following flowchart illustrates the complete macro-architecture of the AutoApply system. Designed with a modular, layered approach, the system cleanly separates the presentation tier, process orchestration, portal-specific scrapers, a universal state-machine for application handling, and a fault-tolerant cognitive tier (cascading AI). This decoupled design ensures resilience against portal DOM changes, robust anti-bot mitigation, and seamless local/cloud AI fallback.
+
+```mermaid
+flowchart TD
+    %% Styling
+    classDef ui fill:#2A3342,stroke:#5A6A85,stroke-width:2px,color:#E1E8F0,rx:8px,ry:8px;
+    classDef orchestrator fill:#1E293B,stroke:#3B82F6,stroke-width:2px,color:#F8FAFC,rx:8px,ry:8px;
+    classDef worker fill:#334155,stroke:#10B981,stroke-width:2px,color:#F8FAFC,rx:8px,ry:8px;
+    classDef ai fill:#4C1D95,stroke:#8B5CF6,stroke-width:2px,color:#EDE9FE,rx:8px,ry:8px;
+    classDef db fill:#064E3B,stroke:#059669,stroke-width:2px,color:#D1FAE5,rx:8px,ry:8px;
+    classDef external fill:#7F1D1D,stroke:#EF4444,stroke-width:2px,color:#FEE2E2,rx:8px,ry:8px;
+
+    %% Subgraphs
+    subgraph Client ["Client Interface (Presentation Layer)"]
+        UI["React/Vanilla Dashboard<br/>(SPA / Real-time KPIs)"]:::ui
+        CLI["CLI Commands<br/>(Headless Executions)"]:::ui
+    end
+
+    subgraph Server ["Orchestrator Layer (Node.js Express + Socket.io)"]
+        API["REST API Endpoints"]:::orchestrator
+        WS["WebSocket Server<br/>(Telemetry & I/O Piping)"]:::orchestrator
+        Index["Process Manager<br/>(child_process.spawn)"]:::orchestrator
+    end
+
+    subgraph Portals ["Job Board Abstraction Layer (Workers)"]
+        NW["Naukri Worker<br/>(Search & Scrape)"]:::worker
+        LW["LinkedIn Worker<br/>(Easy Apply Paginator)"]:::worker
+        IW["Indeed Worker<br/>(Native & External)"]:::worker
+        CW["Company Worker<br/>(ATS Delegator)"]:::worker
+    end
+
+    subgraph CoreEngine ["Universal Apply Engine (DOM State Machine)"]
+        AE["Apply Engine<br/>(Multi-step Form Orchestrator)"]:::worker
+        FF["Form Filler<br/>(Dynamic DOM Evaluator)"]:::worker
+        AD["Anti-Detection<br/>(Bezier Curves & Typo Sim)"]:::worker
+    end
+
+    subgraph AIEngine ["Cognitive AI Cascade (Decision Layer)"]
+        AP["AI Provider<br/>(Fault-Tolerant Router)"]:::ai
+        AA["AI Agent<br/>(3-Tier Knowledge Retrieval)"]:::ai
+        OAM["Ollama Manager<br/>(Local LLM Daemon)"]:::ai
+    end
+
+    subgraph Storage ["Persistence Layer"]
+        DB[("SQLite<br/>(WAL Mode / better-sqlite3)")]:::db
+        Auth{"auth.json<br/>(Serialized Session)"}:::db
+        Screens["Screenshots<br/>(Disk I/O Pipeline)"]:::db
+    end
+
+    subgraph External ["External Services"]
+        JobSite[("Target Portals / ATS")]:::external
+        OpenAI[("OpenAI API")]:::external
+        Gemini[("Gemini API")]:::external
+    end
+
+    %% Data & Control Flows
+    UI <-->|HTTP / WS (Telemetry)| API & WS
+    CLI -->|Spawns| Index
+    API -->|POST /start (IPC)| Index
+
+    Index -->|Forks Worker Process| NW & LW & IW & CW
+    WS <..>|Stdio Piped Logs| NW & LW & IW & CW
+
+    NW & LW & IW & CW -->|Initiates Application| AE
+    AE <-->|DOM Controls| FF
+    AE -.->|Wraps Playwright| AD
+
+    AD -->|Injects Human-like Input| JobSite
+    JobSite -.->|DOM Mutates / Captcha| AE
+
+    FF -->|Unresolved Form Field| AA
+    AA -->|L1: Exact Match Query| DB
+    AA -->|L2: Keyword Heuristics| DB
+    AA -->|L3: Infer Answer| AP
+    
+    AP -->|Primary| OpenAI
+    AP -->|Fallback 1| Gemini
+    AP -->|Fallback 2| OAM
+
+    AE -->|Commit Transaction / Dedup| DB
+    AE -->|Restores Cookies| Auth
+    AE -->|Captures Frame| Screens
+    DB -.->|Broadcasts KPIs| WS
+    AP -.->|Caches Inference| DB
+```
+
 ### Execution Modes
 
 `src/index.js` supports two modes via CLI flags:
