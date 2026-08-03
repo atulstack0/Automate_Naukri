@@ -23,6 +23,9 @@ btnTheme.addEventListener('click', () => {
   html.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
   btnTheme.textContent = next === 'dark' ? '🌙' : '☀️';
+  if (document.getElementById('page-dashboard').classList.contains('active')) {
+    loadDashboard();
+  }
 });
 
 /* ── Toast ────────────────────────────────────────────────── */
