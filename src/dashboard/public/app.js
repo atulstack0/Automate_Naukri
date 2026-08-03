@@ -549,7 +549,8 @@ async function loadConfig() {
     document.getElementById('cfgHeadless').value  = String(c.headless === true);
     document.getElementById('cfgSkipAI').value    = String(c.skipAI === true);
     document.getElementById('cfgSafety').value    = String(c.safetyMode === true);
-    document.getElementById('aiModelName').textContent = c.aiModel || 'unknown';
+    const aiModelEl = document.getElementById('aiModelName');
+    if (aiModelEl) aiModelEl.textContent = c.aiModel || 'unknown';
 
     // Profile fields
     document.getElementById('pfName').value        = p.name            || '';
